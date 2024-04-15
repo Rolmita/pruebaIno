@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Prueba {
+  tiempo  DateTime? @db.DateTime(0)
+  voltios Float?
+  @@map("prueba")
+  @@ignore
+}
+
+model Folder {
+  id         Int         @id @default(autoincrement())
+  name       String
+  dashboards Dashboard[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@map("folders")
+}
+
+model Dashboard {
+  id        Int      @id @default(autoincrement())
+  name      String
+  panels    Panel[]
+  Folder    Folder?  @relation(fields: [folderId], references: [id])
+  folderId  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("dashboards")
+}
+
+model Panel {
+  id          Int       @id @default(autoincrement())
+  name        String
+  Dashboard   Dashboard @relation(fields: [dashboardId], references: [id])
+  dashboardId Int
+  info        Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

@@ -1,0 +1,208 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html,
+body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/*LAYOUT PRINCIPAL*/
+
+nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: #ffffff;
+    max-width: 100vw;
+    height: 60px;
+    border-bottom: 3px solid black;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    font-weight: 800;
+    font-size: 1.2em;
+}
+
+main {
+    max-width: 100vw;
+    background-color: #000000;
+    min-height: 100vh;
+}
+
+/* LAYOUT DE DASHBOARD */
+
+.dashboard-options {
+    padding: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    max-width: 100vw;
+    height: 40px;
+    background-color: #161515;
+    color: #ffffff;
+    font-size: 1em;
+}
+
+select,
+input {
+    margin: 0px 10px;
+    padding: 5px;
+    font-size: 0.9em;
+    width: 150px;
+    border: 5px solid black;
+    border-radius: 10px;
+}
+
+.button, .btn-dropdown {
+    padding: 5px;
+    background-color: #ccc;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-weight: 600;
+    color: black;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.btn-dropdown { 
+    width: 100%;
+    margin:0;
+    font-size: 1em;
+}
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+    width: 150px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width: fit-content;
+    overflow: auto;
+    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.4);
+    background-color: #ccc;
+    width: 150px;
+    margin-bottom: 20px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.dropdown:hover .btn-dropdown{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.dropdown:hover .dropdown-content{
+    display: block;
+}
+
+.btn-dropdown:active .dropdown-content{
+    display:none
+}
+
+.btn-menu{
+    width: 150px;
+    margin-right: 0;
+    font-size:1em;
+}
+.btn-menu:hover{
+    cursor: pointer;
+    background-color: #b3aeae;
+}
+
+.searcher{
+display:flex;
+flex-direction: row;
+width: auto;
+margin-top: 20px;
+align-items: center;
+background-color: #ffffff;
+}
+
+.searcher-input{
+    border:0;
+    outline: none;
+    width: 100%;
+}
+
+.folder-dashboard-list{
+    margin-top:20px;
+}
+
+/* PAGINA DE UN DASHBOARD*/
+
+.react-grid-layout {
+    background-color: #000000;
+}
+
+.layout {
+    background-color: #161515;
+    border: 1px solid #111111;
+    margin: 20px;
+}
+
+.panel {
+    background-color: #10bfeb;
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: move;
+}
+
+/* NUEVO DASHBOARD '/dashboard/new-dashboard */
+
+.dashboard-home {
+    display: flex;
+    flex-direction: row;
+    min-height: 80vh;
+    margin: 20px;
+    color: white;
+    background-color: #161515;
+}
+
+.show-dashboards {
+    width: 100vw;
+    background-color: #111111;
+    padding: 50px;
+}
+
+.new {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    width: 30vw;
+    padding: 20px;
+}
+
+.page-title {
+    margin-bottom: 20px;
+}
+
+.form-component {
+    margin: 15px 0 20px 0;
+}
+
+.new-dashboard a {
+    width: fit-content;
+}
+
+/* ELEMENTO ESCONDIDO */
+
+.hidden {
+    visibility: hidden;
+}
+
+.nodisplay {
+    display: none;
+}
