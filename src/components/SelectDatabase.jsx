@@ -1,28 +1,72 @@
+'use client'
+import { useState, useEffect } from 'react';
+import { openDBConnection } from '@/lib/actions';
 
-import { openDbConnection } from '@/lib/actions'
-import { useState } from 'react'
-import { openDBConnection } from '@/lib/actions'
+export default function SelectDatabase({ databases }) {
+    const [db, setDb] = useState(null);
 
-export default function SelectDatabase({user}) {
+    useEffect(() => {
+        if (db !== null) {
+            const connectToDB = async () => {
+                try {
+                    const dbConfig = await databases.filter(db => db.database == db)
+                    await openDBConnection(dbConfig);
+                    console.log('esta es la conexion', connection);
+                } catch (error) {
+                    console.error('Error connecting to database:', error);
+                }
+            };
+            connectToDB();
+        }
+    }, [db]);
 
-    const [db, setDb] = useState('null')
+    const handleChange = (event) => {
+        const selectedDB = event.target.value;
+        console.log('la db selecccionada es', selectedDB);
+        setDb(selectedDB);
+    };
 
-    const handleChange = (event) =>{
-        db = event.target.value
-        openDBConnection (db);
-    }
-
-
-
-    return (<div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-        <label>Database name: </label>
-        {/*TODO: Este select conecta a la database seleccionada */}
-        <select name='database' onChange={handleChange}>
-            <option  value='null'>-- Choose a database --</option>
-            <option  value='db1'>DB1</option>
-            <option  value='db2'>DB2</option>
-            <option  value='db3'>DB3</option>
-        </select></div>
-    )
-
+    return (
+        <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+            <label>Database name: </label>
+            <select name='database' onChange={handleChange}>
+                <option value={null}>-- Choose a database --</option>
+                {databases.map((db) => (
+                    <option key={db.database} value={db.database}>
+                        {db.database}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
 }
+
+// 'use client'
+// import { useState } from 'react'
+// import { openDBConnection } from '@/lib/actions'
+
+// export default function SelectDatabase({ databases }) {
+
+//     const [db, setDb] = useState('null')
+//     let connection
+
+//     const handleChange = (event) => {
+//         console.log(event.target.value);
+//         setDb(event.target.value)
+//         console.log(db);
+//         connection = async () => { await openDBConnection(db)}
+//     }
+
+//     return (<div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+//         <label>Database name: </label>
+
+//         <select name='database' onChange={handleChange}>
+//             <option value='null'>-- Choose a database --</option>
+//             {databases.map(db => (
+//                 <option key={db.database} value={db}>{db.database}</option>
+//             ))}
+//         </select>
+//     </div>
+//     )
+
+// }

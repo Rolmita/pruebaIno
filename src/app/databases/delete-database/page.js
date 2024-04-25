@@ -1,31 +1,48 @@
 import DatabaseForm from "@/components/DatabaseForm"
-import { getDatabase } from "@/lib/actions.js"
+import { deleteDB } from "@/lib/actions.js"
+import { auth } from "@/auth"
+import { prisma } from "@/lib/prisma"
+import Link from "next/link"
+import Navbar from "@/components/NavBar"
 
-async function EditDatabase({ searchParams }) {
-    const databaseId = Number(searchParams.id)
-    //TODO: buscar bases de datos en actions.js en lugar de meterlas en la variable array predefinida
-    
-    // const db = await getDatabase(databaseId);
+async function DeleteDatabase({ searchParams }) {
+    const databaseName = searchParams.database
 
-    const databases = [
-        { id: 1, name: 'casa_almazara', host: 'localhost', port: '3306', user: 'root', password: 'root' },
-        { id: 2, name: 'prueba_inoelec', host: 'localhost', port: '3306', user: 'root', password: 'root' },
-        { id: 3, name: 'prueba_datos', host: 'localhost', port: '3306', user: 'root', password: 'root' },
-    ]
+    const session = await auth()
 
-    let foundDatabase;
+    const user = await prisma.user.findUnique({
+        where: { email: session.user.email }
+    })
 
-    for (const db of databases) { if (db.id === databaseId) foundDatabase = db }
-
-    console.log('esta es la base de datos', foundDatabase);
+    const userDB = user.databases
+    const dbToDelete = userDB.filter((db) => db.database == databaseName)
+    const disabled = true
 
     return (
         <main>
+            <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
+                <Navbar></Navbar>
+                <nav className='nav-section-page'>
+                    <div>
+                        <Link className='route-link' href='/'><h1>Nombre</h1></Link>
+                        <img src='/right.svg' width='18px'></img>
+                        <Link className='route-link' href='/databases'>Databases</Link>
+                        <img src='/right.svg' width='18px'></img>
+                        <Link className='route-link' href={`/databases/delete-database?database=${databaseName}`}>Delete: {databaseName}</Link>
+                    </div>
+                </nav>
+            </div>
             <div className="show-dashboards">
-                <DatabaseForm db={foundDatabase} />
+                <p>¿Are you sure you want to delete your connection to {databaseName}?</p>
+                <DatabaseForm userId={user.id} db={dbToDelete} disabled={disabled}>
+                    <div>
+                        <button formAction={deleteDB}>Delete</button>
+                        <Link className="button" href='/databases'>Cancelar</Link>
+                    </div>
+                </DatabaseForm>
             </div>
         </main>
     )
 }
 
-export default EditDatabase
+export default DeleteDatabase

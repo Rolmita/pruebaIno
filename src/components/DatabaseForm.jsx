@@ -1,38 +1,35 @@
 import Link from "next/link"
 
-function DatabaseForm({ db, action }) {
+function DatabaseForm({ db, userId, children, disabled }) {
 
-    const userId = 1
+    db != null ? db = db[0] : db
+
     return (
-        <form formAction={action} style={{}}>
-            <h1 style={{ color: 'white' }}>Database connection</h1>
-            <input type='hidden' name='id-database' defaultValue={db?.id} ></input>
+        <form>
+            {disabled ?? <h1 style={{ color: 'white' }}>Database connection</h1>}
             <input type='hidden' name='userId' defaultValue={userId}></input>
+            <input type='hidden' name='dbPrev' defaultValue={db?.database}></input>
             <div>
                 <label htmlFor="name">Database Name:</label>
-                <input type='text' defaultValue={db?.name} name='name'></input>
+                <input type='text' defaultValue={db?.database} name='name' disabled={disabled}></input>
             </div>
             <div>
                 <label htmlFor="host">Host name:</label>
-                <input type='text' name='host' defaultValue={db?.host}></input>
+                <input type='text' name='host' defaultValue={db?.host} disabled={disabled}></input>
             </div>
             <div>
                 <label htmlFor="port">Port:</label>
-                <input type='text' name='port' defaultValue={db?.port}></input>
+                <input type='text' name='port' defaultValue={db?.port} disabled={disabled}></input>
             </div>
             <div>
                 <label htmlFor="user">User:</label>
-                <input type='text' name='user' defaultValue={db?.user}></input>
+                <input type='text' name='user' defaultValue={db?.user} disabled={disabled}></input>
             </div>
             <div>
                 <label htmlFor="password">Password:</label>
-                <input type='text' name='password' defaultValue={db?.password}></input>
+                <input type='text' name='password' defaultValue={db?.password} disabled={disabled}></input>
             </div>
-            <div>
-                {/*TODO:  terminar la conexion a la base de datos (FORMULARIO Y ENVIO DE DATOS)*/}
-                <button type='submit' className="button" action={action}>Save Database Configuration</button>
-                <button type='reset' className="button"><Link href='/databases'>Cancelar</Link></button>
-            </div>
+            {children}
         </form>
     )
 }

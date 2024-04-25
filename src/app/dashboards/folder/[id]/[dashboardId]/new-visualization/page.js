@@ -1,9 +1,17 @@
 import Navbar from "@/components/NavBar"
 import Link from "next/link"
 import SelectDatabase from "@/components/SelectDatabase";
+import { auth } from "@/auth";
 
 export default async function NewVisualization({ params }) {
     console.log(params);
+
+    const session = await auth()
+    const user = await prisma.user.findUnique({
+        where: { email: session.user.email }
+    })
+    const databases = user.databases
+
     const folderId = Number(params.id);
     const folder = await prisma.folder.findUnique({
         where: { id: folderId }
@@ -122,9 +130,9 @@ export default async function NewVisualization({ params }) {
                             <a href='#tab1'><h4>Data</h4></a>
                             <div className="tab-content">
                                 <form style={{ display: 'flex', flexDirection: 'column' }}>
-                                    
-                                       <SelectDatabase></SelectDatabase>
-                                    
+
+                                    <SelectDatabase databases={databases}></SelectDatabase>
+
                                     <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}><label>Table name: </label>
                                         {/* la tabla que se selecciona con los datos 'from [nombre tabla]'*/}
                                         <select>

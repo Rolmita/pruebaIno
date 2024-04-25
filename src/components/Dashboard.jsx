@@ -1,9 +1,8 @@
 'use client'
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import { useState } from 'react';
 import { saveLayouts } from '@/lib/actions'
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -28,36 +27,7 @@ const Dashboard = ({ dashboard }) => {
         // Add more breakpoints as needed
     };
 
-    // const loadLayout = async () => {
-    //     try {
-    //         const savedLayouts = dashboard.content;
-    //         console.log('El layout guardado es', JSON.parse(savedLayouts));
-    //         return savedLayouts ? JSON.parse(savedLayouts) : defaultLayouts;
-    //     } catch (err) {
-    //         console.error("Failed to load layouts", err);
-    //         return defaultLayouts;
-    //     }
-    // };
-
     const [layout, setLayoutState] = useState(JSON.parse(dashboard.content))
-
-    // const [layout, setLayoutState] = useState(
-    //     [
-    //         { i: 'a', x: 0, y: 0, w: 12, h: 3 },
-    //         { i: 'b', x: 1, y: 0, w: 3, h: 2 },
-    //         { i: 'c', x: 4, y: 0, w: 1, h: 2 }
-    //     ])
-
-    // const saveLayouts = async (layout) => {
-    //     try {
-    //         await prisma.dashboard.findUnique({
-
-    //         })
-    //         localStorage.setItem('layout', JSON.stringify(layout));
-    //     } catch (err) {
-    //         console.error("Failed to save layouts to localStorage", err);
-    //     }
-    // };
 
     const onLayoutChange = async (currentLayout, allLayouts) => {
         console.log('¿Es allLayouts una promesa?', typeof allLayouts);

@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs'
 import { signIn, signOut } from '@/auth';
 import { getUserByEmail } from '@/lib/data';
+import { redirect } from 'next/navigation';
+import mysql from 'mysql2/promise'
 
 // AUTHENTICATION FUNCTIONS
 // REGISTER
@@ -225,46 +227,6 @@ export async function getDashboardsWithoutFolders() {
     return dashboards;
 }
 
-//TODO: AVERIGUAR COMO CONECTAR DATABASES PARA METERLAS EN EL MODELO
-
-export async function getDatabase(id) {
-    try {
-        const db = await prisma.databases.findUnique({
-            where: {
-                id: id
-            }
-        })
-        console.log(db);
-        return db
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-export async function newDatabase(formData) {
-    try {
-        const dbName = formData.get('name')
-        const dbPort = formData.get('port')
-        const dbHost = formData.get('host')
-        const dbUser = formData.get('user')
-        const dbPassword = formData.get('password')
-        const db = await prisma.databases.create({
-            data: {
-                name: dbName,
-                host: dbHost,
-                port: dbPort,
-                user: dbUser,
-                password: dbPassword
-            }
-        })
-        console.log('Los datos de conexión se han guardado correctamente');
-    } catch (error) {
-        console.log(error);
-        console.log('Los datos de conexión de la bd no han sido guardados');
-    }
-}
-
 export async function saveLayouts(layout, id) {
     const content = JSON.stringify(layout)
     const result = await prisma.dashboard.update({
@@ -293,15 +255,22 @@ export async function editDashboard(formData) {
     }
 }
 
-export async function createDbConnection(formData) {
-    const userId = formData.get('userId')
+// TODO
+export async function openDBConnection(dbConfig) {
+    console.log(dbConfig);
+    const connection = await mysql.createConnection(dbConfig);
+    console.log(connection);
+    return connection
+}
+
+function dBConnConfig(formData) {
     const dbName = formData.get('name');
     const hostName = formData.get('host');
     const connPort = formData.get('port')
     const connUser = formData.get('user')
     const userPass = formData.get('password')
 
-    const dbConfig = {
+    const config = {
         host: hostName,
         user: connUser,
         password: userPass,
@@ -310,16 +279,34 @@ export async function createDbConnection(formData) {
         supportBigNumbers: true,
         decimalNumbers: true,
     };
+    return config
+}
 
-    const foundUser = prisma.user.findUnique({
+function editDBobject(foundUser, dBPrevName, dbConfig) {
+    const allDB = foundUser.databases
+    let index
+    for (let i = 0; i < allDB.length; i++) {
+        if (allDB[i].database == dBPrevName) index = i
+    }
+    allDB[index].host = dbConfig.host
+    allDB[index].user = dbConfig.user
+    allDB[index].password = dbConfig.password
+    allDB[index].database = dbConfig.database
+    allDB[index].port = dbConfig.port
+    allDB[index].supportBigNumbers = dbConfig.supportBigNumbers
+    allDB[index].decimalNumbers = dbConfig.decimalNumbers
+    return allDB
+}
+
+async function findUserById(userId) {
+    const foundUser = await prisma.user.findUnique({
         where: { id: userId }
     })
+    return foundUser
+}
 
-    let all = JSON.parse(foundUser.databases)
-
-    all.push(dbConfig)
-
-    const result = prisma.user.update({
+async function updateDb(all, userId) {
+    const result = await prisma.user.update({
         data: {
             databases: all
         },
@@ -328,15 +315,71 @@ export async function createDbConnection(formData) {
         }
     })
 
-    console.log('Se ha registrado el nuevo recurso de datos', result.databases);
+    return result
 }
 
-export async function openDBConnection(db) {
-    if (db != null) {
-        const result = await prisma.user.findUnique({
-            where: {
-                id: userId
-            }
-        })
+export async function createDbConnection(formData) {
+    let all;
+    const userId = formData.get('userId')
+
+    const foundUser = await findUserById(userId)
+    const dbConfig = dBConnConfig(formData)
+
+    if (foundUser.databases == null) {
+        all = [dbConfig]
+        JSON.stringify(all)
+    } else {
+        all = foundUser.databases
+        all.push(dbConfig)
     }
+
+    const result = await updateDb(all, userId)
+
+    console.log('Se ha registrado la nueva fuente de datos', result.databases);
+    revalidatePath('/databases')
+    redirect('/databases')
+}
+
+export async function editDbConnection(formData) {
+    let all;
+    const userId = formData.get('userId')
+    const dBPrevName = formData.get('dbPrev')
+
+    const foundUser = await findUserById(userId)
+    const dbConfig = dBConnConfig(formData)
+
+    all = editDBobject(foundUser, dBPrevName, dbConfig)
+
+    const result = await updateDb(all, userId)
+    console.log(`Se ha editado la fuente de datos ${dBPrevName}`, result.databases);
+
+    revalidatePath('/databases')
+    redirect('/databases')
+}
+
+export async function deleteDB(formData) {
+    let all;
+    const userId = formData.get('userId')
+    const dBPrevName = formData.get('dbPrev')
+
+    const foundUser = await findUserById(userId)
+
+    all = deleteDBobject(foundUser, dBPrevName)
+
+    const result = await updateDb(all, userId)
+    console.log(`Se ha eliminado la fuente de datos ${dBPrevName}`, result.databases);
+
+    revalidatePath('/databases')
+    redirect('/databases')
+
+}
+
+function deleteDBobject(foundUser, dBPrevName) {
+    const allDB = foundUser.databases
+    let index
+    for (let i = 0; i < allDB.length; i++) {
+        if (allDB[i].database == dBPrevName) index = i
+    }
+    allDB.splice(index, 1)
+    return allDB
 }
