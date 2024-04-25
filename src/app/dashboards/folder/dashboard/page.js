@@ -1,4 +1,4 @@
-import Dashboard from "@/app/components/Dashboard"
+import Dashboard from "@/components/Dashboard"
 
 function DashboardPage({searchParams}) {
     return (

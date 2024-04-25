@@ -1,5 +1,6 @@
 
-import "./prueba.css";
+import Navbar from "../components/NavBar";
+import "./new.css";
 import Link from 'next/link'
 
 export const metadata = {
@@ -8,15 +9,11 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
       <body >
-        <nav>
-          <Link href="/">Home</Link>
-          <Link href="/dashboards">Dashboards</Link>
-          <Link href="/databases">Databases</Link>
-          <Link href="/settings">Settings</Link>
-        </nav>
+        {/* <Navbar></Navbar> */}
         {children}
       </body>
     </html>

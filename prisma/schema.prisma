@@ -10,16 +10,33 @@ datasource db {
 model Prueba {
   tiempo  DateTime? @db.DateTime(0)
   voltios Float?
+
   @@map("prueba")
   @@ignore
 }
 
+model User {
+  id            String      @id @default(cuid())
+  name          String      @unique
+  email         String      @unique
+  password      String
+  emailVerified DateTime?
+  role          String?     @default("USER") // o  ADMIN
+  databases     Json?
+  folders       Folder[]
+  dashboards    Dashboard[]
+
+  @@map("users")
+}
+
 model Folder {
   id         Int         @id @default(autoincrement())
-  name       String
-  dashboards Dashboard[]
+  name       String      @unique
+  userId     String
+  user       User        @relation(fields: [userId], references: [id])
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  dashboards Dashboard[]
 
   @@map("folders")
 }
@@ -27,11 +44,14 @@ model Folder {
 model Dashboard {
   id        Int      @id @default(autoincrement())
   name      String
-  panels    Panel[]
-  Folder    Folder?  @relation(fields: [folderId], references: [id])
   folderId  Int?
+  folder    Folder?  @relation(fields: [folderId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String?  @db.LongText
+  panel     Panel[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("dashboards")
 }
@@ -39,9 +59,11 @@ model Dashboard {
 model Panel {
   id          Int       @id @default(autoincrement())
   name        String
-  Dashboard   Dashboard @relation(fields: [dashboardId], references: [id])
   dashboardId Int
   info        Json?
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime
+  dashboards  Dashboard @relation(fields: [dashboardId], references: [id])
+
+  @@map("panels")
 }

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from "react";
-import NewMenu from "../components/NewMenu";
+import NewMenu from "../../components/NewMenu";
 
 function ShowDashboards({folder, dashboard}) {
 

@@ -1,8 +1,9 @@
 'use client'
 import Link from 'next/link'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Search from './Search';
 import List from './List';
+
 
 function ShowArchives({ folder, dashboards, isFolder }) {
 
@@ -24,24 +25,23 @@ function ShowArchives({ folder, dashboards, isFolder }) {
     }
 
     let id;
-    let folderToShow;
+
 
     if (isFolder) {
         id = folder.id
-        folderToShow = id
+
     }
 
-    console.log('archives', archives);
-
-
+    console.log('Total de archivos', archives);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const [triggerRender, setTriggerRender] = useState(false);
 
     const filterElements = (archives, searchPatternLC) => {
         let filteredList = [];
         for (let type in archives) {
-            console.log(type);
+            console.log('Tipo en archivos', type);
             archives[type].filter(item => {
                 if (item.name.toLowerCase().match(searchPatternLC)) {
                     filteredList.push(item)
@@ -57,7 +57,7 @@ function ShowArchives({ folder, dashboards, isFolder }) {
         const searchPatternLC = searchPattern.toLowerCase();
         const filteredResults = filterElements(archives, searchPatternLC)
         setSearchResults(filteredResults)
-        console.log(filteredResults);
+        console.log('Resultados filtrados', filteredResults);
     }
 
     const handleSearch = (event) => {
@@ -65,18 +65,19 @@ function ShowArchives({ folder, dashboards, isFolder }) {
         searching()
     }
 
+   
+
     return (
         <div >
             <div className='searcher'>
-                <img src='search.svg' style={{ width: '20px', padding: '3px' }}></img>
+                <img src='/search.svg' style={{ width: '20px', padding: '3px' }}></img>
                 <input type='text' className='searcher-input' placeholder='Search a folder or dashboard' onChange={handleSearch} />
             </div>
             {
                 searchResults != ''
-                    ? <Search searchResults={searchResults}></Search>
-                    : <List archives={archives} isFolder={isFolder} identificationFolder={folderToShow}></List>
+                    ? <Search elementsList={searchResults} isFolder={isFolder}></Search>
+                    : <List archives={archives} isFolder={isFolder} identificationFolder={id}></List>
             }
-
         </div>
     )
 }

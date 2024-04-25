@@ -7,6 +7,8 @@ SELECT
 FROM
   	INFORMATION_SCHEMA.TABLES
 
+// LAS FECHAS LAS GUARDAN EN FORMATO
+
 // Muestra 
 
 // MIRAR INFORME DE INOELEC para ver ejemplo de informe de datos
@@ -28,3 +30,9 @@ https://www.youtube.com/watch?v=KSujnzpRNq0&ab_channel=angeloDev
 
 
 // MIRAR LO DE LOCALSTORAGE A VER SI PUEDO GUARDAR EL ESTADO DE LOS DASHBOARD CREADOS
+
+
+// USESESSION PARA ACCEDER AL USER DESDE 'USE CLIENT'
+HAY QUE PONER SESSION PROVIDER EN EL LAYOUT PRINCIPAL PARA QUE SE PUEDA ACCEDER DESDE CUALQUIER PAG.
+
+force dinamic (mirar en nxprisma-crud-simple1) en pg articulos para recargar la pag automaticamente

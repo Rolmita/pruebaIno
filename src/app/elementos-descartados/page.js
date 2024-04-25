@@ -1,7 +1,7 @@
-import NewMenu from "@/app/components/NewMenu";
+import NewMenu from "@/components/NewMenu";
 import Link from "next/link"
-import ShowArchives from "@/app/components/ShowArchives";
-import FolderHeader from "@/app/components/FolderHeader";
+import ShowArchives from "@/components/ShowArchives";
+import FolderHeader from "@/components/FolderHeader";
 
 
 async function FolderPage({ searchParams }) {

@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import NewMenu from '../components/NewMenu';
+import NewMenu from '../../components/NewMenu';
 import {useEffect, useState} from 'react';
 
 export default function DashboardSection({ children }) {
