@@ -32,7 +32,7 @@ function ShowArchives({ folder, dashboards, isFolder }) {
 
     }
 
-    console.log('Total de archivos', archives);
+    // console.log('Total de archivos', archives);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -41,13 +41,13 @@ function ShowArchives({ folder, dashboards, isFolder }) {
     const filterElements = (archives, searchPatternLC) => {
         let filteredList = [];
         for (let type in archives) {
-            console.log('Tipo en archivos', type);
+            // console.log('Tipo en archivos', type);
             archives[type].filter(item => {
                 if (item.name.toLowerCase().match(searchPatternLC)) {
                     filteredList.push(item)
                 }
             });
-            console.log('Lista filtrada', filteredList);
+            // console.log('Lista filtrada', filteredList);
         }
         return filteredList
     }

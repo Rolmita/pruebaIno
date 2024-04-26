@@ -36,19 +36,16 @@ export async function register(formData) {
     return { success: "Registro correcto" }
 }
 
-// LOGIN credentials
 export async function login(formData) {
     const email = formData.get('email')
     const password = formData.get('password')
 
-    // Comprobamos si el usuario está registrado
     const user = await getUserByEmail(email);
 
     if (!user) {
         return { error: 'Usuario no registrado.' }
     }
 
-    // Comparamos password 
     const matchPassword = await bcrypt.compare(password, user.password)
 
     if (user && matchPassword) {  // && user.emailVerified
@@ -56,13 +53,11 @@ export async function login(formData) {
             {
                 email, password,
                 redirectTo: globalThis.callbackUrl
-                // redirectTo: user.role == 'ADMIN' ? '/admin' : '/dashboard'
             })
         return { success: "Inicio de sesión correcto" }
     } else {
         return { error: 'Credenciales incorrectas.' }
     }
-
 }
 
 // LOGOUT
@@ -170,7 +165,7 @@ export async function createDashboard(user) {
 export async function createFolderDashboard(folderId, user) {
 
     const folder = Number(folderId)
-    console.log('ESTE ES EL USUARIO DEL DASHBOARD DE CARPETA', user);
+    // console.log('ESTE ES EL USUARIO DEL DASHBOARD DE CARPETA', user);
     const newNum = await newNumDashboard(user, folder)
 
     const result = await prisma.dashboard.create({
@@ -255,140 +250,22 @@ export async function editDashboard(formData) {
     }
 }
 
-function dBConnConfig(formData) {
-    const dbName = formData.get('name');
-    const hostName = formData.get('host');
-    const connPort = formData.get('port')
-    const connUser = formData.get('user')
-    const userPass = formData.get('password')
 
-    const config = {
-        host: hostName,
-        user: connUser,
-        password: userPass,
-        database: dbName,
-        port: connPort,
-        supportBigNumbers: true,
-        decimalNumbers: true,
-    };
-    return config
-}
 
-function editDBobject(foundUser, dBPrevName, dbConfig) {
-    const allDB = foundUser.databases
-    let index
-    for (let i = 0; i < allDB.length; i++) {
-        if (allDB[i].database == dBPrevName) index = i
-    }
-    allDB[index].host = dbConfig.host
-    allDB[index].user = dbConfig.user
-    allDB[index].password = dbConfig.password
-    allDB[index].database = dbConfig.database
-    allDB[index].port = dbConfig.port
-    allDB[index].supportBigNumbers = dbConfig.supportBigNumbers
-    allDB[index].decimalNumbers = dbConfig.decimalNumbers
-    return allDB
-}
 
-async function findUserById(userId) {
-    const foundUser = await prisma.user.findUnique({
-        where: { id: userId }
-    })
-    return foundUser
-}
+// TODO: podria cerrar la conexion desde aqui en el caso de que este abierta ---------- NO HACER ESTO Y EN SU LUGAR: ABRIR POOLS
+// export async function openDBConnection(dbConfig) {
+//     console.log('esta es la configuracion de la conexion', dbConfig);
+//     const connection = await mysql.createConnection(dbConfig);
+//     console.log(connection);
+//     return JSON.stringify(connection)
+// }
 
-async function updateDb(all, userId) {
-    const result = await prisma.user.update({
-        data: {
-            databases: all
-        },
-        where: {
-            id: userId
-        }
-    })
-
-    return result
-}
-
-export async function createDbConnection(formData) {
-    let all;
-    const userId = formData.get('userId')
-
-    const foundUser = await findUserById(userId)
-    const dbConfig = dBConnConfig(formData)
-
-    if (foundUser.databases == null) {
-        all = [dbConfig]
-        JSON.stringify(all)
-    } else {
-        all = foundUser.databases
-        all.push(dbConfig)
-    }
-
-    const result = await updateDb(all, userId)
-
-    console.log('Se ha registrado la nueva fuente de datos', result.databases);
-    revalidatePath('/databases')
-    redirect('/databases')
-}
-
-export async function editDbConnection(formData) {
-    let all;
-    const userId = formData.get('userId')
-    const dBPrevName = formData.get('dbPrev')
-
-    const foundUser = await findUserById(userId)
-    const dbConfig = dBConnConfig(formData)
-
-    all = editDBobject(foundUser, dBPrevName, dbConfig)
-
-    const result = await updateDb(all, userId)
-    console.log(`Se ha editado la fuente de datos ${dBPrevName}`, result.databases);
-
-    revalidatePath('/databases')
-    redirect('/databases')
-}
-
-export async function deleteDB(formData) {
-    let all;
-    const userId = formData.get('userId')
-    const dBPrevName = formData.get('dbPrev')
-
-    const foundUser = await findUserById(userId)
-
-    all = deleteDBobject(foundUser, dBPrevName)
-
-    const result = await updateDb(all, userId)
-    console.log(`Se ha eliminado la fuente de datos ${dBPrevName}`, result.databases);
-
-    revalidatePath('/databases')
-    redirect('/databases')
-
-}
-
-function deleteDBobject(foundUser, dBPrevName) {
-    const allDB = foundUser.databases
-    let index
-    for (let i = 0; i < allDB.length; i++) {
-        if (allDB[i].database == dBPrevName) index = i
-    }
-    allDB.splice(index, 1)
-    return allDB
-}
-
-// TODO
-export async function openDBConnection(dbConfig) {
-    console.log('esta es la configuracion de la conexion', dbConfig);
-    const connection = await mysql.createConnection(dbConfig);
-    console.log(connection);
-    return connection
-}
-
-export async function closeDBConnection(connection) {
-    try {
-        await connection.end();
-        console.log("Conexión cerrada correctamente.");
-    } catch (error) {
-        console.error("Error al cerrar la conexión:", error);
-    }
-}
+// export async function closeDBConnection(connection) {
+//     try {
+//         await connection.end();
+//         console.log("Conexión cerrada correctamente.");
+//     } catch (error) {
+//         console.error("Error al cerrar la conexión:", error);
+//     }
+// }

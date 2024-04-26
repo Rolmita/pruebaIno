@@ -14,7 +14,7 @@ async function FolderFound({ params, isFolder }) {
     } catch (error) { console.log(error); }
 
     return (
-        <main>
+        <section>
             <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
                 <Navbar></Navbar>
                 <nav className='nav-section-page'>
@@ -31,7 +31,7 @@ async function FolderFound({ params, isFolder }) {
                 <FolderHeader folder={folder}></FolderHeader>
                 <ShowArchives folder={folder} isFolder={isFolder}></ShowArchives>
             </div>
-        </main>
+        </section>
     )
 
 }

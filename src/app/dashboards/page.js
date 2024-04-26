@@ -10,7 +10,7 @@ import { getUserByEmail } from '@/lib/data';
 async function DashboardList() {
 
     const session = await auth()
-    console.log(session);
+    // console.log(session);
 
     const foundUser = await prisma.user.findUnique({
         where: {
@@ -24,7 +24,7 @@ async function DashboardList() {
             }
         }
     })
-    console.log(foundUser);
+    // console.log(foundUser);
 
     const isFolder = false;
 
@@ -33,7 +33,7 @@ async function DashboardList() {
 
 
     return (
-        <main>
+        <section>
             <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
                 <Navbar></Navbar>
                 <nav className='nav-section-page'>
@@ -52,7 +52,7 @@ async function DashboardList() {
                         : <ShowArchives folder={folders} dashboards={dashboards} isFolder={isFolder}></ShowArchives>
                 }
             </div>
-        </main>
+            </section>
     )
 }
 

@@ -1,10 +1,9 @@
-'use client'
-
-import Routebar from "../components/Routebar";
 import Navbar from "../components/NavBar";
 import Link from "next/link";
+import { auth } from "@/auth";
+import { getUserByEmail } from "@/lib/data";
 
-const Home = ({ children }) => {
+const Home = async () => {
 
   return (
     <main>
@@ -14,11 +13,11 @@ const Home = ({ children }) => {
           <div>
             <Link className='route-link' href='/'><h1>Nombre</h1></Link>
           </div>
-        </nav></div>
-      {children}
+        </nav>
+      </div>
     </main>
-  );
-};
+  )
+}
 
 export default Home;
 

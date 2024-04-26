@@ -17,7 +17,7 @@ async function FolderDashboard({ params }) {
     console.log(JSON.parse(dashboard.content));
 
     return (
-        <main>
+        <section>
             <div className= 'nav-section-page' style={{display:'flex', flexDirection:'row'}}>
                 <Navbar></Navbar>
                 <nav className='nav-section-page' style={{display:'flex', flexDirection:'column'}}>
@@ -35,7 +35,7 @@ async function FolderDashboard({ params }) {
                 <DashboardHeader folder={folder} dashboard={dashboard}></DashboardHeader>
                 <Dashboard dashboard={dashboard}></Dashboard>
             </div>
-        </main>
+        </section>
     )
 }
 

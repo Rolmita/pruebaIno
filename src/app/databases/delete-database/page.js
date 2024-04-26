@@ -14,8 +14,7 @@ async function DeleteDatabase({ searchParams }) {
         where: { email: session.user.email }
     })
 
-    const userDB = user.databases
-    const dbToDelete = userDB.filter((db) => db.database == databaseName)
+    const dbToDelete = user.databases[databaseName]
     const disabled = true
 
     return (
@@ -36,7 +35,7 @@ async function DeleteDatabase({ searchParams }) {
                 <p>¿Are you sure you want to delete your connection to {databaseName}?</p>
                 <DatabaseForm userId={user.id} db={dbToDelete} disabled={disabled}>
                     <div>
-                        <button formAction={deleteDB}>Delete</button>
+                        <button className="button" formAction={deleteDB}>Delete</button>
                         <Link className="button" href='/databases'>Cancelar</Link>
                     </div>
                 </DatabaseForm>

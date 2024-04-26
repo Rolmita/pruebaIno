@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
+
 function Search({ elementsList, isFolder }) {
     const [elements, setElements] = useState(elementsList)
 
@@ -7,7 +8,7 @@ function Search({ elementsList, isFolder }) {
         setElements(elementsList)
     }, [elementsList])
 
-    console.log('Resultados de busqueda', elements);
+    // console.log('Resultados de busqueda', elements);
 
     // TODO: CUANDO BORRO TODO LO QUE HAY EN LA BARRA ME SIGUE SALIENDO LA ULTIMA BUSQUEDA Y NO ME SALEN TODOS LOS ARCHIVOS
 

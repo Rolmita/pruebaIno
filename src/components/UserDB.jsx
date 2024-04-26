@@ -13,29 +13,32 @@ export default async function UserDB({ children }) {
     })
     console.log(user);
     const databases = user.databases
+    console.log(user.databases);
 
     return (
         <div>
             <ul className='databases-list'>
-                {databases != null
-                    ? databases.map(db => (
-                        <li key={db.database} style={{ color: 'white', listStyle: 'none' }}>
+            {databases != null && Object.keys(databases).length > 0 ? (
+                    Object.keys(databases).map(dbName => (
+                        <li key={dbName} style={{ color: 'white', listStyle: 'none' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <div><h3>{db.database}</h3></div>
+                                <div><h3>{dbName}</h3></div>
                                 <div style={{ width: '300px', display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
-                                    <Link className="button" href={`/databases/edit-database?database=${db.database}`}
+                                    <Link className="button" href={`/databases/edit-database?database=${dbName}`}
                                         style={{ textDecoration: 'none', width: '100%', margin: '0 10px', backgroundColor: 'darkgrey', borderColor: 'darkgrey' }}>
-                                        Edit
+                                        Editar
                                     </Link>
-                                    <Link className="button" href={`/databases/delete-database?database=${db.database}`}
+                                    <Link className="button" href={`/databases/delete-database?database=${dbName}`}
                                         style={{ textDecoration: 'none', width: '100%', margin: '0 10px', backgroundColor: 'darkgrey', borderColor: 'darkgrey' }}>
-                                        Delete
+                                        Eliminar
                                     </Link>
                                 </div>
                             </div>
                         </li>
                     ))
-                    : 'No hay bases de datos registradas para el usuario'}
+                ) : (
+                    <li>No hay bases de datos registradas para el usuario</li>
+                )}
             </ul>
         </div>
     )

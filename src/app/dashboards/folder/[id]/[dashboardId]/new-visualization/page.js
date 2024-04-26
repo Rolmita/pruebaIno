@@ -2,6 +2,7 @@ import Navbar from "@/components/NavBar"
 import Link from "next/link"
 import SelectDatabase from "@/components/SelectDatabase";
 import { auth } from "@/auth";
+import usePoolCluster from "@/lib/usePoolCluster";
 
 export default async function NewVisualization({ params }) {
     console.log(params);
@@ -25,7 +26,7 @@ export default async function NewVisualization({ params }) {
     const build = 'data build'
 
     return (
-        <main>
+        <section>
             <div className='nav-section-page' >
                 <Navbar></Navbar>
                 <nav className='nav-section-page' >
@@ -175,6 +176,6 @@ export default async function NewVisualization({ params }) {
                     </div>
                 </section>
             </div>
-        </main>
+        </section>
     )
 }

@@ -1,5 +1,6 @@
 import DatabaseForm from "@/components/DatabaseForm"
 import { editDbConnection } from "@/lib/actions.js"
+import { getUserByEmail } from "@/lib/data";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -10,13 +11,9 @@ async function EditDatabase({ searchParams }) {
 
     const session = await auth()
 
-    const user = await prisma.user.findUnique({
-        where: { email: session.user.email }
-    })
+    const user = await getUserByEmail(session.user.email)
 
-    const userDB = user.databases
-    const dbToEdit = userDB.filter((db) => db.database == databaseName)
-
+    const dbToEdit = user.databases[databaseName]
     const disabled = false
 
     return (

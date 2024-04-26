@@ -15,7 +15,7 @@ function List({ archives, isFolder }) {
         elementsList = archives.folders.concat(archives.dashboards)
     }
 
-    console.log('Lista de elementos', elementsList);
+    // console.log('Lista de elementos', elementsList);
 
     const formattedDateTime = (datetime) => {
         const date = new Date(datetime);

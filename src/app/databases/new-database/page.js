@@ -1,5 +1,5 @@
 import DatabaseForm from "@/components/DatabaseForm"
-import { createDbConnection } from "@/lib/actions.js"
+import { saveDbConnection } from "@/lib/actions.js"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
@@ -32,7 +32,7 @@ async function NewDatabase() {
             <div className="show-dashboards">
                 <DatabaseForm userId={user.id} disabled={disabled} >
                     <div>
-                        <button type='submit' className="button" formAction={createDbConnection}>Save Database Configuration</button>
+                        <button type='submit' className="button" formAction={saveDbConnection}>Save Database Configuration</button>
                         <Link className="button" href='/databases'>Cancelar</Link>
                     </div>
                 </DatabaseForm>
