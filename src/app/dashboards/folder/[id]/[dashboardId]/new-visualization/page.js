@@ -1,28 +1,24 @@
+
 import Navbar from "@/components/NavBar"
 import Link from "next/link"
-import { createQuery } from "@/lib/db-actions";
-import { auth } from "@/auth";
+// import { prisma } from "@/lib/prisma";
+// import { createQuery } from "@/lib/db-actions";
+// import { auth } from "@/auth";
+import { getQueryResult } from '@/lib/queryResult';
 import QueryForm from "@/components/QueryForm";
-import { getUserByEmail } from "@/lib/data";
+import { getFolderById, getDashboardById, getUserBySession } from "@/lib/actions";
+// import { useServer } from 'use-server';
+// import { useState, useEffect } from 'react'
 
 export default async function NewVisualization({ params }) {
-    console.log(params);
-
-    const session = await auth()
-    const user = await getUserByEmail(session.user.email)
-    const databases = user.databases
-
+    let query = 'query sql'
+    const build = 'data build';
     const folderId = Number(params.id);
-    const folder = await prisma.folder.findUnique({
-        where: { id: folderId }
-    })
-    const dashboardId = Number(params.dashboardId)
-    const dashboard = await prisma.dashboard.findUnique({
-        where: { id: dashboardId }
-    })
-
-    const query = 'query sql'
-    const build = 'data build'
+    const folder = await getFolderById(folderId);
+    const dashboardId = Number(params.dashboardId);
+    const dashboard = await getDashboardById(dashboardId);
+    const user = await getUserBySession();
+    const databases = user.databases
 
     return (
         <section>
@@ -36,9 +32,9 @@ export default async function NewVisualization({ params }) {
                     <div>
                         <Link className='route-link' href='/dashboards'>Dashboards</Link>
                         <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/folder/${folder.id}`}>{folder.name}</Link>
+                        <Link className='route-link' href={`/dashboards/folder/${folder?.id}`}>{folder?.name}</Link>
                         <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/folder/${folder.id}/${dashboard.id}`}>{dashboard.name}</Link>
+                        <Link className='route-link' href={`/dashboards/folder/${folder?.id}/${dashboard?.id}`}>{dashboard?.name}</Link>
                         <img src='/right.svg' width='18px'></img>
                         <Link className='route-link' href={``}>New visualization</Link>
                     </div>
@@ -106,7 +102,7 @@ export default async function NewVisualization({ params }) {
                                 <h4>Panel Querys</h4>
                                 <textarea name='query' disabled defaultValue={query} style={{ minWidth: '90%', maxWidth: '95%', minHeight: '30px' }}></textarea>
                                 <h4>Panel Info</h4>
-                                <textarea name='build' disabled defaultValue={build} style={{ minWidth: '90%', maxWidth: '95%', minHeight: '100px' }}></textarea>
+                                <textarea name='build' disabled defaultValue={getQueryResult()} style={{ minWidth: '90%', maxWidth: '95%', minHeight: '100px' }}></textarea>
                             </div>
                         </div>
 
@@ -129,7 +125,6 @@ export default async function NewVisualization({ params }) {
                         <div id='tab1' className="tab">
                             <a href='#tab1'><h4>Data</h4></a>
                             <QueryForm databases={databases}>
-                                <button type='submit' formAction={createQuery}>Run query</button>
                             </QueryForm>
                         </div>
                     </div>

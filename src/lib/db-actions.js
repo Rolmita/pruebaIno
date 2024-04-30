@@ -2,7 +2,7 @@
 import { prisma } from './prisma';
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
-import { getUserByEmail } from '@/lib/data';
+import { getUserByEmail, getUserById } from '@/lib/data';
 import { redirect } from 'next/navigation';
 import mysql from 'mysql2/promise'
 // import bcrypt from 'bcryptjs'
@@ -39,16 +39,9 @@ function dBConnConfig(formData) {
     return config
 }
 
-async function findUserById(userId) {
-    const foundUser = await prisma.user.findUnique({
-        where: { id: userId }
-    })
-    return foundUser
-}
-
 export async function saveDbConnection(formData) {
     const userId = formData.get('userId');
-    const foundUser = await findUserById(userId);
+    const foundUser = await getUserById(userId);
     const dbConfig = dBConnConfig(formData);
 
     if (!foundUser.databases) {
@@ -80,7 +73,7 @@ async function updateDb(databases, userId) {
 export async function editDbConnection(formData) {
     const userId = formData.get('userId')
     const dBPrevName = formData.get('dbPrev')
-    const foundUser = await findUserById(userId)
+    const foundUser = await getUserById(userId)
     const dbConfig = dBConnConfig(formData)
 
     updateDbConfig(foundUser, dBPrevName, dbConfig)
@@ -117,7 +110,7 @@ function updateDbConfig(foundUser, dBPrevName, dbConfig) {
 export async function deleteDB(formData) {
     const userId = formData.get('userId');
     const dBPrevName = formData.get('dbPrev');
-    const foundUser = await findUserById(userId);
+    const foundUser = await getUserById(userId);
 
     deleteDBobject(foundUser, dBPrevName);
 
@@ -197,27 +190,35 @@ export async function createQuery(formData) {
             }
         }
 
-        const theQuery = `SELECT ${cols} from ${table}`
+        const theQuery = `SELECT ${cols} FROM ${table}`
         console.log('QUERY: ', theQuery);
-
-        const session = await auth()
-        const user = await getUserByEmail(session.user.email)
-        const databaseConfig = user.databases[db]
-        const connection = await mysql.createConnection(databaseConfig);
-
-        const [results, fields] = await connection.query(
-            theQuery
-        );
-        console.log(results)
-        await connection.end()
-        return results;
+        return theQuery
 
     } catch (err) {
         console.log(err);
     }
 }
 
+export async function executeQuery(databases, formData) {
+    console.log(formData);
+    const query = formData.get('query-area')
+    const db = formData.get('database')
+    const databaseConfig = databases[db]
+    const connection = await mysql.createConnection(databaseConfig);
+    const [results, fields] = await connection.query(
+        query
+    );
+    await connection.end()
+    console.log(results)
+    return results
+}
 
+async function getDatabase(db) {
+    const session = await auth()
+    const user = await getUserByEmail(session.user.email)
+    const databaseConfig = user.databases[db]
+    return databaseConfig
+}
 
 // export async function createCluster() {
 //     try {

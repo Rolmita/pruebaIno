@@ -25,7 +25,8 @@
     "react-dom": "^18.2.0",
     "react-grid-layout": "^1.4.4",
     "react-resizable": "^3.0.5",
-    "serverless-mysql": "^1.5.5"
+    "serverless-mysql": "^1.5.5",
+    "use-server": "^0.4.9"
   },
   "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
   "main": "index.js",

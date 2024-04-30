@@ -1,14 +1,35 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { searchTables, searchColumns, createQuery } from '@/lib/db-actions';
+import { setQueryResult } from '@/lib/queryResult';
+import { searchTables, searchColumns, createQuery, executeQuery } from '@/lib/db-actions';
 
-function QueryForm({ databases, children }) {
+function QueryForm({ databases , onQueryResult}) {
     const [db, setDb] = useState(null);
     const [tables, setTables] = useState(null)
     const [table, setTable] = useState(null)
     const [columns, setColumns] = useState(null)
     const [columnsCount, setColumnsCount] = useState(2)
     const [numColumns, setNumColumns] = useState([])
+    const [query, setQuery] = useState(null)
+    const [queryResults, setQueryResults] = useState(null)
+    const [formData, setFormData] = useState(null);
+    const [buttonName, setButtonName] = useState('View query')
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const formData = new FormData(event.target);
+            setFormData(formData)
+            const query = await createQuery(formData);
+            setQuery(query)
+        } catch (error) {
+            console.error('Error al ejecutar la consulta:', error);
+        }
+    };
+
+    const handleButtonChange = () => {
+        (buttonName == 'View query') ? setButtonName('Run query') : setButtonName('View query')
+    }
 
     const handleDbChange = (event) => {
         const selectedDB = event.target.value;
@@ -27,57 +48,70 @@ function QueryForm({ databases, children }) {
     };
 
     useEffect(() => {
-        async function fetchData() {
+        async function fetchResult() {
             try {
-                setNumColumns([...Array(columnsCount)])
-                console.log(columnsCount);
+                if (formData !== null) {
+                    const formDataEntries = formData.entries();
+                    const formDataArray = Array.from(formDataEntries);
+                    const lastPair = formDataArray.pop();
+                    const lastValue = lastPair[1];
+                    if (query != null && lastValue !== '') {
+                        console.log(query, formData);
+                        const result = await executeQuery(databases, formData)
+                        setQueryResults(result)
+                        onQueryResult(result);
+                        console.log(result);
+                    }
+                }
+
             } catch (error) {
-                console.error('Error al establecer la conexión con la base de datos:', error);
+                console.error('Error al obtener el resultado de la consulta:', error);
             }
         }
-        fetchData();
-    }, [columnsCount]);
+        fetchResult();
+    }, [query, formData]); //
 
     useEffect(() => {
         async function fetchData() {
             try {
+                if (columnsCount != null) {
+                    setNumColumns([...Array(columnsCount)]);
+                }
                 if (db != null) {
                     setTables(await searchTables(db));
                     console.log('tablas', tables);
                 }
-            } catch (error) {
-                console.error('Error al establecer la conexión con la base de datos:', error);
-            }
-        }
-        fetchData();
-    }, [db]);
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
                 if (table != null) {
                     setColumns(await searchColumns(db, table));
                     console.log('columnas', columns);
                 }
             } catch (error) {
-                console.error('Error al establecer la conexión con la base de datos:', error);
+                console.error('Error:', error);
             }
         }
         fetchData();
-    }, [table]);
+    }, [columnsCount, db, table]);
+
+    useEffect(() => {
+        if (query !== null) {
+            document.getElementById('query-area').value = query;
+        }
+    }, [query]);
 
     return (
         <div className="tab-content">
-            <form style={{ display: 'flex', flexDirection: 'column' }}>
+            <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleSubmit}>
                 <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                     <label>Nombre de la base de datos: </label>
                     <select name='database' onChange={handleDbChange}>
                         <option value={null}>-- Elija una base de datos --</option>
-                        {Object.keys(databases).map(dbName => (
-                            <option key={dbName} value={dbName}>
-                                {dbName}
-                            </option>
-                        ))}
+                        {databases
+                            ? (Object.keys(databases).map(dbName => (
+                                <option key={dbName} value={dbName}>
+                                    {dbName}
+                                </option>
+                            )))
+                            : ''}
                     </select>
                 </div>
 
@@ -112,7 +146,8 @@ function QueryForm({ databases, children }) {
                 <div>
                     <button type="button" onClick={handleAddSelect}>Add column</button>
                 </div>
-                {children}
+                <textarea name='query-area' id='query-area' defaultValue={query}></textarea>
+                <button type='submit' onClick={handleButtonChange}>{buttonName}</button>
             </form>
         </div>
     )

@@ -1,4 +1,4 @@
-import { getFolderById } from "@/lib/actions"
+import { getFolderWithDashboards } from "@/lib/actions"
 import FolderHeader from "@/components/FolderHeader.jsx";
 import ShowArchives from "@/components/ShowArchives.jsx";
 import Link from "next/link";
@@ -10,7 +10,7 @@ async function FolderFound({ params, isFolder }) {
     isFolder = true
 
     try {
-        folder = await getFolderById(params.id)
+        folder = await getFolderWithDashboards(params.id)
     } catch (error) { console.log(error); }
 
     return (

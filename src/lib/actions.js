@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs'
 import { signIn, signOut } from '@/auth';
 import { getUserByEmail } from '@/lib/data';
+import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import mysql from 'mysql2/promise'
 
@@ -69,6 +70,11 @@ export async function logout() {
     }
 }
 
+export async function getUserBySession() {
+    const session = await auth()
+    const user = await getUserByEmail(session.user.email)
+    return user
+}
 // FOLDER FUNCTIONS
 
 export async function createFolder(user) {
@@ -131,23 +137,34 @@ export async function editFolder(formData) {
     }
 }
 
+export async function getFolderById(id) {
+    const folder = await prisma.folder.findUnique({
+        where: { id: id }
+    })
+    return folder
+}
 export async function getFolders() {
     const folders = await prisma.folder.findMany({ include: { dashboards: true } })
     return folders;
 }
 
-export async function getFolderById(id) {
+export async function getFolderWithDashboards(id) {
     const idFolder = Number(id)
     const result = await prisma.folder.findUnique({
         where: { id: idFolder },
-        include: {
-            dashboards: true
-        }
+        include: { dashboards: true }
     })
     return result
 }
 
 //  DASHBOARD FUNCTIONS
+
+export async function getDashboardById(id) {
+    const dashboard = await prisma.dashboard.findUnique({
+        where: { id: id }
+    })
+    return dashboard
+}
 
 export async function createDashboard(user) {
 
