@@ -1,18 +1,22 @@
 'use server'
 import { prisma } from './prisma';
 import { revalidatePath } from 'next/cache';
-import bcrypt from 'bcryptjs'
-import { auth, signIn, signOut } from '@/auth';
+import { auth } from '@/auth';
 import { getUserByEmail } from '@/lib/data';
 import { redirect } from 'next/navigation';
-import { mysql, createPoolCluster, createPool } from 'mysql2/promise'
+import mysql from 'mysql2/promise'
+// import bcrypt from 'bcryptjs'
+// import mysql, { createPoolCluster, createPool } from 'mysql2/promise'
+// import mariadb from 'mariadb'
+// import { poolCluster} from './usePoolCluster';
+// import { getPoolCluster } from './usePoolCluster';
 
 // CONEXIONES A LAS BBDD
 
 function dBConnConfig(formData) {
     const dbName = formData.get('name');
     const hostName = formData.get('host');
-    const connPort = formData.get('port')
+    const connPort = Number(formData.get('port'))
     const connUser = formData.get('user')
     const userPass = formData.get('password')
 
@@ -101,12 +105,12 @@ function updateDbConfig(foundUser, dBPrevName, dbConfig) {
         dbToUpdate.supportBigNumbers = dbConfig.supportBigNumbers
         dbToUpdate.decimalNumbers = dbConfig.decimalNumbers
         dbToUpdate.waitForConnections = dbConfig.waitForConnections
-        dbToUpdate.waitForConnections = dbConfig.connectionLimit
-        dbToUpdate.waitForConnections = dbConfig.maxIdle
-        dbToUpdate.waitForConnections = dbConfig.idleTimeout
-        dbToUpdate.waitForConnections = dbConfig.queueLimit
-        dbToUpdate.waitForConnections = dbConfig.enableKeepAlive
-        dbToUpdate.waitForConnections = dbConfig.keepAliveInitialDelay
+        dbToUpdate.connectionLimit = dbConfig.connectionLimit
+        dbToUpdate.maxIdle = dbConfig.maxIdle
+        dbToUpdate.idleTimeout = dbConfig.idleTimeout
+        dbToUpdate.queueLimit = dbConfig.queueLimit
+        dbToUpdate.enableKeepAlive = dbConfig.enableKeepAlive
+        dbToUpdate.keepAliveInitialDelay = dbConfig.keepAliveInitialDelay
     }
 }
 
@@ -129,23 +133,158 @@ function deleteDBobject(foundUser, dBPrevName) {
     delete foundUser.databases[dBPrevName];
 }
 
-export async function createCluster() {
+export async function searchTables(db) {
     const session = await auth()
     const user = await getUserByEmail(session.user.email)
-    const databasesConfig = user.databases
-    const poolCluster = createDatabasePoolCluster(databasesConfig);
-    console.log(cluster);
-    return poolCluster
-}
+    const databaseConfig = user.databases[db]
+    const connection = await mysql.createConnection(databaseConfig);
 
-function createDatabasePoolCluster(databasesConfig) {
-    const cluster = createPoolCluster();
+    try {
+        const [results, fields] = await connection.query(
+            `SELECT TABLE_NAME
+            FROM information_schema.tables
+            WHERE TABLE_SCHEMA = '${db}'`
+        );
 
-    for (const dbName in databasesConfig) {
-        const dbConfig = databasesConfig[dbName];
-        const pool = createPool(dbConfig);
-        cluster.add(dbName, pool);
+        console.log(results)
+        await connection.end()
+        return results;
+    } catch (err) {
+        console.log(err);
     }
-    return cluster;
 }
 
+export async function searchColumns(db, table) {
+    const session = await auth()
+    const user = await getUserByEmail(session.user.email)
+    const databaseConfig = user.databases[db]
+    const connection = await mysql.createConnection(databaseConfig);
+
+    try {
+        const [results, fields] = await connection.query(
+            `SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_NAME = '${table}'`
+        );
+
+        console.log(results)
+        await connection.end()
+        return results;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export async function createQuery(formData) {
+    console.log('entrando en formacion de la query');
+    try {
+        const db = formData.get('database')
+        const table = formData.get('table')
+        const columns = formData.getAll('column')
+        const allColumns = formData.get('all-columns')
+        console.log('RESULTADOS DEL FORMULARIO: DATABASE:', db, ' TABLE: ', table, ' COLUMNS: ', allColumns ? allColumns : columns);
+
+        let cols
+        if (allColumns) {
+            cols = '*'
+        } else {
+            for (let i = 0; i < columns.length; i++) {
+                if (i == 0) {
+                    cols = columns[i]
+                } else {
+                    cols += `, ${columns[i]}`
+                }
+            }
+        }
+
+        const theQuery = `SELECT ${cols} from ${table}`
+        console.log('QUERY: ', theQuery);
+
+        const session = await auth()
+        const user = await getUserByEmail(session.user.email)
+        const databaseConfig = user.databases[db]
+        const connection = await mysql.createConnection(databaseConfig);
+
+        const [results, fields] = await connection.query(
+            theQuery
+        );
+        console.log(results)
+        await connection.end()
+        return results;
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+
+// export async function createCluster() {
+//     try {
+//         const session = await auth()
+//         const user = await getUserByEmail(session.user.email)
+//         const databasesConfig = user.databases
+//         const poolCluster = await createDatabasePoolCluster(databasesConfig);
+//         console.log(poolCluster);
+//         return poolCluster
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+// export async function createCluster() {
+//     try {
+//         const session = await auth()
+//         const user = await getUserByEmail(session.user.email)
+//         const databasesConfig = user.databases
+//         const poolCluster = await createDatabasePoolCluster(databasesConfig);
+//         console.log(poolCluster);
+//         return poolCluster
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
+// async function createDatabasePoolCluster(databasesConfig) {
+//     try {
+//         const cluster = createPoolCluster();
+
+//         for (const dbName in databasesConfig) {
+//             const dbConfig = databasesConfig[dbName];
+//             const pool = createPool(dbConfig);
+//             console.log(pool);
+//             cluster.add(dbName, pool);
+//         }
+//         console.log(cluster);
+//         return cluster;
+
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
+// export async function createDBConnection(db) {
+//     try {
+//         const poolCluster = await getPoolCluster();
+//         console.log(poolCluster);
+//         console.log('Esta es la base de datos a la que nos conectamos:', db);
+
+//         // Realiza la consulta utilizando el método query del pool
+//         const query = `SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS`;
+
+//         const connection = await poolCluster.getConnection(db)
+//         // Ejecuta la consulta utilizando la conexión
+//         const rows = await connection.query(query);
+
+//         // Libera la conexión
+//         connection.release();
+
+//         console.log('Resultado de la consulta:', rows);
+//         // Realiza cualquier lógica adicional con los resultados aquí
+
+//         // Cierra el poolCluster
+//         await poolCluster.end();
+
+//     } catch (error) {
+//         console.error('Error al crear la conexión a la base de datos:', error);
+//     }
+// }

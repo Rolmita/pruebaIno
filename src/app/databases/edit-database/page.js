@@ -1,5 +1,5 @@
 import DatabaseForm from "@/components/DatabaseForm"
-import { editDbConnection } from "@/lib/actions.js"
+import { editDbConnection } from "@/lib/db-actions"
 import { getUserByEmail } from "@/lib/data";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";

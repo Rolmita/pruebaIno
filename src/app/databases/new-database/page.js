@@ -1,5 +1,5 @@
 import DatabaseForm from "@/components/DatabaseForm"
-import { saveDbConnection } from "@/lib/actions.js"
+import { saveDbConnection } from "@/lib/db-actions"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"

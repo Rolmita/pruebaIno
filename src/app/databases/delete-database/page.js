@@ -1,5 +1,5 @@
 import DatabaseForm from "@/components/DatabaseForm"
-import { deleteDB } from "@/lib/actions.js"
+import { deleteDB } from "@/lib/db-actions"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"

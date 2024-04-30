@@ -1,16 +1,15 @@
 import Navbar from "@/components/NavBar"
 import Link from "next/link"
-import SelectDatabase from "@/components/SelectDatabase";
+import { createQuery } from "@/lib/db-actions";
 import { auth } from "@/auth";
-import usePoolCluster from "@/lib/usePoolCluster";
+import QueryForm from "@/components/QueryForm";
+import { getUserByEmail } from "@/lib/data";
 
 export default async function NewVisualization({ params }) {
     console.log(params);
 
     const session = await auth()
-    const user = await prisma.user.findUnique({
-        where: { email: session.user.email }
-    })
+    const user = await getUserByEmail(session.user.email)
     const databases = user.databases
 
     const folderId = Number(params.id);
@@ -129,49 +128,9 @@ export default async function NewVisualization({ params }) {
 
                         <div id='tab1' className="tab">
                             <a href='#tab1'><h4>Data</h4></a>
-                            <div className="tab-content">
-                                <form style={{ display: 'flex', flexDirection: 'column' }}>
-
-                                    <SelectDatabase databases={databases}></SelectDatabase>
-
-                                    <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}><label>Table name: </label>
-                                        {/* la tabla que se selecciona con los datos 'from [nombre tabla]'*/}
-                                        <select>
-                                            <option name='first-table' value='null'>-- Choose a table --</option>
-                                            <option name='first-table' value='table1'>Table1</option>
-                                            <option name='first-table' value='table2'>Table2</option>
-                                            <option name='first-table' value='table3'>Table3</option>
-                                        </select>
-                                    </div>
-                                    <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-                                        <label>Columns: </label>
-                                        <select>
-                                            <option name='first-column' value='null'>-- Choose a column --</option>
-                                            <option name='first-column' value='column1'>Column1</option>
-                                            <option name='first-column' value='column2'>Column2</option>
-                                            <option name='first-column' value='column3'>Column3</option>
-                                        </select>
-                                        <select>
-                                            <option name='second-column' value='null'>-- Choose a column --</option>
-                                            <option name='second-column' value='column1'>Column1</option>
-                                            <option name='second-column' value='column2'>Column2</option>
-                                            <option name='second-column' value='column3'>Column3</option>
-                                        </select>
-                                        <input type='checkbox'></input>
-                                        <label>All columns</label>
-                                    </div>
-
-                                    {/* TODO: si se selecciona este checkbox la consulta se modifica y en lugar de el nombre de las columnas se pone '*' */}
-                                    <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }} >
-
-                                    </div>
-                                    {/* TODO: si se selecciona el siguiente botton salen mas, a la consulta hay que añadirle un ',' por cada columna seleccionada */}
-                                    <div>
-                                        <button>Add column</button>
-                                    </div>
-                                </form>
-                                <button>Run query</button>
-                            </div>
+                            <QueryForm databases={databases}>
+                                <button type='submit' formAction={createQuery}>Run query</button>
+                            </QueryForm>
                         </div>
                     </div>
                 </section>
