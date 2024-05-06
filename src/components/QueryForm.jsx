@@ -1,9 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { setQueryResult } from '@/lib/queryResult';
 import { searchTables, searchColumns, createQuery, executeQuery } from '@/lib/db-actions';
 
-function QueryForm({ databases , onQueryResult}) {
+function QueryForm({ databases, onQueryResults }) {
     const [db, setDb] = useState(null);
     const [tables, setTables] = useState(null)
     const [table, setTable] = useState(null)
@@ -11,7 +10,6 @@ function QueryForm({ databases , onQueryResult}) {
     const [columnsCount, setColumnsCount] = useState(2)
     const [numColumns, setNumColumns] = useState([])
     const [query, setQuery] = useState(null)
-    const [queryResults, setQueryResults] = useState(null)
     const [formData, setFormData] = useState(null);
     const [buttonName, setButtonName] = useState('View query')
 
@@ -28,18 +26,16 @@ function QueryForm({ databases , onQueryResult}) {
     };
 
     const handleButtonChange = () => {
-        (buttonName == 'View query') ? setButtonName('Run query') : setButtonName('View query')
+        (buttonName === 'View query') ? setButtonName('Run query') : setButtonName('View query')
     }
 
     const handleDbChange = (event) => {
         const selectedDB = event.target.value;
-        console.log('Base de datos seleccionada:', selectedDB);
         setDb(selectedDB);
     };
 
     const handleTableChange = (event) => {
         const selectedTable = event.target.value;
-        console.log('Tabla seleccionada:', selectedTable);
         setTable(selectedTable);
     };
 
@@ -56,11 +52,8 @@ function QueryForm({ databases , onQueryResult}) {
                     const lastPair = formDataArray.pop();
                     const lastValue = lastPair[1];
                     if (query != null && lastValue !== '') {
-                        console.log(query, formData);
                         const result = await executeQuery(databases, formData)
-                        setQueryResults(result)
-                        onQueryResult(result);
-                        console.log(result);
+                        onQueryResults(result);
                     }
                 }
 
@@ -69,7 +62,7 @@ function QueryForm({ databases , onQueryResult}) {
             }
         }
         fetchResult();
-    }, [query, formData]); //
+    }, [query, formData, databases, onQueryResults]);
 
     useEffect(() => {
         async function fetchData() {
@@ -79,11 +72,9 @@ function QueryForm({ databases , onQueryResult}) {
                 }
                 if (db != null) {
                     setTables(await searchTables(db));
-                    console.log('tablas', tables);
                 }
                 if (table != null) {
                     setColumns(await searchColumns(db, table));
-                    console.log('columnas', columns);
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -97,6 +88,8 @@ function QueryForm({ databases , onQueryResult}) {
             document.getElementById('query-area').value = query;
         }
     }, [query]);
+
+    //TODO: AMPLIAR EL FORMULARIO CON FILTROS DE DATOS PARA LA QUERY
 
     return (
         <div className="tab-content">
@@ -153,4 +146,4 @@ function QueryForm({ databases , onQueryResult}) {
     )
 }
 
-export default QueryForm
+export default QueryForm;

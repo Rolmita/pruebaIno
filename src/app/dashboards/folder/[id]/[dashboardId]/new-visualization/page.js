@@ -1,24 +1,35 @@
-
+'use client'
 import Navbar from "@/components/NavBar"
 import Link from "next/link"
-// import { prisma } from "@/lib/prisma";
-// import { createQuery } from "@/lib/db-actions";
-// import { auth } from "@/auth";
-import { getQueryResult } from '@/lib/queryResult';
+import Information from "@/components/information";
+import Visualization from "@/components/Visualization";
 import QueryForm from "@/components/QueryForm";
 import { getFolderById, getDashboardById, getUserBySession } from "@/lib/actions";
-// import { useServer } from 'use-server';
-// import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
-export default async function NewVisualization({ params }) {
-    let query = 'query sql'
-    const build = 'data build';
-    const folderId = Number(params.id);
-    const folder = await getFolderById(folderId);
-    const dashboardId = Number(params.dashboardId);
-    const dashboard = await getDashboardById(dashboardId);
-    const user = await getUserBySession();
-    const databases = user.databases
+export default function NewVisualization({ params }) {
+    const [folder, setFolder] = useState(null)
+    const [dashboard, setDashboard] = useState(null)
+    const [databases, setDatabases] = useState(null)
+    const [queryRes, setQueryRes] = useState(null);
+
+    useEffect(() => {
+        const fetchData = () => {
+            const folderId = Number(params.id);
+            getFolderById(folderId)
+                .then(folder => setFolder(folder))
+                .catch(error => console.error('Error fetching folder:', error));
+            const dashboardId = Number(params.dashboardId);
+            getDashboardById(dashboardId)
+                .then(dashboard => setDashboard(dashboard))
+                .catch(error => console.error('Error fetching dashboard:', error));
+            getUserBySession()
+                .then(user => setDatabases(user.databases))
+                .catch(error => console.error('Error fetching user by session:', error));
+        };
+
+        fetchData();
+    }, [params.id, params.dashboardId]);
 
     return (
         <section>
@@ -49,61 +60,15 @@ export default async function NewVisualization({ params }) {
                         <button>Discard</button>
                     </div>
                 </div>
-                <section className="visualization" style={{ minWidth: '100%' }}>
-                    <div className="preview" style={{ minHeight: '100%', backgroundColor: 'lightgrey' }}>
-                        <div>
-                            <button>Show Table</button>
-                            <button>Show Graphic</button>
-                            <label>Select time</label>
-                            <select>
-                                <option>Tiempo1</option>
-                                <option>Tiempo2</option>
-                                <option>Tiempo3</option>
-                            </select>
-                        </div>
-                        <div className="preview-content" style={{ minHeight: '100%', backgroundColor: 'white' }}>
-                            <div className="preview-table" style={{ border: '1px solid black', height: '100%' }}>
-                                <table style={{ border: '1px solid black', margin: '10px auto' }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Tiempo</th>
-                                            <th>Datos</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>01:00</td>
-                                            <td>123</td>
-                                        </tr>
-                                        <tr>
-                                            <td>01:00</td>
-                                            <td>123</td>
-                                        </tr>
-                                        <tr>
-                                            <td>01:00</td>
-                                            <td>123</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="preview-graph">
-                                <canvas></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <Visualization data = {queryRes}></Visualization>
                 <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '20%', padding: '5px' }}>
 
                     <div className="tab-container">
 
                         <div id="tab4" className="tab">
                             <a href="#tab4"><h4>Build</h4></a>
-                            <div className="tab-content">
-                                <h4>Panel Querys</h4>
-                                <textarea name='query' disabled defaultValue={query} style={{ minWidth: '90%', maxWidth: '95%', minHeight: '30px' }}></textarea>
-                                <h4>Panel Info</h4>
-                                <textarea name='build' disabled defaultValue={getQueryResult()} style={{ minWidth: '90%', maxWidth: '95%', minHeight: '100px' }}></textarea>
-                            </div>
+                            <Information build={queryRes}></Information>
+
                         </div>
 
                         <div id="tab3" className="tab">
@@ -124,7 +89,7 @@ export default async function NewVisualization({ params }) {
 
                         <div id='tab1' className="tab">
                             <a href='#tab1'><h4>Data</h4></a>
-                            <QueryForm databases={databases}>
+                            <QueryForm databases={databases} onQueryResults={setQueryRes}>
                             </QueryForm>
                         </div>
                     </div>

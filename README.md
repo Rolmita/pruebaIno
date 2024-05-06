@@ -36,3 +36,73 @@ https://www.youtube.com/watch?v=KSujnzpRNq0&ab_channel=angeloDev
 HAY QUE PONER SESSION PROVIDER EN EL LAYOUT PRINCIPAL PARA QUE SE PUEDA ACCEDER DESDE CUALQUIER PAG.
 
 force dinamic (mirar en nxprisma-crud-simple1) en pg articulos para recargar la pag automaticamente
+
+
+// EJEMPLO DE GRAFICO DE LINEAS (PARA VER CUANTOS DATOS GUARDAR EN EL DASHBOARD)
+var myChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: yLabel,
+          borderColor: gradientStroke,
+          pointBorderColor: gradientStroke,
+          pointBackgroundColor: gradientStroke,
+          pointHoverBackgroundColor: gradientStroke,
+          pointHoverBorderColor: gradientStroke,
+          pointBorderWidth: 8,
+          pointHoverRadius: 8,
+          pointHoverBorderWidth: 1,
+          pointRadius: 3,
+          fill: false,
+          borderWidth: 4,
+          data: data
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      legend: {
+        position: "none"
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              fontFamily: "Roboto Mono",
+              fontColor: "#556F7B",
+              fontStyle: "bold",
+              beginAtZero: true,
+              maxTicksLimit: 5,
+              padding: 20
+            },
+            gridLines: {
+              drawTicks: false,
+              display: false,
+              drawBorder: false
+            }
+          }
+        ],
+        xAxes: [
+          {
+            gridLines: {
+              zeroLineColor: "transparent"
+            },
+            ticks: {
+              padding: 20,
+              fontColor: "#556F7B",
+              fontStyle: "bold",
+              fontFamily: "Roboto Mono"
+            },
+            gridLines: {
+              drawTicks: false,
+              display: false,
+              drawBorder: false
+            }
+          }
+        ]
+      }
+    }
+  });

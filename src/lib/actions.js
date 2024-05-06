@@ -266,23 +266,3 @@ export async function editDashboard(formData) {
         throw error
     }
 }
-
-
-
-
-// TODO: podria cerrar la conexion desde aqui en el caso de que este abierta ---------- NO HACER ESTO Y EN SU LUGAR: ABRIR POOLS
-// export async function openDBConnection(dbConfig) {
-//     console.log('esta es la configuracion de la conexion', dbConfig);
-//     const connection = await mysql.createConnection(dbConfig);
-//     console.log(connection);
-//     return JSON.stringify(connection)
-// }
-
-// export async function closeDBConnection(connection) {
-//     try {
-//         await connection.end();
-//         console.log("Conexión cerrada correctamente.");
-//     } catch (error) {
-//         console.error("Error al cerrar la conexión:", error);
-//     }
-// }

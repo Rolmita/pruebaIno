@@ -130,6 +130,7 @@ export async function searchTables(db) {
     const session = await auth()
     const user = await getUserByEmail(session.user.email)
     const databaseConfig = user.databases[db]
+    // const databaseConfig = getDatabase(db)
     const connection = await mysql.createConnection(databaseConfig);
 
     try {
@@ -151,6 +152,7 @@ export async function searchColumns(db, table) {
     const session = await auth()
     const user = await getUserByEmail(session.user.email)
     const databaseConfig = user.databases[db]
+    // const databaseConfig = getDatabase(db)
     const connection = await mysql.createConnection(databaseConfig);
 
     try {
@@ -182,11 +184,7 @@ export async function createQuery(formData) {
             cols = '*'
         } else {
             for (let i = 0; i < columns.length; i++) {
-                if (i == 0) {
-                    cols = columns[i]
-                } else {
-                    cols += `, ${columns[i]}`
-                }
+                i == 0 ? cols = columns[i] : cols += `, ${columns[i]}`
             }
         }
 
@@ -205,9 +203,7 @@ export async function executeQuery(databases, formData) {
     const db = formData.get('database')
     const databaseConfig = databases[db]
     const connection = await mysql.createConnection(databaseConfig);
-    const [results, fields] = await connection.query(
-        query
-    );
+    const [results, fields] = await connection.query(query);
     await connection.end()
     console.log(results)
     return results

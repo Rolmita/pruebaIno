@@ -31,7 +31,6 @@ export default async function Home() {
         console.log(labels);
         console.log(data);
 
-
     } catch (err) {
         console.error(err);
     }
