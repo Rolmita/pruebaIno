@@ -1,7 +1,4 @@
 'use client'
-// import { getQueryResult } from "@/lib/queryResult"
-// import {queryResult} from "@/lib/queryResult";
-// import { useState, useEffect } from 'react';
 
 export const dynamic = 'force-dynamic'
 

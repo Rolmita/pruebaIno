@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Grafico from './Grafico';
 
-export default function Visualization({ data }) {
+export default function Visualization({ data, options }) {
     const [chartData, setChartData] = useState(null);
 
     // TODO: QUE MUESTRE CORRECTAMENTE EL GRAFICO DE LINEA (TIEMPO EN EL EJE X Y DATO EN EL Y)
@@ -50,17 +50,22 @@ export default function Visualization({ data }) {
                 display: true,
                 text: 'Chart.js Line Chart',
             },
+            tooltip: { // para mostrar los datos
+                enabled: true,
+            }
         },
         scales: {
             x: {
                 type: 'time',
                 time: {
-                    parser: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+                    parser: 'YYYY-MM-DDTHH:mm:ss',
                     unit: 'minute',
+                    stepSize: '5',
                     displayFormats: {
-                        hour: 'HH:mm',
-                        minute: 'HH:mm'
-                    }
+                        // hour: 'HH',
+                        minute: 'HH:mm',
+                    },
+                    // tooltipFormat: 'minute'
                 }
             },
             y: {

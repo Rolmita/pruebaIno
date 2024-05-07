@@ -4,6 +4,7 @@ import Link from "next/link"
 import Information from "@/components/information";
 import Visualization from "@/components/Visualization";
 import QueryForm from "@/components/QueryForm";
+import GraphicForm from "@/components/GraphicForm";
 import { getFolderById, getDashboardById, getUserBySession } from "@/lib/actions";
 import { useState, useEffect } from 'react'
 
@@ -82,8 +83,8 @@ export default function NewVisualization({ params }) {
                         <div id="tab2" className="tab">
                             <a href="#tab2"><h4>Graphic</h4></a>
                             <div className="tab-content">
-                                <h4>Titulo 2</h4>
-                                <p>Lorem ipsum ...</p>
+                                <h4>Graphic Settings</h4>
+                                <GraphicForm></GraphicForm>
                             </div>
                         </div>
 
