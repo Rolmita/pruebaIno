@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { searchTables, searchColumns, createQuery, executeQuery } from '@/lib/db-actions';
+import QueryFilterForm from './QueryFilterForm';
 
 function QueryForm({ databases, onQueryResults }) {
     const [db, setDb] = useState(null);
@@ -12,13 +13,14 @@ function QueryForm({ databases, onQueryResults }) {
     const [query, setQuery] = useState(null)
     const [formData, setFormData] = useState(null);
     const [buttonName, setButtonName] = useState('View query')
+    const [filterResult, setFilterResult] = useState('')
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const formData = new FormData(event.target);
             setFormData(formData)
-            const query = await createQuery(formData);
+            const query = await createQuery(formData, filterResult);
             setQuery(query)
         } catch (error) {
             console.error('Error al ejecutar la consulta:', error);
@@ -42,6 +44,45 @@ function QueryForm({ databases, onQueryResults }) {
     const handleAddSelect = () => {
         setColumnsCount(prevCount => prevCount + 1);
     };
+
+    // const handleFilterChange = (event) => {
+    //     const selectedFilterType = event.target.value;
+    //     const selectID = event.target.id
+    //     const time = document.getElementById(`time-filter1`)
+    //     const datetime = document.getElementById(`datetime-filter1`)
+    //     const date = document.getElementById(`date-filter1`)
+    //     const value = document.getElementById(`value-filter1`)
+    //     // const time = document.getElementById(`time-filter${selectID}`)
+    //     // const datetime = document.getElementById(`datetime-filter${selectID}`)
+    //     // const date = document.getElementById(`date-filter${selectID}`)
+    //     // const value = document.getElementById(`value-filter${selectID}`)
+    //     switch (selectedFilterType) {
+    //         case 'time':
+    //             time.style.display = 'block'
+    //             datetime.style.display = 'none'
+    //             date.style.display = 'none'
+    //             value.style.display = 'none'
+    //             break
+    //         case 'datetime':
+    //             time.style.display = 'none'
+    //             datetime.style.display = 'block'
+    //             date.style.display = 'none'
+    //             value.style.display = 'none'
+    //             break
+    //         case 'date':
+    //             time.style.display = 'none'
+    //             datetime.style.display = 'none'
+    //             date.style.display = 'block'
+    //             value.style.display = 'none'
+    //             break
+    //         case 'value':
+    //             time.style.display = 'none'
+    //             datetime.style.display = 'none'
+    //             date.style.display = 'none'
+    //             value.style.display = 'block'
+    //             break
+    //     }
+    // }
 
     useEffect(() => {
         async function fetchResult() {
@@ -131,14 +172,13 @@ function QueryForm({ databases, onQueryResults }) {
                             ))}
                         </select>
                     ))}
-
                     <input name='all-columns' type='checkbox' value='*'></input>
                     <label>All columns</label>
+                    <div>
+                        <button type="button" onClick={handleAddSelect}>Add column</button>
+                    </div>
                 </div>
-
-                <div>
-                    <button type="button" onClick={handleAddSelect}>Add column</button>
-                </div>
+                <QueryFilterForm columns={columns} db={db} table={table} onFilter={setFilterResult }></QueryFilterForm>
                 <textarea name='query-area' id='query-area' defaultValue={query}></textarea>
                 <button type='submit' onClick={handleButtonChange}>{buttonName}</button>
             </form>

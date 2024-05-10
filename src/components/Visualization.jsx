@@ -56,17 +56,68 @@ export default function Visualization({ data, options }) {
         },
         scales: {
             x: {
+                axis: 'x',
                 type: 'time',
+                alignToPixels: false,
+                backgroundColor: 'white',
+                border: {
+                    display: true,
+                    color: 'black',
+                    width: 1,
+                    dash: [],
+                    dashOffset: 0.0,
+                    z: 0,
+                },
+                display: 'auto',
+                grid: {
+                    circular: false,
+                    color: 'black',
+                    display: true,
+                    drawOnChartArea: true,
+                    drawTicks: true,
+                    lineWidth: 1,
+                    offset: false,
+                    tickColor: 'black',
+                    tickLength: 8,
+                    tickWidth: 1,
+                    z: -1,
+                },
+                reverse: false,
+                stacked: false,
+                // suggestedMax: 500,
+                // suggestedMin: 0,
+                ticks: {
+                    backdropColor: 'green',
+                    backdropPadding: 1,
+                    display: true,
+                    color: 'yellow',
+                    // font: 'Arial',
+                    major: false,
+                    padding: 1,
+                    showLabelBackdrop: true,
+                    textStrokeColor: 'orange',
+                    textStrokeWidth: 1,
+                    z: 0,
+                    callback: function (value) {
+                        const minutes = String(new Date(value).getMinutes()).padStart(2,'0')
+                        const hours = String(new Date(value).getHours()).padStart(2, '0')
+                        if (minutes % 5 === 0)
+                            return `${hours}:${minutes}`;
+                    }
+                },
                 time: {
                     parser: 'YYYY-MM-DDTHH:mm:ss',
                     unit: 'minute',
-                    stepSize: '5',
                     displayFormats: {
-                        // hour: 'HH',
+                        // hour: 'HH:mm',
                         minute: 'HH:mm',
+                        // stepSize: 5, // Establecer el tamaño del paso a 5 minutos
                     },
-                    // tooltipFormat: 'minute'
-                }
+                    // minUnit: 'minute', // Especifica la unidad mínima de tiempo que se debe usar
+                    // autoSkip: true, // Permite el salto automático de las marcas de tiempo si hay muchas de ellas
+                    tooltipFormat: 'dd-MM-yyyy HH:mm',
+                },
+               
             },
             y: {
                 type: 'linear',
@@ -127,9 +178,9 @@ export default function Visualization({ data, options }) {
                             </tbody>
                         </table>
                     </div>
-                    <div className="preview-graph" id="preview-graph">
+                    <div className="preview-graph" id="preview-graph" style={{ display: 'none' }}>
                         {chartData && <Grafico data={chartData} options={chartOpt}></Grafico>}
-                        <canvas></canvas>
+
                     </div>
                 </div>
             </div>

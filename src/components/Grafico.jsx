@@ -8,7 +8,7 @@ function Grafico({ data, options }) {
     ChartJS.register(...registerablesChartJS);
 
     return (
-        <div style={{ width: '50vw' }}>
+        <div style={{ width: '90vw' }}>
             {data && options && <Line datasetIdKey='id' data={data} options={options}></Line>}
         </div>
     )

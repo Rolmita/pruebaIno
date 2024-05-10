@@ -40,7 +40,7 @@ const chart = {
                 type: 'time', // (escala de tipo tiempo) Tipo de escala que se emplea. Se pueden crear y registrar escalas personalizadas con una clave de cadena. Esto permite cambiar el tipo de eje de un gráfico.
                 alignToPixels: false, // alinea los valors de pixeles a los del dispositivo donde se muestran
                 backgroundColor: 'white',// fondo del area de escala
-                color: 'black', // color de la letra de los ejes 
+                // color: 'black', // color de la letra de los ejes 
                 border: { // linea de borde entre el grafico y los ejes
                     display: true, // por defecto
                     color: 'black',
@@ -98,14 +98,13 @@ const chart = {
                 time: {
                     parser: 'YYYY-MM-DDTHH:mm:ss', // formato que se va a formatear
                     unit: 'minute', // unidades del eje
-                    stepSize: '5', // tamaño del paso de la unidad (dato cada 5 min en este caso)
+                    // stepSize: '5', // tamaño del paso de la unidad (dato cada 5 min en este caso)
                     displayFormats: { // formato en el que se muestra
                         hour: 'HH:mm',
                         minute: 'HH:mm',
                     },
                     tooltipFormat: 'minute'
                 },
-
             },
 
             voltios: {

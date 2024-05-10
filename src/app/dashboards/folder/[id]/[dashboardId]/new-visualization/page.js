@@ -61,7 +61,7 @@ export default function NewVisualization({ params }) {
                         <button>Discard</button>
                     </div>
                 </div>
-                <Visualization data = {queryRes}></Visualization>
+                <Visualization data={queryRes}></Visualization>
                 <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '20%', padding: '5px' }}>
 
                     <div className="tab-container">
@@ -82,10 +82,11 @@ export default function NewVisualization({ params }) {
 
                         <div id="tab2" className="tab">
                             <a href="#tab2"><h4>Graphic</h4></a>
-                            <div className="tab-content">
+
+                            <div className="tab-content" >
                                 <h4>Graphic Settings</h4>
                                 <GraphicForm></GraphicForm>
-                            </div>
+                            </div >
                         </div>
 
                         <div id='tab1' className="tab">

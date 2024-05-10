@@ -106,3 +106,12 @@ var myChart = new Chart(ctx, {
       }
     }
   });
+
+
+
+/// OBTENER TIPO DE DATO DE LA COLUMNA PARA SACAR EL TIPO DE FILTRO QUE SE PUEDE APLICAR
+SELECT DATA_TYPE,CHARACTER_MAXIMUM_LENGTH
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA='database'
+  AND TABLE_NAME='tabla'
+  AND COLUMN_NAME='campo';

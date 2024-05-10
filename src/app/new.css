@@ -323,6 +323,22 @@ li {
     z-index: 0;
 }
 
+fieldset {
+    margin: 5px;
+}
+
+.graphic-form legend {
+    font-weight: bold;
+}
+
+.graphic-form fieldset {
+    padding: 5px;
+}
+
+.graphic-form label {
+    margin-right: 5px;
+}
+
 /* TODO: HACER RESPONSIVE */
 @media (max-width: 480px) {
     * {

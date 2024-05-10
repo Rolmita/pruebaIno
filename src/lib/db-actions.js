@@ -170,7 +170,36 @@ export async function searchColumns(db, table) {
     }
 }
 
-export async function createQuery(formData) {
+//TODO: VER COMO PODRÍA HACERLO MÁS EFICIENTE
+export async function searchColumnType(db, table, column) {
+    const session = await auth()
+    const user = await getUserByEmail(session.user.email)
+    const databaseConfig = user.databases[db]
+    // const databaseConfig = getDatabase(db)
+    const connection = await mysql.createConnection(databaseConfig);
+
+    try {
+        // `SELECT DATA_TYPE
+        //     FROM information_schema.COLUMNS
+        //     WHERE TABLE_SCHEMA='${db}'
+        //     AND TABLE_NAME='${table}'
+        //     AND COLUMN_NAME='${column}'`
+        const [results, fields] = await connection.query(
+            `SELECT DATA_TYPE,CHARACTER_MAXIMUM_LENGTH
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA='${db}'
+            AND TABLE_NAME='${table}'
+            AND COLUMN_NAME='${column}'`
+        );
+        console.log(results)
+        await connection.end()
+        return results;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export async function createQuery(formData, filterResult) {
     console.log('entrando en formacion de la query');
     try {
         const db = formData.get('database')
@@ -184,11 +213,12 @@ export async function createQuery(formData) {
             cols = '*'
         } else {
             for (let i = 0; i < columns.length; i++) {
-                i == 0 ? cols = columns[i] : cols += `, ${columns[i]}`
+                if (columns[i] != 'null') i == 0 ? cols = columns[i] : cols += `, ${columns[i]}`
             }
         }
 
-        const theQuery = `SELECT ${cols} FROM ${table}`
+        let theQuery = `SELECT ${cols} FROM ${table}`
+        filterResult != [] ? theQuery += ` ${filterResult}` : theQuery
         console.log('QUERY: ', theQuery);
         return theQuery
 
