@@ -45,45 +45,6 @@ function QueryForm({ databases, onQueryResults }) {
         setColumnsCount(prevCount => prevCount + 1);
     };
 
-    // const handleFilterChange = (event) => {
-    //     const selectedFilterType = event.target.value;
-    //     const selectID = event.target.id
-    //     const time = document.getElementById(`time-filter1`)
-    //     const datetime = document.getElementById(`datetime-filter1`)
-    //     const date = document.getElementById(`date-filter1`)
-    //     const value = document.getElementById(`value-filter1`)
-    //     // const time = document.getElementById(`time-filter${selectID}`)
-    //     // const datetime = document.getElementById(`datetime-filter${selectID}`)
-    //     // const date = document.getElementById(`date-filter${selectID}`)
-    //     // const value = document.getElementById(`value-filter${selectID}`)
-    //     switch (selectedFilterType) {
-    //         case 'time':
-    //             time.style.display = 'block'
-    //             datetime.style.display = 'none'
-    //             date.style.display = 'none'
-    //             value.style.display = 'none'
-    //             break
-    //         case 'datetime':
-    //             time.style.display = 'none'
-    //             datetime.style.display = 'block'
-    //             date.style.display = 'none'
-    //             value.style.display = 'none'
-    //             break
-    //         case 'date':
-    //             time.style.display = 'none'
-    //             datetime.style.display = 'none'
-    //             date.style.display = 'block'
-    //             value.style.display = 'none'
-    //             break
-    //         case 'value':
-    //             time.style.display = 'none'
-    //             datetime.style.display = 'none'
-    //             date.style.display = 'none'
-    //             value.style.display = 'block'
-    //             break
-    //     }
-    // }
-
     useEffect(() => {
         async function fetchResult() {
             try {
@@ -114,7 +75,7 @@ function QueryForm({ databases, onQueryResults }) {
                 if (db != null) {
                     setTables(await searchTables(db));
                 }
-                if (table != null) {
+                if (db != null && table != null) {
                     setColumns(await searchColumns(db, table));
                 }
             } catch (error) {
@@ -178,7 +139,7 @@ function QueryForm({ databases, onQueryResults }) {
                         <button type="button" onClick={handleAddSelect}>Add column</button>
                     </div>
                 </div>
-                <QueryFilterForm columns={columns} db={db} table={table} onFilter={setFilterResult }></QueryFilterForm>
+                <QueryFilterForm columns={columns} db={db} table={table} onFilter={setFilterResult }/>
                 <textarea name='query-area' id='query-area' defaultValue={query}></textarea>
                 <button type='submit' onClick={handleButtonChange}>{buttonName}</button>
             </form>

@@ -179,11 +179,6 @@ export async function searchColumnType(db, table, column) {
     const connection = await mysql.createConnection(databaseConfig);
 
     try {
-        // `SELECT DATA_TYPE
-        //     FROM information_schema.COLUMNS
-        //     WHERE TABLE_SCHEMA='${db}'
-        //     AND TABLE_NAME='${table}'
-        //     AND COLUMN_NAME='${column}'`
         const [results, fields] = await connection.query(
             `SELECT DATA_TYPE,CHARACTER_MAXIMUM_LENGTH
             FROM information_schema.COLUMNS

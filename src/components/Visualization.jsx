@@ -6,6 +6,7 @@ export default function Visualization({ data, options }) {
 
     // TODO: QUE MUESTRE CORRECTAMENTE EL GRAFICO DE LINEA (TIEMPO EN EL EJE X Y DATO EN EL Y)
     useEffect(() => {
+        console.log(data);
         if (data) {
             const labels = [];
             const datasets = [];
@@ -99,7 +100,7 @@ export default function Visualization({ data, options }) {
                     textStrokeWidth: 1,
                     z: 0,
                     callback: function (value) {
-                        const minutes = String(new Date(value).getMinutes()).padStart(2,'0')
+                        const minutes = String(new Date(value).getMinutes()).padStart(2, '0')
                         const hours = String(new Date(value).getHours()).padStart(2, '0')
                         if (minutes % 5 === 0)
                             return `${hours}:${minutes}`;
@@ -117,7 +118,7 @@ export default function Visualization({ data, options }) {
                     // autoSkip: true, // Permite el salto automático de las marcas de tiempo si hay muchas de ellas
                     tooltipFormat: 'dd-MM-yyyy HH:mm',
                 },
-               
+
             },
             y: {
                 type: 'linear',
@@ -158,23 +159,28 @@ export default function Visualization({ data, options }) {
                         <table style={{ border: '1px solid black', margin: '10px auto' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid red' }}>
-                                    {data && Object.keys(data[0]).map(colName => (
-                                        <th key={colName} style={{ border: '1px solid black', margin: '10px auto', padding: '0.5em' }}>{colName}</th>
-                                    ))}
+                                    {data && data.length > 0
+                                        ?
+                                        Object.keys(data[0]).map(colName => (
+                                            <th key={colName} style={{ border: '1px solid black', margin: '10px auto', padding: '0.5em' }}>{colName}</th>
+                                        ))
+                                        : <th>Error: Datos no disponibles</th>}
                                 </tr>
                             </thead>
                             <tbody>
-                                {data && data.map((row, rowIndex) => (
-                                    <tr key={rowIndex} style={{ borderBottom: '1px solid black', margin: '10px auto' }}>
-                                        {Object.entries(row).map(([key, value], colIndex) => (
-                                            <td key={key} style={{ border: '1px solid black', margin: '10px auto', textAlign: 'center', padding: '0.5em' }}>
-                                                {key === 'tiempo' && typeof value === 'object' && value instanceof Date
-                                                    ? `${value.getDate()}/${value.getMonth() + 1}/${value.getFullYear()} ${String(value.getHours()).padStart(2, '0')}:${String(value.getMinutes()).padStart(2, '0')}`
-                                                    : value}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
+                                {data && data.length > 0
+                                    ? data.map((row, rowIndex) => (
+                                        <tr key={rowIndex} style={{ borderBottom: '1px solid black', margin: '10px auto' }}>
+                                            {Object.entries(row).map(([key, value], colIndex) => (
+                                                <td key={key} style={{ border: '1px solid black', margin: '10px auto', textAlign: 'center', padding: '0.5em' }}>
+                                                    {key === 'tiempo' && typeof value === 'object' && value instanceof Date
+                                                        ? `${value.getDate()}/${value.getMonth() + 1}/${value.getFullYear()} ${String(value.getHours()).padStart(2, '0')}:${String(value.getMinutes()).padStart(2, '0')}`
+                                                        : value}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))
+                                    : <tr><td>No hay datos disponibles que coincidan con la búsqueda</td></tr>}
                             </tbody>
                         </table>
                     </div>
