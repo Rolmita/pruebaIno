@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Grafico from './Grafico';
 
-export default function Visualization({ data, options }) {
+export default function Visualization({ data }) {
     const [chartData, setChartData] = useState(null);
 
     // TODO: QUE MUESTRE CORRECTAMENTE EL GRAFICO DE LINEA (TIEMPO EN EL EJE X Y DATO EN EL Y)

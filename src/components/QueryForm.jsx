@@ -91,8 +91,6 @@ function QueryForm({ databases, onQueryResults }) {
         }
     }, [query]);
 
-    //TODO: AMPLIAR EL FORMULARIO CON FILTROS DE DATOS PARA LA QUERY
-
     return (
         <div className="tab-content">
             <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleSubmit}>

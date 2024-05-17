@@ -6,6 +6,7 @@ import 'chartjs-adapter-date-fns'
 function Grafico({ data, options }) {
 
     ChartJS.register(...registerablesChartJS);
+    console.log('DATA DEL GRAFICO PASADO AL LINE', data);
 
     return (
         <div style={{ width: '90vw' }}>

@@ -13,6 +13,7 @@ export default function NewVisualization({ params }) {
     const [dashboard, setDashboard] = useState(null)
     const [databases, setDatabases] = useState(null)
     const [queryRes, setQueryRes] = useState(null);
+    const status = 'new'
 
     useEffect(() => {
         const fetchData = () => {
@@ -61,7 +62,7 @@ export default function NewVisualization({ params }) {
                         <button>Discard</button>
                     </div>
                 </div>
-                <Visualization data={queryRes}></Visualization>
+                <Visualization data={queryRes} status={status}></Visualization>
                 <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '20%', padding: '5px' }}>
 
                     <div className="tab-container">
@@ -85,7 +86,7 @@ export default function NewVisualization({ params }) {
 
                             <div className="tab-content" >
                                 <h4>Graphic Settings</h4>
-                                <GraphicForm></GraphicForm>
+                                <GraphicForm data={queryRes} status={status}></GraphicForm>
                             </div >
                         </div>
 
