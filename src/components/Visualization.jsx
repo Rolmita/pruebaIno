@@ -1,43 +1,12 @@
 import { useState, useEffect } from 'react';
 import Grafico from './Grafico';
+import { Line } from 'react-chartjs-2';
 
-export default function Visualization({ data }) {
+export default function Visualization({ data, status, finalData, finalOpt, type }) {
     const [chartData, setChartData] = useState(null);
-
-    // TODO: QUE MUESTRE CORRECTAMENTE EL GRAFICO DE LINEA (TIEMPO EN EL EJE X Y DATO EN EL Y)
     useEffect(() => {
-        console.log(data);
-        if (data) {
-            const labels = [];
-            const datasets = [];
-
-            data.forEach(row => {
-                Object.entries(row).forEach(([key, value]) => {
-                    if (value instanceof Date) {
-                        labels.push(value);
-                    } else {
-                        const existingDatasetIndex = datasets.findIndex(dataset => dataset.label === key);
-                        if (existingDatasetIndex !== -1) {
-                            datasets[existingDatasetIndex].data.push(value);
-                        } else {
-                            datasets.push({
-                                label: key,
-                                data: [value]
-                            });
-                        }
-                    }
-                });
-            });
-
-            const newChartData = {
-                labels: labels, //TODO: EN LOS LABELS IRIAN LOS TIEMPOS (HORAS) Y CORRESPONDERIA AL EJE X
-                datasets: datasets //TODO: EN LOS DATASETS VAN LOS DATOS Y CORRESPONDE AL EJE Y
-            };
-
-            setChartData(newChartData);
-            console.log('DATOS DEL GRAFICO: ', newChartData);
-        }
-    }, [data]);
+        console.log('DATOS FINALES PARA EL GRÁFICO:', finalData);
+    }, [finalData])
 
     //TODO: ESTO VIENE DE LOS FORMULARIOS DE LAS PESTAÑAS DE ABAJO (hay que pasarselo a esta page)
 
@@ -56,74 +25,74 @@ export default function Visualization({ data }) {
             }
         },
         scales: {
-            x: {
-                axis: 'x',
-                type: 'time',
-                alignToPixels: false,
-                backgroundColor: 'white',
-                border: {
-                    display: true,
-                    color: 'black',
-                    width: 1,
-                    dash: [],
-                    dashOffset: 0.0,
-                    z: 0,
-                },
-                display: 'auto',
-                grid: {
-                    circular: false,
-                    color: 'black',
-                    display: true,
-                    drawOnChartArea: true,
-                    drawTicks: true,
-                    lineWidth: 1,
-                    offset: false,
-                    tickColor: 'black',
-                    tickLength: 8,
-                    tickWidth: 1,
-                    z: -1,
-                },
-                reverse: false,
-                stacked: false,
-                // suggestedMax: 500,
-                // suggestedMin: 0,
-                ticks: {
-                    backdropColor: 'green',
-                    backdropPadding: 1,
-                    display: true,
-                    color: 'yellow',
-                    // font: 'Arial',
-                    major: false,
-                    padding: 1,
-                    showLabelBackdrop: true,
-                    textStrokeColor: 'orange',
-                    textStrokeWidth: 1,
-                    z: 0,
-                    callback: function (value) {
-                        const minutes = String(new Date(value).getMinutes()).padStart(2, '0')
-                        const hours = String(new Date(value).getHours()).padStart(2, '0')
-                        if (minutes % 5 === 0)
-                            return `${hours}:${minutes}`;
-                    }
-                },
-                time: {
-                    parser: 'YYYY-MM-DDTHH:mm:ss',
-                    unit: 'minute',
-                    displayFormats: {
-                        // hour: 'HH:mm',
-                        minute: 'HH:mm',
-                        // stepSize: 5, // Establecer el tamaño del paso a 5 minutos
-                    },
-                    // minUnit: 'minute', // Especifica la unidad mínima de tiempo que se debe usar
-                    // autoSkip: true, // Permite el salto automático de las marcas de tiempo si hay muchas de ellas
-                    tooltipFormat: 'dd-MM-yyyy HH:mm',
-                },
+            // x: {
+            //     axis: 'x',
+            //     type: 'time',
+            //     alignToPixels: false,
+            //     backgroundColor: 'white',
+            //     border: {
+            //         display: true,
+            //         color: 'black',
+            //         width: 1,
+            //         dash: [],
+            //         dashOffset: 0.0,
+            //         z: 0,
+            //     },
+            //     display: 'auto',
+            //     grid: {
+            //         circular: false,
+            //         color: 'black',
+            //         display: true,
+            //         drawOnChartArea: true,
+            //         drawTicks: true,
+            //         lineWidth: 1,
+            //         offset: false,
+            //         tickColor: 'black',
+            //         tickLength: 8,
+            //         tickWidth: 1,
+            //         z: -1,
+            //     },
+            //     reverse: false,
+            //     stacked: false,
+            //     // suggestedMax: 500,
+            //     // suggestedMin: 0,
+            //     ticks: {
+            //         backdropColor: 'green',
+            //         backdropPadding: 1,
+            //         display: true,
+            //         color: 'yellow',
+            //         // font: 'Arial',
+            //         major: false,
+            //         padding: 1,
+            //         showLabelBackdrop: true,
+            //         textStrokeColor: 'orange',
+            //         textStrokeWidth: 1,
+            //         z: 0,
+            //         callback: function (value) {
+            //             const minutes = String(new Date(value).getMinutes()).padStart(2, '0')
+            //             const hours = String(new Date(value).getHours()).padStart(2, '0')
+            //             if (minutes % 5 === 0)
+            //                 return `${hours}:${minutes}`;
+            //         }
+            //     },
+            //     time: {
+            //         parser: 'YYYY-MM-DDTHH:mm:ss',
+            //         unit: 'minute',
+            //         displayFormats: {
+            //             // hour: 'HH:mm',
+            //             minute: 'HH:mm',
+            //             // stepSize: 5, // Establecer el tamaño del paso a 5 minutos
+            //         },
+            //         // minUnit: 'minute', // Especifica la unidad mínima de tiempo que se debe usar
+            //         // autoSkip: true, // Permite el salto automático de las marcas de tiempo si hay muchas de ellas
+            //         tooltipFormat: 'dd-MM-yyyy HH:mm',
+            //     },
 
-            },
-            y: {
-                type: 'linear',
-                beginAtZero: false,
-            }
+            // },
+            // y: {
+            //     type: 'linear',
+            //     beginAtZero: false,
+            // }
         },
     };
 
@@ -185,8 +154,7 @@ export default function Visualization({ data }) {
                         </table>
                     </div>
                     <div className="preview-graph" id="preview-graph" style={{ display: 'none' }}>
-                        {chartData && <Grafico data={chartData} options={chartOpt}></Grafico>}
-
+                        {finalData && <Grafico data={finalData} options={chartOpt} type={type}></Grafico>}
                     </div>
                 </div>
             </div>

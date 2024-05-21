@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Chart as ChartJS, registerables as registerablesChartJS } from 'chart.js';
 import LineDataset from './graphics/LineDatasets';
+import PieDoughnutDatasets from './graphics/PieDatasets';
+import BarDataset from './graphics/BarDatasets';
+import { lineChartData, pieChartData, barChartData } from '@/lib/lineChart';
 //TODO: añadir funcion en el eje de datos para mostrar dependiendo del valor, ej:
 // color: function(context) {
 //     const index = context.dataIndex;
@@ -9,9 +12,8 @@ import LineDataset from './graphics/LineDatasets';
 //         index % 2 ? 'blue' :    // else, alternate values in blue and green
 //         'green';
 // },
-//TODO: AÑADIR FUNCION PARA PASAR CHARTDATA DESDE EL GRAFICO A LA VISUALIZACION
-//TODO: LOS AXIS ID PODRIAN SER UN SELECT POR EJEMPLO DE 5 AXISID Y ELEGIR EL QUE CONVENGA. DEFAULT=FIRST
-export default function GraphicForm({ data, status }) {
+
+export default function GraphicForm({ data, status, onFinalData, onChartType }) {
     const [titlePadding, setTitlePadding] = useState(4)
     const [borderWidth, setBorderWidth] = useState(1)
     const [options, setOptions] = useState({})
@@ -19,15 +21,7 @@ export default function GraphicForm({ data, status }) {
     const [datasets, setDatasets] = useState([])
     const [chartData, setChartData] = useState(null);
     const [chartType, setChartType] = useState(null);
-    const [chartDataInit, setChartDataInit] = useState(false)
-    // const [chartDatasetOpt, setChartDatasetOpt] = useState(null)
 
-    // const setDatasetsOpt = (datasetsOpt, index) => {
-    //     const newDatasetsOpt = chartData.datasets[index].concat(datasetsOpt)
-    //     setChartData(newDatasetsOpt)
-    // }
-
-    // TODO: QUE MUESTRE CORRECTAMENTE EL GRAFICO DE LINEA (TIEMPO EN EL EJE X Y DATO EN EL Y)
     useEffect(() => {
         console.log(data);
         if (data) {
@@ -53,8 +47,8 @@ export default function GraphicForm({ data, status }) {
             });
 
             const newChartData = {
-                labels: labels, //TODO: EN LOS LABELS IRIAN LOS TIEMPOS (HORAS) Y CORRESPONDERIA AL EJE X
-                datasets: datasets //TODO: EN LOS DATASETS VAN LOS DATOS Y CORRESPONDE AL EJE Y
+                labels: labels,
+                datasets: datasets
             };
 
             setChartData(newChartData);
@@ -62,7 +56,6 @@ export default function GraphicForm({ data, status }) {
         }
     }, [data]);
 
-    // const [chart, setChart] = useState(new ChartJS)
     const handleTitlePaddingChange = (value) => {
         setTitlePadding(value)
     }
@@ -102,59 +95,55 @@ export default function GraphicForm({ data, status }) {
         img.style.transform == 'rotate(180deg)' ? img.style.transform = 'rotate(0deg)' : img.style.transform = 'rotate(180deg)'
     };
 
+    //TODO: SIMPLIFICAR CÓDIGO
     useEffect(() => {
         console.log('añadiendo opciones');
+        let construction
+        let dataInit = false
+        let newLineChartDatasets = { ...chartData }
         if (chartData && chartType == 'line' && status == 'new') {
             console.log('entrando en la construccion');
-            const newLineChartData = { ...chartData }
-            const construction = newLineChartData.datasets.map(dataset => ({
-                label: dataset.label,
-                data: dataset.data,
-                xAxisID: 'first-x-axis',
-                yAxisID: 'first-y-axis',
-                drawActiveElementsOnTop: true,
-                indexAxis: 'x',
-                backgroundColor: '#000000',
-                borderCapStyle: 'butt',
-                borderColor: '#000000',
-                borderDash: [],
-                borderJoinStyle: 'miter',
-                borderWidth: 3,
-                fill: false,
-                showLine: true,
-                spanGaps: undefined,
-                hoverBackgroundColor: undefined,
-                hoverBorderCapStyle: 'butt',
-                hoverBorderColor: undefined,
-                hoverBorderDash: undefined,
-                hoverBorderJoinStyle: 'miter',
-                hoverBorderWidth: 4,
-                pointBackgroundColor: '#000000',
-                pointBorderColor: '#000000',
-                pointBorderWidth: 1,
-                pointHitRadius: 1,
-                pointRadius: 3,
-                pointStyle: 'circle',
-                pointHoverBackgroundColor: undefined,
-                pointHoverBorderColor: undefined,
-                pointHoverBorderWidth: 1,
-                pointHoverRadius: 4,
+            construction = newLineChartDatasets.datasets.map(dataset => ({
+                ...lineChartData.datasets[0], ['label']: dataset.label, ['data']: dataset.data
             }))
-            newLineChartData.datasets = construction
-            setChartData(newLineChartData)
-            console.log('chartdata supuestamente cambiado');
-            setChartDataInit(true);
+            console.log('construction', construction, typeof construction);
+            dataInit = true
+        } else if (chartData && (chartType == 'pie' || chartType == 'doughnut') && status == 'new') {
+            console.log('entrando en la construccion');
+            construction = newLineChartDatasets.datasets.map(dataset => ({
+                ...pieChartData.datasets[0], ['label']: dataset.label, ['data']: dataset.data
+            }))
+            console.log('construction', construction, typeof construction);
+            dataInit = true
+        } else if (chartData && chartType == 'bar' && status == 'new') {
+            console.log('entrando en la construccion');
+            construction = newLineChartDatasets.datasets.map(dataset => ({
+                ...barChartData.datasets[0], ['label']: dataset.label, ['data']: dataset.data
+            }))
+            console.log('construction', construction, typeof construction);
+            dataInit = true
+        }
+        if (dataInit == true) {
+            newLineChartDatasets.datasets = construction
+            setChartData(newLineChartDatasets)
+            console.log('chartdata supuestamente cambiado', newLineChartDatasets);
+            onChartType(chartType)
         }
     }, [chartType])
 
     useEffect(() => {
         console.log('HA CAMBIADO', chartData);
+        onFinalData(chartData)
     }, [chartData])
 
-    // const modifyDataset = (thisDataset, index) => {
-    //     console.log('se va a modificar chartData despues de thisDataset');
-    //     setChartData(chartData.datasets.map((dataset, i) => (i == index) ? thisDataset : dataset))
-    // }
+    const modifyDataset = (index, updatedDataset) => {
+        const newDatasets = [...chartData.datasets];
+        newDatasets[index] = updatedDataset;
+        setChartData({
+            ...chartData,
+            datasets: newDatasets
+        });
+    };
 
     return (
         <form className="graphic-form">
@@ -175,6 +164,7 @@ export default function GraphicForm({ data, status }) {
                                 <option value='null'>--Select a graphic type--</option>
                                 <option value='line'>Line</option>
                                 <option value='pie'>Pie</option>
+                                <option value='doughnut'>Doughnut</option>
                                 <option value='bar'>Bar</option>
                             </select>
 
@@ -217,7 +207,15 @@ export default function GraphicForm({ data, status }) {
                                     <legend>
                                         {dataset.label}
                                     </legend>
-                                    {chartType == 'line' && <LineDataset dataset={dataset}></LineDataset>}
+                                    {chartType == 'line' &&
+                                        <LineDataset dataset={dataset}
+                                            onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
+                                    {(chartType == 'pie' || chartType == 'doughnut') &&
+                                        <PieDoughnutDatasets dataset={dataset}
+                                            onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
+                                    {chartType == 'bar' &&
+                                        <BarDataset dataset={dataset}
+                                            onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
                                 </fieldset>
                             ))}
                             <button type='button'>Add Dataset</button>
