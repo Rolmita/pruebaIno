@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Chart as ChartJS, registerables as registerablesChartJS } from 'chart.js';
-import LineDataset from './graphics/LineDatasets';
-import PieDoughnutDatasets from './graphics/PieDatasets';
-import BarDataset from './graphics/BarDatasets';
+import LineDataset from './LineDatasets';
+import PieDoughnutDatasets from './PieDatasets';
+import BarDataset from './BarDatasets';
 import { lineChartData, pieChartData, barChartData } from '@/lib/lineChart';
+
 //TODO: añadir funcion en el eje de datos para mostrar dependiendo del valor, ej:
 // color: function(context) {
 //     const index = context.dataIndex;
@@ -13,6 +14,9 @@ import { lineChartData, pieChartData, barChartData } from '@/lib/lineChart';
 //         'green';
 // },
 
+
+//TODO: AÑADIR LAS OPCIONES COMUNES(PLUGINS) Y LAS DEL GRAFICO DE LINEA Y DE BARRAS
+
 export default function GraphicForm({ data, status, onFinalData, onChartType }) {
     const [titlePadding, setTitlePadding] = useState(4)
     const [borderWidth, setBorderWidth] = useState(1)
@@ -20,7 +24,8 @@ export default function GraphicForm({ data, status, onFinalData, onChartType }) 
     const [chartDataset, setChartDataset] = useState({})
     const [datasets, setDatasets] = useState([])
     const [chartData, setChartData] = useState(null);
-    const [chartType, setChartType] = useState(null);
+    const [chartType, setChartType] = useState('line');
+    const [datasetTypes, setDatasetTypes] = useState(['line'])
 
     useEffect(() => {
         console.log(data);
@@ -95,41 +100,43 @@ export default function GraphicForm({ data, status, onFinalData, onChartType }) 
         img.style.transform == 'rotate(180deg)' ? img.style.transform = 'rotate(0deg)' : img.style.transform = 'rotate(180deg)'
     };
 
-    //TODO: SIMPLIFICAR CÓDIGO
     useEffect(() => {
-        console.log('añadiendo opciones');
-        let construction
-        let dataInit = false
-        let newLineChartDatasets = { ...chartData }
-        if (chartData && chartType == 'line' && status == 'new') {
-            console.log('entrando en la construccion');
-            construction = newLineChartDatasets.datasets.map(dataset => ({
-                ...lineChartData.datasets[0], ['label']: dataset.label, ['data']: dataset.data
-            }))
-            console.log('construction', construction, typeof construction);
-            dataInit = true
-        } else if (chartData && (chartType == 'pie' || chartType == 'doughnut') && status == 'new') {
-            console.log('entrando en la construccion');
-            construction = newLineChartDatasets.datasets.map(dataset => ({
-                ...pieChartData.datasets[0], ['label']: dataset.label, ['data']: dataset.data
-            }))
-            console.log('construction', construction, typeof construction);
-            dataInit = true
-        } else if (chartData && chartType == 'bar' && status == 'new') {
-            console.log('entrando en la construccion');
-            construction = newLineChartDatasets.datasets.map(dataset => ({
-                ...barChartData.datasets[0], ['label']: dataset.label, ['data']: dataset.data
-            }))
-            console.log('construction', construction, typeof construction);
-            dataInit = true
+        console.log(datasetTypes);
+        if (chartData && status === 'new') {
+            let baseObject
+            let type
+            let newType = chartType;
+            const construction = chartData.datasets.map((dataset, index) => {
+                console.log(datasetTypes[index])
+                const currentType = datasetTypes[index] ? datasetTypes[index] : chartType
+                switch (currentType) {
+                    case 'line':
+                        baseObject = lineChartData.datasets[0]
+                        type = 'line'
+                        break
+                    case 'pie':
+                        baseObject = pieChartData.datasets[0]
+                        type = 'pie'
+                        break
+                    case 'doughnut':
+                        baseObject = pieChartData.datasets[0]
+                        baseObject[type] = 'doughnut'
+                        type = 'doughnut'
+                        break
+                    case 'bar':
+                        baseObject = barChartData.datasets[0]
+                        type = 'bar'
+                        break
+                    default:
+                        return null;
+                }
+                return { ...baseObject, type: type, label: dataset.label, data: dataset.data }
+            });
+
+            setChartData({ ...chartData, datasets: construction })
+            onChartType(newType)
         }
-        if (dataInit == true) {
-            newLineChartDatasets.datasets = construction
-            setChartData(newLineChartDatasets)
-            console.log('chartdata supuestamente cambiado', newLineChartDatasets);
-            onChartType(chartType)
-        }
-    }, [chartType])
+    }, [chartType, datasetTypes, status])
 
     useEffect(() => {
         console.log('HA CAMBIADO', chartData);
@@ -137,11 +144,10 @@ export default function GraphicForm({ data, status, onFinalData, onChartType }) 
     }, [chartData])
 
     const modifyDataset = (index, updatedDataset) => {
-        const newDatasets = [...chartData.datasets];
-        newDatasets[index] = updatedDataset;
-        setChartData({
-            ...chartData,
-            datasets: newDatasets
+        setChartData(() => {
+            const newDatasets = [...chartData.datasets];
+            newDatasets[index] = updatedDataset;
+            return { ...chartData, datasets: newDatasets };
         });
     };
 
@@ -161,7 +167,7 @@ export default function GraphicForm({ data, status, onFinalData, onChartType }) 
                             <label htmlFor="type">
                                 Type of graphic:</label>
                             <select name='type' onChange={(e) => setChartType(e.target.value)}>
-                                <option value='null'>--Select a graphic type--</option>
+                                <option value='undefined'>--Select a graphic type--</option>
                                 <option value='line'>Line</option>
                                 <option value='pie'>Pie</option>
                                 <option value='doughnut'>Doughnut</option>
@@ -201,20 +207,34 @@ export default function GraphicForm({ data, status, onFinalData, onChartType }) 
                         </fieldset>
                         <fieldset>
                             <legend>Datasets and options: </legend>
-                            {/* TODO: ESTOS DATOS NO SERAN LOS LABELS */}
                             {chartData && chartData.datasets.map((dataset, index) => (
                                 <fieldset key={index}>
                                     <legend>
-                                        {dataset.label}
+                                        <div>{dataset.label}</div>
                                     </legend>
-                                    {chartType == 'line' &&
-                                        <LineDataset dataset={dataset}
+                                    {(chartType == 'line' || datasetTypes[index] == 'line') &&
+                                        < LineDataset dataset={dataset} index={index} onTypeChange={(type, index) => {
+                                            const newDatasetTypes = [...datasetTypes]
+                                            newDatasetTypes[index] = type
+                                            setDatasetTypes(newDatasetTypes)
+                                            setChartType(undefined)
+                                        }}
                                             onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
-                                    {(chartType == 'pie' || chartType == 'doughnut') &&
-                                        <PieDoughnutDatasets dataset={dataset}
+                                    {(chartType == 'pie' || chartType == 'doughnut' || datasetTypes[index] == 'pie' || datasetTypes[index] == 'doughnut') &&
+                                        <PieDoughnutDatasets dataset={dataset} index={index} onTypeChange={(type, index) => {
+                                            const newDatasetTypes = [...datasetTypes]
+                                            newDatasetTypes[index] = type
+                                            setDatasetTypes(newDatasetTypes)
+                                            setChartType(undefined)
+                                        }}
                                             onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
-                                    {chartType == 'bar' &&
-                                        <BarDataset dataset={dataset}
+                                    {(chartType == 'bar' || datasetTypes[index] == 'bar') &&
+                                        < BarDataset dataset={dataset} index={index} onTypeChange={(type, index) => {
+                                            const newDatasetTypes = [...datasetTypes]
+                                            newDatasetTypes[index] = type
+                                            setDatasetTypes(newDatasetTypes)
+                                            setChartType(undefined)
+                                        }}
                                             onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
                                 </fieldset>
                             ))}

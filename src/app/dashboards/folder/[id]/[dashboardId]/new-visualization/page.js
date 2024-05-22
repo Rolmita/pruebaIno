@@ -2,9 +2,9 @@
 import Navbar from "@/components/NavBar"
 import Link from "next/link"
 import Information from "@/components/information";
-import Visualization from "@/components/Visualization";
+import Visualization from "@/components/graphics/Visualization";
 import QueryForm from "@/components/QueryForm";
-import GraphicForm from "@/components/GraphicForm";
+import GraphicForm from "@/components/graphics/GraphicForm";
 import { getFolderById, getDashboardById, getUserBySession } from "@/lib/actions";
 import { useState, useEffect } from 'react'
 

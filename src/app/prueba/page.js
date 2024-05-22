@@ -1,5 +1,5 @@
 import { connection1, connection2 } from "@/lib/db";
-import Grafico from "../../components/Grafico";
+import Grafico from "../../components/graphics/Grafico";
 
 export default async function Home() {
 

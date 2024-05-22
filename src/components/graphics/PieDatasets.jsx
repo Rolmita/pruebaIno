@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-export default function PieDoughnutDatasets({ dataset, onDatasetChange }) {
+export default function PieDoughnutDatasets({ dataset, onDatasetChange, onTypeChange, index }) {
     const [thisDataset, setThisDataset] = useState(dataset)
 
     const [selectedColors, setSelectedColors] = useState([]);
@@ -23,7 +23,13 @@ export default function PieDoughnutDatasets({ dataset, onDatasetChange }) {
         modifySetting('borderAlign', e.target.value, e.target.type)
     }
 
+    const onTypeChangeInner = (chartType) => {
+        modifySetting('type', chartType);
+        onTypeChange(chartType, index);
+    };
+
     const modifySetting = (key, value, type) => {
+        if (key == 'type') onTypeChange(value)
         let updatedDataset
         console.log(type);
         if (type == 'number') {
@@ -55,6 +61,17 @@ export default function PieDoughnutDatasets({ dataset, onDatasetChange }) {
 
     return (
         <div>
+            <div className='graphic-form-group'>
+                <label htmlFor="type">
+                    Type of dataset:</label>
+                <select name='type' onChange={(e) => onTypeChangeInner(e.target.value)}>
+                    <option value='undefined'>--Select a dataset type--</option>
+                    <option value='line'>Line</option>
+                    <option value='pie'>Pie</option>
+                    <option value='doughnut'>Doughnut</option>
+                    <option value='bar'>Bar</option>
+                </select>
+            </div>
             <div>
                 <div className='graphic-form-group'>
                     <h4 style={{ marginRight: '10px' }}>Basics settings</h4>
@@ -156,7 +173,8 @@ export default function PieDoughnutDatasets({ dataset, onDatasetChange }) {
                                     value="'#f0a202', '#f18805', '#d95d39', '#202c59', '#581f18','#cfffb3', '#ade25d', '#fcec52', '#3b7080', '#3a5743','#a4243b', '#d8c99b', '#d8973c', ' #bd632f', '#273e47','#21294A', '#4D688F', '#37a35d', '#edeff2', '#ebb93b','#0e2e2b', '#254656', '#74b39c', '#38a889', '#fe8451', '#f1a93c'"
                                     onChange={handleColorCheckboxChange} />
                                 <label htmlFor="all">All palettes</label>
-                            </div></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

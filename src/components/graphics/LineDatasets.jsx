@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-export default function LineDataset({ dataset, onDatasetChange, index }) {
+export default function LineDataset({ dataset, onDatasetChange, onTypeChange, index }) {
     //TODO: PASAR EL ID QUE ES DESDE LA PAG PADRE
     const xAxisIDs = ['first-x-axis', 'second-x-axis', 'third-x-axis', 'fourth-x-axis', 'fifth-x-axis']
     const yAxisIDs = ['first-y-axis', 'second-y-axis', 'third-y-axis', 'fourth-y-axis', 'fifth-y-axis']
@@ -13,6 +13,7 @@ export default function LineDataset({ dataset, onDatasetChange, index }) {
     const [thisDataset, setThisDataset] = useState(dataset)
 
     console.log(dataset);
+    console.log('este es el index de lineDataset', index);
 
     const toggleDropdown = (divId, imgId) => {
         const element = document.getElementById(divId);
@@ -51,11 +52,9 @@ export default function LineDataset({ dataset, onDatasetChange, index }) {
         modifySetting('borderDash', [borderDashLineLength, borderDashLineSpacing])
     }, [borderDashLineLength, borderDashLineSpacing])
 
-    // useEffect(() => {
-    //     modifySetting('borderDash', borderDash)
-    // }, [borderDash])
-
     const modifySetting = (key, value, type) => {
+        if (key == 'type' && value == 'undefined') value.trim().replace(/'/g, '');
+        if (key == 'type') onTypeChange(value)
         let updatedDataset
         if (key == 'backgroundColor') {
             const colorToModify = value
@@ -72,25 +71,25 @@ export default function LineDataset({ dataset, onDatasetChange, index }) {
         onDatasetChange(updatedDataset)
     }
 
+    const onTypeChangeInner = (chartType, index) => {
+        modifySetting('type', chartType)
+        onTypeChange(chartType, index)
+    };
+
     const handleRadioChange = (e) => {
         modifySetting('indexAxis', e.target.value)
     }
 
     const hexToRgba = (hex) => {
-        // Elimina el signo # si está presente
-        hex = hex.replace(/^#/, '');
+        hex = hex.replace(/^#/, '')
 
-        // Verifica que el string hexadecimal sea de 6 caracteres de longitud
-        if (hex.length !== 6) {
-            throw new Error('Invalid hexadecimal color');
-        }
+        if (hex.length !== 6) throw new Error('Invalid hexadecimal color')
 
-        // Divide el string en sus componentes rojo, verde y azul
-        const r = parseInt(hex.slice(0, 2), 16);
-        const g = parseInt(hex.slice(2, 4), 16);
-        const b = parseInt(hex.slice(4, 6), 16);
+        const r = parseInt(hex.slice(0, 2), 16)
+        const g = parseInt(hex.slice(2, 4), 16)
+        const b = parseInt(hex.slice(4, 6), 16)
 
-        return `rgba(${r}, ${g}, ${b}, 0.1)`;
+        return `rgba(${r}, ${g}, ${b}, 0.1)`
     }
 
     // const rgbaToHex = (rgba) => {
@@ -111,6 +110,17 @@ export default function LineDataset({ dataset, onDatasetChange, index }) {
 
     return (
         <div>
+            <div className='graphic-form-group'>
+                <label htmlFor="type">
+                    Type of dataset:</label>
+                <select name='type' onChange={(e) => onTypeChangeInner(e.target.value, index)}>
+                    <option value='undefined'>--Select a dataset type--</option>
+                    <option value='line'>Line</option>
+                    <option value='pie'>Pie</option>
+                    <option value='doughnut'>Doughnut</option>
+                    <option value='bar'>Bar</option>
+                </select>
+            </div>
             <div>
                 <div className='graphic-form-group'>
                     <h4 style={{ marginRight: '10px' }}>Basics settings</h4>
@@ -118,12 +128,12 @@ export default function LineDataset({ dataset, onDatasetChange, index }) {
                         <img id='down-img-dataset-1-basic' className='down-img' src='/down.svg' width='10px' /></button>
                 </div>
                 <div id="basicSettings-dropdown" style={{ display: 'none', padding: '5px' }}>
-                    {/* TODO: POR DEFECTO EL NOMBRE DE LA COLUMNA */}
+
                     <div className='graphic-form-group-opt'>
                         <label htmlFor='label'>Dataset label: </label>
                         <input type='text' name='label' defaultValue={thisDataset?.label} onChange={(e) => modifySetting('label', e.target.value)} />
                     </div>
-                    {/* TODO: AÑADIR CONFIGURACION DEL INDEXAXIS EN EL ONCHANGE */}
+
                     <div className='graphic-form-group-opt'>
                         <label htmlFor='indexAxis' title="The base axis of the dataset. 'x' for horizontal lines and 'y' for vertical lines.">Index Axis: </label>
                         <input type='radio' name='indexAxis' value='x' defaultChecked onChange={handleRadioChange} />
@@ -142,6 +152,11 @@ export default function LineDataset({ dataset, onDatasetChange, index }) {
                         <select name='yAxisID' onChange={(e) => modifySetting('yAxisID', e.target.value)}>
                             {yAxisIDs.map((axis, index) => (<option key={`yAxis${index}`} value={axis}>{axis}</option>))}
                         </select>
+                    </div>
+                    <div className='graphic-form-group-opt'>
+                        <label htmlFor='order'>Order: </label>
+                        <input type='number' name='order' defaultValue={thisDataset?.order} step='1'
+                            onChange={(e) => modifySetting('order', e.target.value, e.target.type)}></input>
                     </div>
                 </div>
             </div>

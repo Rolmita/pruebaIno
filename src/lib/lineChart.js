@@ -76,6 +76,7 @@ export const lineChartData = {
     //data.datasets[index]opciones para el conjunto de datos en específico
     labels: [],
     datasets: [{
+        type: 'line',
         xAxisID: 'first-x-axis',
         yAxisID: 'first-y-axis',
         data: [], // object | object[] | number[] | string[]
@@ -83,7 +84,7 @@ export const lineChartData = {
         drawActiveElementsOnTop: true, //boolean
         indexAxis: 'x', // x o y
         label: 'nombre del conjunto',
-        //order: 0, //number
+        order: 0, //number
         //stack: 'line', //boolean
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         borderCapStyle: 'butt', //round, square
@@ -123,6 +124,7 @@ export const lineChartData = {
 export const pieChartData = {
     labels: [],
     datasets: [{
+        type: 'pie',
         data: [], // object | object[] | number[] | string[]
         clip: undefined, //number|object|false
         label: 'nombre del conjunto',
@@ -158,37 +160,38 @@ export const barChartData = {
     //data.datasets[index]opciones para el conjunto de datos en específico
     labels: [],
     datasets: [{
+        type: 'bar',
         backgroundColor: [
             '#f0a202', '#f18805', '#d95d39', '#202c59', '#581f18',
             '#cfffb3', '#ade25d', '#fcec52', '#3b7080', '#3a5743',
             '#a4243b', '#d8c99b', '#d8973c', ' #bd632f', '#273e47',
             '#21294A', '#4D688F', '#37a35d', '#edeff2', '#ebb93b',
             '#0e2e2b', '#254656', '#74b39c', '#38a889', '#fe8451', '#f1a93c'],
-            base: undefined,
+        base: undefined,
         barPercentage: 0.9,
         barThickness: undefined,
-         borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderColor: 'rgba(0, 0, 0, 0.1)',
         borderSkipped: 'start',
         borderRadius: 0,
-            borderWidth: 0, //number
+        borderWidth: 0, //number
         categoryPertentage: 0.8,
         clip: undefined, //number|object|false
-            data: [], // object | object[] | number[] | string[]
+        data: [], // object | object[] | number[] | string[]
         grouped: true,
         hoverBackgroundColor: undefined, //color
         hoverBorderColor: undefined,
         hoverBorderWidth: 1, //number
         hoverBorderRadius: 0,
-            indexAxis: 'x', // x o y
+        indexAxis: 'x', // x o y
         inflateAmount: 'auto',
-            label: 'nombre del conjunto',
+        label: 'nombre del conjunto',
         maxBarThickness: undefined,
         minBarLength: undefined,
         order: 0, //number
         pointStyle: 'circle', //'circle' 'cross' 'crossRot' 'dash' 'line' 'rect' 'rectRounded' 'rectRot' 'star' 'triangle' false
         skipNull: true,
         stack: 'bar', //boolean
-            xAxisID: 'first-x-axis',
-            yAxisID: 'first-y-axis',
+        xAxisID: 'first-x-axis',
+        yAxisID: 'first-y-axis',
     }]
 }
