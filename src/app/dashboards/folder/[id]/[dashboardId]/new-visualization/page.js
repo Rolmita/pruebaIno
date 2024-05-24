@@ -14,6 +14,7 @@ export default function NewVisualization({ params }) {
     const [databases, setDatabases] = useState(null)
     const [queryRes, setQueryRes] = useState(null);
     const [finalData, setFinalData] = useState(null)
+    const [finalOptions, setFinalOptions] = useState(null)
     const [chartType, setChartType] = useState('line')
     const status = 'new'
 
@@ -64,7 +65,7 @@ export default function NewVisualization({ params }) {
                         <button>Discard</button>
                     </div>
                 </div>
-                <Visualization data={queryRes} status={status} finalData={finalData} type={chartType}></Visualization>
+                <Visualization data={queryRes} status={status} finalData={finalData} type={chartType} finalOpt={finalOptions}></Visualization>
                 <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '20%', padding: '5px' }}>
 
                     <div className="tab-container">
@@ -88,7 +89,7 @@ export default function NewVisualization({ params }) {
 
                             <div className="tab-content" >
                                 <h4>Graphic Settings</h4>
-                                <GraphicForm data={queryRes} status={status} onFinalData={setFinalData} onChartType={setChartType}></GraphicForm>
+                                <GraphicForm data={queryRes} status={status} onFinalData={setFinalData} onFinalOptions={setFinalOptions} onChartType={setChartType}></GraphicForm>
                             </div >
                         </div>
 

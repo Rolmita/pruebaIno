@@ -195,3 +195,346 @@ export const barChartData = {
         yAxisID: 'first-y-axis',
     }]
 }
+
+export const basicChartOptions = {
+    animation: false, //animacion para los datos
+    plugins: {
+        title: { // titulo del grafico
+            display: true,
+            text: '',
+        },
+        legend: { // para mostrar la leyenda de los datos
+            display: true,
+            position: 'top',
+        },
+        tooltip: { // para mostrar los datos
+            enabled: true,
+        }
+    },
+    scales: {}
+}
+
+export const timeScaleOptions = {
+    //all axes
+    type: undefined,
+    alignToPixels: false,
+    backgroundColor: '#ffffff',
+    border: {
+        display: true,
+        color: undefined,
+        width: 1,
+    },
+    display: true,
+    grid: {
+        display: true,
+        color: '#808080',
+        drawOnChartArea: true,
+        lineWidth: 1,
+        offset: false, //true para barchart
+        drawTicks: true,
+        tickBorderDash: [],
+        tickBorderDashOffset: undefined,
+        tickColor: '#d3d3d3',
+        tickLength: 8,
+        tickWidth: 1,
+    },
+    min: undefined,
+    suggestedMin: undefined,
+    max: undefined,
+    suggestedMax: undefined,
+    reverse: false,
+    stacked: false,
+    ticks: {
+        //all axes
+        display: true,
+        showLabelBackdrop: false,
+        callback: undefined,
+        backdropColor: 'rgba(255, 255, 255, 0.75)',
+        backdropPadding: 2,
+        color: '#000000',
+        padding: 3,
+        major: { enabled: false },
+        textStrokeColor: "",
+        textStrokeWidth: 0,
+        z: 0,
+        //all cartesian
+        align: 'center',	//The tick alignment along the axis. Can be 'start', 'center', 'end', or 'inner'. inner alignment means align start for first tick and end for the last tick of horizontal axis
+        crossAlign: 'near',	//The tick alignment perpendicular to the axis. Can be 'near', 'center', or 'far'. See Tick Alignment
+        // sampleSize: ticks.length,  //The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
+        autoSkip: true,	//If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
+        autoSkipPadding: 3,//Padding between the ticks on the horizontal axis when autoSkip is enabled.
+        includeBounds: true,//Should the defined min and max values be presented as ticks even if they are not "nice".
+        labelOffset: 0,//Distance in pixels to offset the label from the centre point of the tick (in the x-direction for the x-axis, and the y-direction for the y-axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
+        maxRotation: 50,	//Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
+        minRotation: 0,//Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
+        mirror: false,	//Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
+        padding: 0,//Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+        maxTicksLimit: 11,	//Maximum number of ticks and gridlines to show
+
+        //time axis
+        source: 'auto',
+    },
+    weight: 0,
+
+    //all cartesian
+    axis: undefined,
+    bounds: 'data', //ticks por defecto en demas
+    clip: true,
+    offset: false, //true para barchart
+    position: undefined,
+    //stack,
+    //stackWeight
+    title: {
+        display: true,
+        text: '',
+        align: 'center',
+    },
+
+    //time axis
+    offsetAfterAutoskip: false,
+    time: {
+        parser: undefined,
+        unit: undefined,
+        minUnit: undefined,
+        isoWeekday: true,
+        round: false,
+        displayFormats: {
+            second: 'HH:mm:ss',
+            minute: 'HH:mm',
+            hour: 'HH',
+            day: 'DD',
+            week: '',
+            month: 'MM',
+            quarter: 'MMM YYYY',
+            year: 'YYYY',
+        },
+        tooltipFormat: undefined,
+    },
+}
+
+export const linearScaleOptions = {
+    type: undefined,
+    alignToPixels: false,
+    backgroundColor: '#ffffff',
+    border: {
+        display: true,
+        color: undefined,
+        width: 1,
+    },
+    display: true,
+    grid: {
+        display: true,
+        color: '#808080',
+        drawOnChartArea: true,
+        lineWidth: 1,
+        offset: false, //true para barchart
+        drawTicks: true,
+        tickBorderDash: [],
+        tickBorderDashOffset: undefined,
+        tickColor: '#d3d3d3',
+        tickLength: 8,
+        tickWidth: 1,
+    },
+    min: undefined,
+    suggestedMin: undefined,
+    max: undefined,
+    suggestedMax: undefined,
+    reverse: false,
+    stacked: false,
+    ticks: {
+        //all axes
+        display: true,
+        showLabelBackdrop: false,
+        callback: undefined,
+        backdropColor: 'rgba(255, 255, 255, 0.75)',
+        backdropPadding: 2,
+        color: '#000000',
+        padding: 3,
+        major: { enabled: false },
+        textStrokeColor: "",
+        textStrokeWidth: 0,
+        z: 0,
+        //all cartesian
+        align: 'center',	//The tick alignment along the axis. Can be 'start', 'center', 'end', or 'inner'. inner alignment means align start for first tick and end for the last tick of horizontal axis
+        crossAlign: 'near',	//The tick alignment perpendicular to the axis. Can be 'near', 'center', or 'far'. See Tick Alignment
+        // sampleSize: ticks.length,  //The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
+        autoSkip: true,	//If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
+        autoSkipPadding: 3,//Padding between the ticks on the horizontal axis when autoSkip is enabled.
+        includeBounds: true,//Should the defined min and max values be presented as ticks even if they are not "nice".
+        labelOffset: 0,//Distance in pixels to offset the label from the centre point of the tick (in the x-direction for the x-axis, and the y-direction for the y-axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
+        maxRotation: 50,	//Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
+        minRotation: 0,//Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
+        mirror: false,	//Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
+        padding: 0,//Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+        maxTicksLimit: 11,	//Maximum number of ticks and gridlines to show
+        //linear axis
+        count: undefined,
+        format: {},
+        precision: undefined, //if defined and stepSize is not specified, the step size will be rounded to this many decimal places.
+        stepSize: undefined,
+    },
+    weight: 0,
+    axis: undefined,
+    bounds: 'ticks', //ticks por defecto en demas
+    clip: true,
+    offset: false, //true para barchart
+    position: undefined,
+    //stack,
+    //stackWeight
+    title: {
+        display: true,
+        text: '',
+        align: 'center',
+    },
+    //linear axis
+    beginAtZero: true,
+    grace: undefined, //number, string with %
+}
+
+export const categoryScaleOptions = {
+    type: undefined,
+    alignToPixels: false,
+    backgroundColor: '#ffffff',
+    border: {
+        display: true,
+        color: undefined,
+        width: 1,
+    },
+    display: true,
+    grid: {
+        display: true,
+        color: '#808080',
+        drawOnChartArea: true,
+        lineWidth: 1,
+        offset: false, //true para barchart
+        drawTicks: true,
+        tickBorderDash: [],
+        tickBorderDashOffset: undefined,
+        tickColor: '#d3d3d3',
+        tickLength: 8,
+        tickWidth: 1,
+    },
+    // labels:[],
+    min: '',
+    suggestedMin: undefined,
+    max: '',
+    suggestedMax: undefined,
+    reverse: false,
+    stacked: false,
+    ticks: {
+        //all axes
+        display: true,
+        showLabelBackdrop: false,
+        callback: undefined,
+        backdropColor: 'rgba(255, 255, 255, 0.75)',
+        backdropPadding: 2,
+        color: '#000000',
+        padding: 3,
+        major: { enabled: false },
+        textStrokeColor: "",
+        textStrokeWidth: 0,
+        z: 0,
+        //all cartesian
+        align: 'center',	//The tick alignment along the axis. Can be 'start', 'center', 'end', or 'inner'. inner alignment means align start for first tick and end for the last tick of horizontal axis
+        crossAlign: 'near',	//The tick alignment perpendicular to the axis. Can be 'near', 'center', or 'far'. See Tick Alignment
+        // sampleSize: ticks.length,  //The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
+        autoSkip: true,	//If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
+        autoSkipPadding: 3,//Padding between the ticks on the horizontal axis when autoSkip is enabled.
+        includeBounds: true,//Should the defined min and max values be presented as ticks even if they are not "nice".
+        labelOffset: 0,//Distance in pixels to offset the label from the centre point of the tick (in the x-direction for the x-axis, and the y-direction for the y-axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
+        maxRotation: 50,	//Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
+        minRotation: 0,//Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
+        mirror: false,	//Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
+        padding: 0,//Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+        maxTicksLimit: 11,	//Maximum number of ticks and gridlines to show
+    },
+    weight: 0,
+    axis: undefined,
+    bounds: 'ticks', //ticks por defecto en demas
+    clip: true,
+    offset: false, //true para barchart
+    position: undefined,
+    //stack,
+    //stackWeight
+    title: {
+        display: true,
+        text: '',
+        align: 'center',
+    },
+}
+
+export const logarithmicScaleoptions = {
+    type: undefined,
+    alignToPixels: false,
+    backgroundColor: '#ffffff',
+    border: {
+        display: true,
+        color: undefined,
+        width: 1,
+    },
+    display: true,
+    grid: {
+        display: true,
+        color: '#808080',
+        drawOnChartArea: true,
+        lineWidth: 1,
+        offset: false, //true para barchart
+        drawTicks: true,
+        tickBorderDash: [],
+        tickBorderDashOffset: undefined,
+        tickColor: '#d3d3d3',
+        tickLength: 8,
+        tickWidth: 1,
+    },
+    min: undefined,
+    suggestedMin: undefined,
+    max: undefined,
+    suggestedMax: undefined,
+    reverse: false,
+    stacked: false,
+    ticks: {
+        //all axes
+        display: true,
+        showLabelBackdrop: false,
+        callback: undefined,
+        backdropColor: 'rgba(255, 255, 255, 0.75)',
+        backdropPadding: 2,
+        color: '#000000',
+        padding: 3,
+        major: { enabled: false },
+        textStrokeColor: "",
+        textStrokeWidth: 0,
+        z: 0,
+        //all cartesian
+        align: 'center',	//The tick alignment along the axis. Can be 'start', 'center', 'end', or 'inner'. inner alignment means align start for first tick and end for the last tick of horizontal axis
+        crossAlign: 'near',	//The tick alignment perpendicular to the axis. Can be 'near', 'center', or 'far'. See Tick Alignment
+        // sampleSize: ticks.length,  //The number of ticks to examine when deciding how many labels will fit. Setting a smaller value will be faster, but may be less accurate when there is large variability in label length.
+        autoSkip: true,	//If true, automatically calculates how many labels can be shown and hides labels accordingly. Labels will be rotated up to maxRotation before skipping any. Turn autoSkip off to show all labels no matter what.
+        autoSkipPadding: 3,//Padding between the ticks on the horizontal axis when autoSkip is enabled.
+        includeBounds: true,//Should the defined min and max values be presented as ticks even if they are not "nice".
+        labelOffset: 0,//Distance in pixels to offset the label from the centre point of the tick (in the x-direction for the x-axis, and the y-direction for the y-axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
+        maxRotation: 50,	//Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
+        minRotation: 0,//Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
+        mirror: false,	//Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
+        padding: 0,//Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
+        maxTicksLimit: 11,	//Maximum number of ticks and gridlines to show
+        //logarithmic axis
+        // format: undefined,
+    },
+    weight: 0,
+    axis: undefined,
+    bounds: 'ticks', //ticks por defecto en demas
+    clip: true,
+    offset: false, //true para barchart
+    position: undefined,
+    //stack,
+    //stackWeight
+    title: {
+        display: true,
+        text: '',
+        align: 'center',
+    },
+}
+
+//TODO: SIMPLIFICAR LAS OPCIONES ANTERIORES CREANDO UN OBJETO COMÚN AL QUE LUEGO AÑADO LAS CARACTERÍSTICAS NECESARIAS DE CADA UNA
+//TODO: averiguar forma de pasar el callback(también marcado con todo en el form EN UN COMENTARIO VERDE

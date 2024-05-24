@@ -34,7 +34,7 @@ function List({ archives, isFolder }) {
             {elementsList.map(element =>
                 <li key={element.name}>
                     {!isFolder && element.folderId !== null
-                        ? <Link className='list-element' href={`dashboards/folder/${element.id}`} target='__blank'>
+                        ? <Link className='list-element' href={`dashboards/folder/${element.id}`} >
                             <div>
                                 <img src='/folder2.svg' width='20px' />
                                 <p>{element.name}</p>

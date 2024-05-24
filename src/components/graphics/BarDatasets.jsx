@@ -40,7 +40,7 @@ export default function BarDataset({ dataset, onDatasetChange, onTypeChange, ind
             const colorToModify = value
             value = hexToRgba(colorToModify)
         }
-        if (key == 'pointStyle' && value == 'false') value = false
+        if (key == 'pointStyle' && (value == 'false' || value=='true')) value.trim().replace(/'/g, '')
         if (type == 'number') {
             const numValue = Number(value)
             updatedDataset = { ...thisDataset, [key]: numValue }
