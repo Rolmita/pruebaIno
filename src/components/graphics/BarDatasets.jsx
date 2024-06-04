@@ -40,7 +40,7 @@ export default function BarDataset({ dataset, onDatasetChange, onTypeChange, ind
             const colorToModify = value
             value = hexToRgba(colorToModify)
         }
-        if (key == 'pointStyle' && (value == 'false' || value=='true')) value.trim().replace(/'/g, '')
+        if (key == 'pointStyle' && (value == 'false' || value == 'true')) value.trim().replace(/'/g, '')
         if (type == 'number') {
             const numValue = Number(value)
             updatedDataset = { ...thisDataset, [key]: numValue }
@@ -99,10 +99,10 @@ export default function BarDataset({ dataset, onDatasetChange, onTypeChange, ind
             <div>
                 <div className='graphic-form-group'>
                     <h4 style={{ marginRight: '10px' }}>Basics settings</h4>
-                    <button type='button' onClick={() => toggleDropdown('basicSettings-dropdown', 'down-img-dataset-1-basic')}>
-                        <img id='down-img-dataset-1-basic' className='down-img' src='/down.svg' width='10px' /></button>
+                    <button type='button' onClick={() => toggleDropdown(`basicSettings-dropdown-bar-${index}`, `down-img-bar-${index}-basic`)}>
+                        <img id={`down-img-bar-${index}-basic`} className='down-img' src='/down.svg' width='10px' /></button>
                 </div>
-                <div id="basicSettings-dropdown" style={{ display: 'none', padding: '5px' }}>
+                <div id={`basicSettings-dropdown-bar-${index}`} style={{ display: 'none', padding: '5px' }}>
                     {/* TODO: POR DEFECTO EL NOMBRE DE LA COLUMNA */}
                     <div className='graphic-form-group-opt'>
                         <label htmlFor='label'>Dataset label: </label>
@@ -159,10 +159,10 @@ export default function BarDataset({ dataset, onDatasetChange, onTypeChange, ind
                 <div>
                     <div className='graphic-form-group'>
                         <h4 style={{ marginRight: '10px' }}>Style Settings</h4>
-                        <button type='button' onClick={() => toggleDropdown('styleSettings-dropdown', 'down-img-dataset-1-style')}>
-                            <img id='down-img-dataset-1-style' className='down-img' src='/down.svg' width='10px' /></button>
+                        <button type='button' onClick={() => toggleDropdown(`styleSettings-dropdown-bar-${index}`, `down-img-bar-${index}-style`)}>
+                            <img id={`down-img-bar-${index}-style`} className='down-img' src='/down.svg' width='10px' /></button>
                     </div>
-                    <div id="styleSettings-dropdown" style={{ display: 'none', padding: '5px' }}>
+                    <div id={`styleSettings-dropdown-bar-${index}`} style={{ display: 'none', padding: '5px' }}>
                         <div className='graphic-form-group-opt' style={{ display: 'flex', flexDirection: 'row' }}>
                             <label htmlFor='backgroundColor'>Background color: </label>
                             <div style={{ backgroundColor: 'white', padding: '3px' }}>

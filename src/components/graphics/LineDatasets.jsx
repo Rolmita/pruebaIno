@@ -6,7 +6,7 @@ export default function LineDataset({ dataset, onDatasetChange, onTypeChange, in
 
     const [showLine, setShowLine] = useState(true)
     const [enableBorderDash, setEnableBorderDash] = useState(false)
-    const [borderDash, setBorderDash] = useState([0, 0])
+    const [borderDash, setBorderDash] = useState([])
     const [borderDashLineLength, setBorderDashLineLength] = useState(borderDash[0])
     const [borderDashLineSpacing, setBorderDashLineSpacing] = useState(borderDash[1])
 

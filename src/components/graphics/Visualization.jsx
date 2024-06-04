@@ -5,8 +5,8 @@ import { Line } from 'react-chartjs-2';
 export default function Visualization({ data, status, finalData, finalOpt, type }) {
     const [chartData, setChartData] = useState(null);
     useEffect(() => {
-        console.log('DATOS FINALES PARA EL GRÁFICO:', finalData);
-    }, [finalData])
+        console.log('DATOS FINALES PARA EL GRÁFICO:', finalData, finalOpt);
+    }, [finalData, finalOpt])
 
     //TODO: ESTO VIENE DE LOS FORMULARIOS DE LAS PESTAÑAS DE ABAJO (hay que pasarselo a esta page)
 
@@ -154,8 +154,8 @@ export default function Visualization({ data, status, finalData, finalOpt, type 
                             </tbody>
                         </table>
                     </div>
-                    <div className="preview-graph" id="preview-graph" style={{ display: 'none' }}>
-                        {finalData && <Grafico data={finalData} options={chartOpt} type={type}></Grafico>}
+                    <div className="preview-graph" id="preview-graph" style={{ display: 'none', minHeight: '50vh', minWidth: '90vw' }}>
+                        {finalData && <Grafico data={finalData} options={finalOpt} type={type}></Grafico>}
                     </div>
                 </div>
             </div>

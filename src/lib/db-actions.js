@@ -200,15 +200,31 @@ export async function createQuery(formData, filterResult) {
         const db = formData.get('database')
         const table = formData.get('table')
         const columns = formData.getAll('column')
+        let modifiers = {}
+        columns.forEach((column, index) => modifiers[`modifiers-${index}`] = formData.getAll(`modifiers-${index}`))
         const allColumns = formData.get('all-columns')
         console.log('RESULTADOS DEL FORMULARIO: DATABASE:', db, ' TABLE: ', table, ' COLUMNS: ', allColumns ? allColumns : columns);
 
-        let cols
+        let cols = ''
         if (allColumns) {
             cols = '*'
         } else {
-            for (let i = 0; i < columns.length; i++) {
-                if (columns[i] != 'null') i == 0 ? cols = columns[i] : cols += `, ${columns[i]}`
+            if (modifiers) {
+                columns.forEach((column, index) => {
+                    //compruebo si existen modificadores para la columna
+                    if (modifiers[`modifiers-${index}`]) {
+                        modifiers[`modifiers-${index}`].forEach((modifier, i) => {
+                            (index == 0 && i == 0) ? cols += `${modifier}(${column})` : cols += `, ${modifier}(${column})`
+                        })
+                    } else {
+                        index == 0 ? cols += `${column}` : cols += `, ${column}`
+                    }
+
+                })
+            } else {
+                for (let i = 0; i < columns.length; i++) {
+                    if (columns[i] != 'null') i == 0 ? cols = columns[i] : cols += `, ${columns[i]}`
+                }
             }
         }
 

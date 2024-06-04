@@ -5,7 +5,7 @@ import Information from "@/components/information";
 import Visualization from "@/components/graphics/Visualization";
 import QueryForm from "@/components/QueryForm";
 import GraphicForm from "@/components/graphics/GraphicForm";
-import { getFolderById, getDashboardById, getUserBySession } from "@/lib/actions";
+import { getFolderById, getDashboardById, getUserBySession, saveChart } from "@/lib/actions";
 import { useState, useEffect } from 'react'
 
 export default function NewVisualization({ params }) {
@@ -16,6 +16,7 @@ export default function NewVisualization({ params }) {
     const [finalData, setFinalData] = useState(null)
     const [finalOptions, setFinalOptions] = useState(null)
     const [chartType, setChartType] = useState('line')
+    const [query, setQuery] = useState(null)
     const status = 'new'
 
     useEffect(() => {
@@ -61,7 +62,7 @@ export default function NewVisualization({ params }) {
                     <div>
                         <h1>New Visualization</h1>
                     </div>
-                    <div><button>Save</button>
+                    <div><button onClick={() => saveChart(finalData, finalOptions, dashboard, query)}>Save</button>
                         <button>Discard</button>
                     </div>
                 </div>
@@ -95,7 +96,7 @@ export default function NewVisualization({ params }) {
 
                         <div id='tab1' className="tab">
                             <a href='#tab1'><h4>Data</h4></a>
-                            <QueryForm databases={databases} onQueryResults={setQueryRes}>
+                            <QueryForm databases={databases} onQueryResults={setQueryRes} onQuery={setQuery}>
                             </QueryForm>
                         </div>
                     </div>

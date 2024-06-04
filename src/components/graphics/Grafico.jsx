@@ -8,7 +8,7 @@ function Grafico({ data, options, type }) {
     const [typeOfChart, setTypeOfChart] = useState(type)
     ChartJS.register(...registerablesChartJS);
 
-    console.log('DATA DEL GRAFICO PASADO AL COMPONENTE', data);
+    console.log('DATA DEL GRAFICO PASADO AL COMPONENTE', data, options);
 
     useEffect(() => {
         if (!type) {
@@ -20,13 +20,13 @@ function Grafico({ data, options, type }) {
     }, [type, data]);
 
     return (
-        <div style={{ width: '90vw' }}>
+        <div style={{ width: '100%', height: '100%' }}>
             {data && options
-                ? <div>
-                    {typeOfChart == 'line' && <Line datasetIdKey='id' data={data} options={options}></Line>}
-                    {typeOfChart == 'pie' && <Pie datasetIdKey='id' data={data} options={options}></Pie>}
-                    {typeOfChart == 'doughnut' && <Doughnut datasetIdKey='id' data={data} options={options}></Doughnut>}
-                    {typeOfChart == 'bar' && <Bar datasetIdKey='id' data={data} options={options}></Bar>}
+                ? <div style={{ width: '100%', height: '100%' }}>
+                    {typeOfChart == 'line' && <Line datasetIdKey='id' data={data} options={options} style={{ width: '100%', height: '100%' }}></Line>}
+                    {typeOfChart == 'pie' && <Pie datasetIdKey='id' data={data} options={options} style={{ width: '100%', height: '100%' }}></Pie>}
+                    {typeOfChart == 'doughnut' && <Doughnut datasetIdKey='id' data={data} options={options} style={{ width: '100%', height: '100%' }}></Doughnut>}
+                    {typeOfChart == 'bar' && <Bar datasetIdKey='id' data={data} options={options} style={{ width: '100%', height: '100%' }}></Bar>}
                 </div>
                 : <p>'No hay ningún gráfico para mostrar'</p>
             }

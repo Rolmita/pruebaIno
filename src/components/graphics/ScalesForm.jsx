@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { timeScaleOptions, linearScaleOptions, categoryScaleOptions, logarithmicScaleoptions } from "@/lib/lineChart"
 
-//TODO: COMPROBAR EN MODIFYsETTING SI LA KEY PASADA TIENE GUIONES Y DESCOMPONERLA PARA PASARLA ADECUADAMENTE AL OBJ
+//TODO: MIRAR BIEN LO DEL ADAPTER DE LA FECHA PORQUE CREO QUE ES LO QUE FALLA
 //TODO: RECUPERACION DE DATOS DE AXISSCALE SEGUN EL TIPO DE ESCALA Y CAMBIO DE VALORES CUANDO ES BARCHART
-export default function ScalesForm({ axisId, axis, datasetType }) {
+export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange, chartLabels }) {
     let axisScale = { axis: axis, display: 'auto', type: undefined }
     let isBar = false
     let offset = false
@@ -25,34 +25,48 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
     };
 
     const modifySetting = (key, value, type) => {
-        let finalValue = value
         let updatedProp
+        let finalValue = value
+        if (value == 'false') finalValue = false
+        if (value == 'true') finalValue = true
+        if (value == 'undefined') finalValue = undefined
         if (type == 'number' || type == 'range') finalValue = Number(value)
+        if (axisIdScale.type == 'time' && key == 'time-displayFormats') key = `time-displayFormats-${axisIdScale.time.unit}`
+        console.log(key, value);
         if (key.includes('-')) {
             let arr = []
             arr = key.split('-') //axis.hola.saludo = 8
+            console.log(arr);
+            let prop1 = arr[0]
+            let prop2 = arr[1]
+            let prop3 = arr[2]
             switch (arr.length) {
                 case 2:
+                    console.log(arr[0], arr[1]);
+                    // console.log([arr[0]], axisIdScale.arr[0], [arr[1]], finalValue);
                     updatedProp = {
-                        ...axisIdScale, [arr[0]]: { ...axisIdScale.arr[0], [arr[1]]: finalValue }
+                        ...axisIdScale, [prop1]: { ...axisIdScale[prop1], [prop2]: finalValue }
                     }
                     break
                 case 3:
+                    console.log(arr[0], arr[1], arr[2]);
                     updatedProp = {
-                        ...axisIdScale, [arr[0]]: { ...axisIdScale.arr[0], [arr[1]]: { ...axisIdScale.arr[0].arr[1], [arr[2]]: finalValue } }
+                        ...axisIdScale, [prop1]: { ...axisIdScale[prop1], [prop2]: { ...axisIdScale[prop1][prop2], [prop3]: finalValue } }
                     }
                     break
             }
         } else {
             updatedProp = { ...axisIdScale, [key]: finalValue }
+
         }
 
         // if (key == 'backgroundColor') {
         //     const colorToModify = value
         //     value = hexToRgba(colorToModify)
         // }
-
+        console.log(updatedProp);
         setAxisIdScale(updatedProp)
+
         // onDatasetChange(updatedProp)
     }
 
@@ -71,25 +85,26 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
     }, [axisId])
 
     useEffect(() => {
+        onOptionsChange(axisIdScale)
         console.log('esta es la config de la escala ', axisId, ': ', axisIdScale);
     }, [axisIdScale])
 
     useEffect(() => {
         switch (scaleType) {
             case 'linear':
-                setAxisIdScale({ ...linearScaleOptions, type: 'linear', offset: isBar, grid: { ...linearScaleOptions.grid, offset: isBar } })
+                setAxisIdScale({ ...linearScaleOptions, axis: axis, type: 'linear', offset: isBar, grid: { ...linearScaleOptions.grid, offset: isBar } })
                 break
             case 'time':
-                setAxisIdScale({ ...timeScaleOptions, type: 'time', offset: isBar, grid: { ...timeScaleOptions.grid, offset: isBar } })
+                setAxisIdScale({ ...timeScaleOptions, axis: axis, type: 'time', offset: isBar, grid: { ...timeScaleOptions.grid, offset: isBar } })
                 break
             case 'timeseries':
-                setAxisIdScale({ ...timeScaleOptions, type: 'timeseries', offset: isBar, grid: { ...timeScaleOptions.grid, offset: isBar } })
+                setAxisIdScale({ ...timeScaleOptions, axis: axis, type: 'timeseries', offset: isBar, grid: { ...timeScaleOptions.grid, offset: isBar } })
                 break
             case 'category':
-                setAxisIdScale({ ...categoryScaleOptions, type: 'category', offset: isBar, grid: { ...categoryScaleOptions.grid, offset: isBar } })
+                setAxisIdScale({ ...categoryScaleOptions, axis: axis, type: 'category', offset: isBar, labels: chartLabels, grid: { ...categoryScaleOptions.grid, offset: isBar } })
                 break
             case 'logarithmic':
-                setAxisIdScale({ ...logarithmicScaleoptions, type: 'logarithmic', offset: isBar, grid: { ...logarithmicScaleoptions.grid, offset: isBar } })
+                setAxisIdScale({ ...logarithmicScaleoptions, axis: axis, type: 'logarithmic', offset: isBar, grid: { ...logarithmicScaleoptions.grid, offset: isBar } })
                 break
         }
     }, [scaleType])
@@ -133,10 +148,10 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                     <div>
                         <div className='graphic-form-group'>
                             <h4 style={{ marginRight: '10px' }}>Axis title</h4>
-                            <button type='button' onClick={() => toggleDropdown('title-dropdown', 'down-img-1')}>
+                            <button type='button' onClick={() => toggleDropdown(`title-dropdown-${axisId}`, 'down-img-1')}>
                                 <img id='down-img-1' className='down-img' src='/down.svg' width='10px' /></button>
                         </div>
-                        <div id='title-dropdown' style={{ display: 'none', padding: '5px' }}>
+                        <div id={`title-dropdown-${axisId}`} style={{ display: 'none', padding: '5px' }}>
                             <div className='graphic-form-group-opt'>
                                 <label htmlFor="title-text">
                                     Title: </label>
@@ -201,10 +216,10 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                         (<div>
                             <div className='graphic-form-group'>
                                 <h4 style={{ marginRight: '10px' }}>Time values:</h4>
-                                <button type='button' onClick={() => toggleDropdown('time-dropdown', 'down-img-2')}>
+                                <button type='button' onClick={() => toggleDropdown(`time-dropdown-${axisId}`, 'down-img-2')}>
                                     <img id='down-img-2' className='down-img' src='/down.svg' width='10px' /></button>
                             </div>
-                            <div id='time-dropdown' style={{ display: 'none', padding: '5px' }}>
+                            <div id={`time-dropdown-${axisId}`} style={{ display: 'none', padding: '5px' }}>
                                 <div className='graphic-form-group-opt'>
                                     <label htmlFor="time-parser">
                                         Your data format: </label>
@@ -212,9 +227,9 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                                         defaultValue={axisIdScale?.time.parser}
                                         onChange={(e) => modifySetting('time-parser', e.target.value)}>
                                         <option value='undefined'>--Select your data format--</option>
-                                        <option value='YYYY-MM-DDTHH:mm:ss'>YYYY-MM-DDTHH:mm:ss</option>
-                                        <option value='YYYY-MM-DDTHH:mm'>YYYY-MM-DDTHH:mm</option>
-                                        <option value='YYYY-MM-DD'>YYYY-MM-DD</option>
+                                        <option value="yyyy-MM-dd'T'HH:mm:ss:SSS">YYYY-MM-DDTHH:mm:ss</option>
+                                        <option value="yyyy-MM-dd'T'HH:mm">YYYY-MM-DDTHH:mm</option>
+                                        <option value='yyyy-MM-dd'>YYYY-MM-DD</option>
                                         <option value='HH:mm:ss'>HH:mm:ss</option>
                                         <option value='HH:mm'>HH:mm</option>
                                     </select>
@@ -290,18 +305,19 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                                     </select>
                                 </div>
 
-                                {/* <div className='graphic-form-group-opt'>
-                            <label htmlFor="time-displayFormats">
-                                Display format for the ticks </label>
-                            <select name='time-displayFormats'>
-                                <option value='null'>--Select your data format--</option>
-                                <option value='YYYY-MM-DDTHH:mm:ss'>YYYY-MM-DDTHH:mm:ss</option>
-                                <option value='YYYY-MM-DDTHH:mm'>YYYY-MM-DDTHH:mm</option>
-                                <option value='YYYY-MM-DD'>YYYY-MM-DD</option>
-                                <option value='HH:mm:ss'>HH:mm:ss</option>
-                                <option value='HH:mm'>HH:mm</option>
-                            </select>
-                        </div> */}
+                                <div className='graphic-form-group-opt'>
+                                    <label htmlFor="time-displayFormats">
+                                        Display format for the ticks </label>
+                                    <select name='time-displayFormats' defaultValue={axisIdScale?.time.displayFormats}
+                                        onChange={(e) => modifySetting('time-displayFormats', e.target.value)}>
+                                        <option value='null'>--Select your data format--</option>
+                                        <option value='YYYY-MM-DDTHH:mm:ss'>YYYY-MM-DDTHH:mm:ss</option>
+                                        <option value='YYYY-MM-DDTHH:mm'>YYYY-MM-DDTHH:mm</option>
+                                        <option value='YYYY-MM-DD'>YYYY-MM-DD</option>
+                                        <option value='HH:mm:ss'>HH:mm:ss</option>
+                                        <option value='HH:mm'>HH:mm</option>
+                                    </select>
+                                </div>
                                 <div className='graphic-form-group-opt'>
                                     <label htmlFor="time-tooltipFormat">
                                         Tooltip format: </label>
@@ -332,10 +348,10 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                     <div>
                         <div className='graphic-form-group'>
                             <h4 style={{ marginRight: '10px' }}>Data:</h4>
-                            <button type='button' onClick={() => toggleDropdown('data-dropdown', 'down-img-3')}>
+                            <button type='button' onClick={() => toggleDropdown(`data-dropdown-${axisId}`, 'down-img-3')}>
                                 <img id='down-img-3' className='down-img-3' src='/down.svg' width='10px' /></button>
                         </div>
-                        <div id='data-dropdown' style={{ display: 'none', padding: '5px' }}>
+                        <div id={`data-dropdown-${axisId}`} style={{ display: 'none', padding: '5px' }}>
                             <div className='graphic-form-group-opt'>
                                 <label htmlFor='min'>Min:</label>
                                 <input name='min' type='datetime-local' defaultValue={axisIdScale?.min}
@@ -374,10 +390,10 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                     <div>
                         <div className='graphic-form-group'>
                             <h4 style={{ marginRight: '10px' }}>Style</h4>
-                            <button type='button' onClick={() => toggleDropdown('style-dropdown', 'down-img-4')}>
+                            <button type='button' onClick={() => toggleDropdown(`style-dropdown-${axisId}`, 'down-img-4')}>
                                 <img id='down-img-4' className='down-img' src='/down.svg' width='10px' /></button>
                         </div>
-                        <div id='style-dropdown' style={{ display: 'none', padding: '5px' }}>
+                        <div id={`style-dropdown-${axisId}`} style={{ display: 'none', padding: '5px' }}>
 
                             <div className='graphic-form-group-opt'>
                                 <label htmlFor='position'>
@@ -448,10 +464,10 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                     <div>
                         <div className='graphic-form-group'>
                             <h4 style={{ marginRight: '10px' }}>Border style</h4>
-                            <button type='button' onClick={() => toggleDropdown('border-style-dropdown', 'down-img-5')}>
+                            <button type='button' onClick={() => toggleDropdown(`border-style-dropdown-${axisId}`, 'down-img-5')}>
                                 <img id='down-img-5' className='down-img' src='/down.svg' width='10px' /></button>
                         </div>
-                        <div id='border-style-dropdown' style={{ display: 'none', padding: '5px' }}>
+                        <div id={`border-style-dropdown-${axisId}`} style={{ display: 'none', padding: '5px' }}>
                             <div className='graphic-form-group-opt'>
                                 <label htmlFor='border-display'>Border display:</label>
                                 <input type='radio' name='border-display' value='true' defaultChecked={axisIdScale?.border.display}
@@ -513,10 +529,10 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
 
                         <div className='graphic-form-group'>
                             <h4 style={{ marginRight: '10px' }}>Grid style</h4>
-                            <button type='button' onClick={() => toggleDropdown('grid-style-dropdown', 'down-img-6')}>
+                            <button type='button' onClick={() => toggleDropdown(`grid-style-dropdown-${axisId}`, 'down-img-6')}>
                                 <img id='down-img-6' className='down-img' src='/down.svg' width='10px' /></button>
                         </div>
-                        <div id='grid-style-dropdown' style={{ display: 'none', padding: '5px' }}>
+                        <div id={`grid-style-dropdown-${axisId}`} style={{ display: 'none', padding: '5px' }}>
                             <div className='graphic-form-group-opt'>
                                 <label htmlFor='grid-display'>Grid display: </label>
                                 <input type='radio' name='grid-display' value='true'
@@ -634,10 +650,10 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                     <div>
                         <div className='graphic-form-group'>
                             <h4 style={{ marginRight: '10px' }}>Ticks</h4>
-                            <button type='button' onClick={() => toggleDropdown('ticks-dropdown', 'down-img-7')}>
+                            <button type='button' onClick={() => toggleDropdown(`ticks-dropdown-${axisId}`, 'down-img-7')}>
                                 <img id='down-img-7' className='down-img' src='/down.svg' width='10px' /></button>
                         </div>
-                        <div id='ticks-dropdown' style={{ display: 'none', padding: '5px' }}>
+                        <div id={`ticks-dropdown-${axisId}`} style={{ display: 'none', padding: '5px' }}>
                             <div className='graphic-form-group-opt'>
                                 <label htmlFor='ticks-display'>Ticks display: </label>
                                 <input type='radio' name='ticks-display' value='true'
@@ -706,12 +722,12 @@ export default function ScalesForm({ axisId, axis, datasetType }) {
                                         A major tick will affect autoskipping and major will be defined on ticks in the scriptable options context'>
                                     Major ticks enabled: </label>
                                 <input type='radio' name='ticks-major-enabled' value='true'
-                                    defaultChecked={axisIdScale?.ticks.major.enabled ? false : true}
-                                    onChange={(e) => modifySetting('ticks-major-enabled', e.target.value, e.target.type)}></input>
+                                    defaultChecked={axisIdScale?.ticks.major.enabled}
+                                    onChange={(e) => modifySetting('ticks-major-enabled', e.target.value)}></input>
                                 <label htmlFor='true'>True</label>
                                 <input type='radio' name='ticks-major-enabled' value='false'
                                     defaultChecked={axisIdScale?.ticks.major.enabled ? false : true}
-                                    onChange={(e) => modifySetting('ticks-major-enabled', e.target.value, e.target.type)}></input>
+                                    onChange={(e) => modifySetting('ticks-major-enabled', e.target.value)}></input>
                                 <label htmlFor='false'>False</label>
                             </div>
 

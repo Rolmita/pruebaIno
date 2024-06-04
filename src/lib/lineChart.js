@@ -197,7 +197,10 @@ export const barChartData = {
 }
 
 export const basicChartOptions = {
-    animation: false, //animacion para los datos
+    animation: false, //animacion para los datos,
+    responsive: true,
+    // maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
         title: { // titulo del grafico
             display: true,
@@ -216,12 +219,12 @@ export const basicChartOptions = {
 
 export const timeScaleOptions = {
     //all axes
-    type: undefined,
+    type: 'time',
     alignToPixels: false,
     backgroundColor: '#ffffff',
     border: {
         display: true,
-        color: undefined,
+        // color: undefined,
         width: 1,
     },
     display: true,
@@ -233,22 +236,22 @@ export const timeScaleOptions = {
         offset: false, //true para barchart
         drawTicks: true,
         tickBorderDash: [],
-        tickBorderDashOffset: undefined,
+        // tickBorderDashOffset: undefined,
         tickColor: '#d3d3d3',
         tickLength: 8,
         tickWidth: 1,
     },
-    min: undefined,
-    suggestedMin: undefined,
-    max: undefined,
-    suggestedMax: undefined,
+    // min: undefined,
+    // suggestedMin: undefined,
+    // max: undefined,
+    // suggestedMax: undefined,
     reverse: false,
     stacked: false,
     ticks: {
         //all axes
         display: true,
         showLabelBackdrop: false,
-        callback: undefined,
+        // callback: undefined,
         backdropColor: 'rgba(255, 255, 255, 0.75)',
         backdropPadding: 2,
         color: '#000000',
@@ -270,18 +273,18 @@ export const timeScaleOptions = {
         mirror: false,	//Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
         padding: 0,//Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
         maxTicksLimit: 11,	//Maximum number of ticks and gridlines to show
-
+        stepSize: 5,
         //time axis
         source: 'auto',
     },
     weight: 0,
 
     //all cartesian
-    axis: undefined,
+    // axis: undefined,
     bounds: 'data', //ticks por defecto en demas
     clip: true,
     offset: false, //true para barchart
-    position: undefined,
+    // position: undefined,
     //stack,
     //stackWeight
     title: {
@@ -292,33 +295,48 @@ export const timeScaleOptions = {
 
     //time axis
     offsetAfterAutoskip: false,
+    //TODO: DA FALLO AL CAMBIAR POR EJEMPLO LA UNIDAD
     time: {
-        parser: undefined,
-        unit: undefined,
-        minUnit: undefined,
+        // parser: 'yyyy-MM-dd\'T\'HH:mm:ss',
+        parser: "yyyy-MM-dd'T'HH:mm:ss:SSS'Z'",
+        unit: 'minute',
+        // minUnit: undefined,
         isoWeekday: true,
         round: false,
         displayFormats: {
             second: 'HH:mm:ss',
             minute: 'HH:mm',
             hour: 'HH',
-            day: 'DD',
+            day: 'dd',
             week: '',
             month: 'MM',
-            quarter: 'MMM YYYY',
-            year: 'YYYY',
+            quarter: 'MMM yyyy',
+            year: 'yyyy',
         },
-        tooltipFormat: undefined,
+        tooltipFormat: 'dd-MM-yyyy HH:mm',
+        // stepSize: 5,
     },
+    // time: {
+    //     parser: 'YYYY-MM-DDTHH:mm:ss',
+    //     unit: 'minute',
+    //     displayFormats: {
+    //         // hour: 'HH:mm',
+    //         minute: 'HH:mm',
+    //         // stepSize: 5, // Establecer el tamaño del paso a 5 minutos
+    //     },
+    //     // minUnit: 'minute', // Especifica la unidad mínima de tiempo que se debe usar
+    //     // autoSkip: true, // Permite el salto automático de las marcas de tiempo si hay muchas de ellas
+    //     tooltipFormat: 'dd-MM-yyyy HH:mm',
+    // },
 }
 
 export const linearScaleOptions = {
-    type: undefined,
+    type: 'linear',
     alignToPixels: false,
     backgroundColor: '#ffffff',
     border: {
         display: true,
-        color: undefined,
+        // color: undefined,
         width: 1,
     },
     display: true,
@@ -330,22 +348,22 @@ export const linearScaleOptions = {
         offset: false, //true para barchart
         drawTicks: true,
         tickBorderDash: [],
-        tickBorderDashOffset: undefined,
+        // tickBorderDashOffset: undefined,
         tickColor: '#d3d3d3',
         tickLength: 8,
         tickWidth: 1,
     },
-    min: undefined,
-    suggestedMin: undefined,
-    max: undefined,
-    suggestedMax: undefined,
+    // min: undefined,
+    // suggestedMin: undefined,
+    // max: undefined,
+    // suggestedMax: undefined,
     reverse: false,
     stacked: false,
     ticks: {
         //all axes
         display: true,
         showLabelBackdrop: false,
-        callback: undefined,
+        // callback: undefined,
         backdropColor: 'rgba(255, 255, 255, 0.75)',
         backdropPadding: 2,
         color: '#000000',
@@ -368,17 +386,17 @@ export const linearScaleOptions = {
         padding: 0,//Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
         maxTicksLimit: 11,	//Maximum number of ticks and gridlines to show
         //linear axis
-        count: undefined,
+        // count: undefined,
         format: {},
-        precision: undefined, //if defined and stepSize is not specified, the step size will be rounded to this many decimal places.
-        stepSize: undefined,
+        // precision: undefined, //if defined and stepSize is not specified, the step size will be rounded to this many decimal places.
+        // stepSize: undefined,
     },
     weight: 0,
-    axis: undefined,
+    // axis: undefined,
     bounds: 'ticks', //ticks por defecto en demas
     clip: true,
     offset: false, //true para barchart
-    position: undefined,
+    // position: undefined,
     //stack,
     //stackWeight
     title: {
@@ -388,13 +406,14 @@ export const linearScaleOptions = {
     },
     //linear axis
     beginAtZero: true,
-    grace: undefined, //number, string with %
+    // grace: undefined, //number, string with %
 }
 
 export const categoryScaleOptions = {
     type: undefined,
     alignToPixels: false,
     backgroundColor: '#ffffff',
+    labels: [],
     border: {
         display: true,
         color: undefined,

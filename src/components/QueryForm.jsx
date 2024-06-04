@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { searchTables, searchColumns, createQuery, executeQuery } from '@/lib/db-actions';
 import QueryFilterForm from './QueryFilterForm';
 
-function QueryForm({ databases, onQueryResults }) {
+function QueryForm({ databases, onQueryResults, onQuery }) {
     const [db, setDb] = useState(null);
     const [tables, setTables] = useState(null)
     const [table, setTable] = useState(null)
@@ -14,6 +14,8 @@ function QueryForm({ databases, onQueryResults }) {
     const [formData, setFormData] = useState(null);
     const [buttonName, setButtonName] = useState('View query')
     const [filterResult, setFilterResult] = useState('')
+    const [numQuery, setNumQuery] = useState([])
+    const [queryCount, setQueryCount] = useState(1)
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -56,6 +58,7 @@ function QueryForm({ databases, onQueryResults }) {
                     if (query != null && lastValue !== '') {
                         const result = await executeQuery(databases, formData)
                         onQueryResults(result);
+                        onQuery(query)
                     }
                 }
 
@@ -122,14 +125,39 @@ function QueryForm({ databases, onQueryResults }) {
                 <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                     <label>Columns: </label>
                     {numColumns.map((_, index) => (
-                        <select name='column' key={index}>
-                            <option value='null'>-- Choose a column --</option>
-                            {columns != null && Object.keys(columns).map(index => (
-                                <option key={columns[index].COLUMN_NAME} value={columns[index].COLUMN_NAME}>
-                                    {columns[index].COLUMN_NAME}
-                                </option>
-                            ))}
-                        </select>
+                        <div key={`column-${index}`}>
+                            <select name='column' key={index}>
+                                <option value='null'>-- Choose a column --</option>
+                                {columns != null && Object.keys(columns).map(index => (
+                                    <option key={columns[index].COLUMN_NAME} value={columns[index].COLUMN_NAME}>
+                                        {columns[index].COLUMN_NAME}
+                                    </option>
+                                ))}
+                            </select>
+                            <div key={`modifiers-${index}`}>
+                                <label htmlFor='modifiers'>Modifiers:</label>
+                                <div>
+                                    <input type='checkbox' name={`modifiers-${index}`} value='SUM'></input>
+                                    <label htmlFor={`modifiers-${index}`}>Sum</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' name={`modifiers-${index}`} value='COUNT'></input>
+                                    <label htmlFor={`modifiers-${index}`}>Count</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' name={`modifiers-${index}`} value='MAX'></input>
+                                    <label htmlFor={`modifiers-${index}`}>Max</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' name={`modifiers-${index}`} value='MIN'></input>
+                                    <label htmlFor={`modifiers-${index}`}>Min</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' name={`modifiers-${index}`} value='AVG'></input>
+                                    <label htmlFor={`modifiers-${index}`}>AVG</label>
+                                </div>
+                            </div>
+                        </div>
                     ))}
                     <input name='all-columns' type='checkbox' value='*'></input>
                     <label>All columns</label>
@@ -137,7 +165,7 @@ function QueryForm({ databases, onQueryResults }) {
                         <button type="button" onClick={handleAddSelect}>Add column</button>
                     </div>
                 </div>
-                <QueryFilterForm columns={columns} db={db} table={table} onFilter={setFilterResult }/>
+                <QueryFilterForm columns={columns} db={db} table={table} onFilter={setFilterResult} />
                 <textarea name='query-area' id='query-area' defaultValue={query}></textarea>
                 <button type='submit' onClick={handleButtonChange}>{buttonName}</button>
             </form>

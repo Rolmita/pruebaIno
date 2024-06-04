@@ -173,7 +173,8 @@ export async function createDashboard(user) {
     const result = await prisma.dashboard.create({
         data: {
             name: `Nuevo dashboard (${newNum})`,
-            userId: user
+            userId: user,
+            content: JSON.stringify({ layout: { lg: [], md: [], sm: [], xs: [], xxs: [] }, charts: [] })
         }
     })
     return result;
@@ -189,44 +190,98 @@ export async function createFolderDashboard(folderId, user) {
         data: {
             name: `Nuevo dashboard (${newNum})`,
             folderId: folder,
-            userId: user
+            userId: user,
+            content: JSON.stringify({ layout: { lg: [], md: [], sm: [], xs: [], xxs: [] }, charts: [] })
         }
     })
     return result;
 }
 
 async function newNumDashboard(user, folder) {
+    // let maxNum;
+
+    // if (folder) {
+    //     maxNum = await prisma.dashboard.findFirst({
+    //         where: {
+    //             name: { startsWith: 'Nuevo dashboard (' },
+    //             folderId: folder,
+    //             userId: user
+    //         },
+    //         select: { name: true },
+    //         orderBy: { name: 'desc' }
+    //     })
+    // } else {
+    //     maxNum = await prisma.dashboard.findFirst({
+    //         where: {
+    //             name: { startsWith: 'Nuevo dashboard (' },
+    //             userId: user
+    //         },
+    //         select: { name: true },
+    //         orderBy: { name: 'desc' }
+    //     })
+    // }
+
+    let newNum = 1;
+
+    // if (maxNum) {
+    //     const regex = /Nuevo dashboard \((\d+)\)/;
+    //     const match = regex.exec(maxNum.name);
+    //     console.log(match[1], 10);
+    //     match ? newNum = parseInt(match[1]) + 1 : newNum = 1
+    // }
+
+    // return newNum
     let maxNum;
 
     if (folder) {
-        maxNum = await prisma.dashboard.findFirst({
+        const dashboards = await prisma.dashboard.findMany({
             where: {
                 name: { startsWith: 'Nuevo dashboard (' },
                 folderId: folder,
                 userId: user
             },
-            select: { name: true },
-            orderBy: { name: 'desc' }
-        })
+            select: { name: true }
+        });
+
+        dashboards.sort((a, b) => {
+            const regex = /Nuevo dashboard \((\d+)\)/;
+            const aNum = parseInt(a.name.match(regex)[1], 10);
+            const bNum = parseInt(b.name.match(regex)[1], 10);
+            return bNum - aNum;
+        });
+
+        maxNum = dashboards.length > 0 ? dashboards[0] : null;
     } else {
-        maxNum = await prisma.dashboard.findFirst({
+        const dashboards = await prisma.dashboard.findMany({
             where: {
                 name: { startsWith: 'Nuevo dashboard (' },
                 userId: user
             },
-            select: { name: true },
-            orderBy: { name: 'desc' }
-        })
-    }
+            select: { name: true }
+        });
 
-    let newNum = 1;
+        dashboards.sort((a, b) => {
+            const regex = /Nuevo dashboard \((\d+)\)/;
+            const aNum = parseInt(a.name.match(regex)[1], 10);
+            const bNum = parseInt(b.name.match(regex)[1], 10);
+            return bNum - aNum;
+        });
+
+        maxNum = dashboards.length > 0 ? dashboards[0] : null;
+    }
 
     if (maxNum) {
         const regex = /Nuevo dashboard \((\d+)\)/;
         const match = regex.exec(maxNum.name);
-        match ? newNum = parseInt(match[1]) + 1 : newNum = 1
+        if (match) {
+            const extractedNumber = parseInt(match[1], 10);
+            newNum = extractedNumber + 1;
+        } else {
+            newNum = 1;
+        }
+    } else {
+        newNum = 1;
     }
-
     return newNum
 }
 
@@ -239,14 +294,77 @@ export async function getDashboardsWithoutFolders() {
     return dashboards;
 }
 
-export async function saveLayouts(layout, id) {
-    const content = JSON.stringify(layout)
+//TODO: ESTA FUNCION NO DEBE SER ASI, DEBE DE BUSCARSE EL PANEL ADECUADO 
+// export async function saveLayouts(newLayout, id, dashboard) {
+//     console.log('nuevo layout', newLayout);
+//     const prevContent = JSON.parse(dashboard.content)
+//     // const prevLayout = prevContent.layout
+//     prevContent.layout.lg.forEach(layout => { if (layout.i == id) layout = newLayout })
+//     const newContent = JSON.stringify(prevContent)
+//     const result = await prisma.dashboard.update({
+//         where: { id: dashboard.id },
+//         data: { content: newContent }
+//     })
+//     console.log('Se ha guardado el layout para el siguiente dashboard', result);
+//     return result
+//     // la estructura debe ser content = {layout:[{i:'chart1', w:....}], charts:[{id:'chart1',data:{}, options:{}}]}
+// }
+export async function saveLayouts(newLayout, dashboard) {
+    const prevContent = JSON.parse(dashboard.content);
+
+
+
+
+    // Si se encuentra el layout que deseas actualizar
+
+    // Copiar el objeto prevContent para no modificar el original directamente
+    const updatedContent = { ...prevContent };
+
+    // Actualizar el layout en el array lg
+    updatedContent.layout.lg = newLayout;
+
+    // Convertir de nuevo a JSON para guardarlo en la base de datos
+    const newContent = JSON.stringify(updatedContent);
     const result = await prisma.dashboard.update({
-        where: { id: id },
-        data: { content: content }
+        where: { id: dashboard.id },
+        data: { content: newContent }
+    });
+
+    console.log('Se ha guardado el layout actualizado en el dashboard', result);
+    return result;
+
+    // la estructura debe ser content = {layout:[{i:'chart1', w:....}], charts:[{id:'chart1',data:{}, options:{}}]}
+}
+
+//Para nuevo grafico
+export async function saveChart(finalData, finalOptions, dashboard, query) {
+    console.log('grafico guardado');
+    const prevContent = JSON.parse(dashboard.content)
+    const prevLayout = prevContent.layout
+    const prevCharts = prevContent.charts
+    let chartCount = 0
+    console.log('prevlayout:', prevLayout, 'prevCharts:', prevCharts);
+    // console.log('chartType:', chartType);
+    console.log('prevCharts.length:', prevCharts.length);
+    if (prevCharts.length > 0) {
+        prevCharts.forEach(chart => {
+            if (chart.id > chartCount) chartCount = chart.id
+            console.log(chartCount);
+        })
+    }
+    const idChart = chartCount + 1
+    // prevLayout.push({ i: idChart, x: 0, y: 0, w: 12, h: 2 })
+    prevLayout.lg.push({ i: idChart, x: 0, y: 0, w: 12, h: 2 })
+    prevCharts.push({ id: idChart, type: finalData.datasets[0].type, querys: [query], data: finalData, options: finalOptions })
+    const newContent = { ...prevContent, layout: prevLayout, charts: prevCharts }
+    //INCLUIR EN BD
+    const result = await prisma.dashboard.update({
+        where: { id: dashboard.id },
+        data: { content: JSON.stringify(newContent) }
     })
-    console.log('Se ha guardado el layout para el siguiente dashboard', result);
-    return result
+    console.log('nuevo gráfico guardado', result);
+    //TODO: revalidate path (quizá pasando los parámetros en la página)
+    //TODO: no recoge chartType
 }
 
 export async function editDashboard(formData) {

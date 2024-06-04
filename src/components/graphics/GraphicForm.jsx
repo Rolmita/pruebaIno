@@ -16,11 +16,9 @@ import { lineChartData, pieChartData, barChartData, basicChartOptions } from '@/
 // },
 
 
-//TODO: AÑADIR LAS OPCIONES COMUNES(PLUGINS) Y LAS DEL GRAFICO DE LINEA Y DE BARRAS
+// TODO: NO LOGRO HACER QUE SE MUESTRE SI SELECCIONO MAX, MIN Y AVG EN LABELS DISTINTOS
 
 export default function GraphicForm({ data, status, onFinalData, onFinalOptions, onChartType }) {
-    const [titlePadding, setTitlePadding] = useState(4)
-    const [borderWidth, setBorderWidth] = useState(1)
     const [options, setOptions] = useState({})
     const [chartDataset, setChartDataset] = useState({})
     const [datasets, setDatasets] = useState([])
@@ -41,22 +39,34 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
 
             data.forEach(row => {
                 Object.entries(row).forEach(([key, value]) => {
+                    //TODO: SI SON VALORES DE MIN, MAX, MEDIA Y SUMA TODOS VAN EN EL MISMO DATASET (HACER ESTA TARDE)
+                    // if (key.includes('MAX') || key.includes('MIN') || key.includes('AVG') || key.includes('SUM')) {
+                    //     datasets.push(({
+                    //         // label: key,
+                    //         label: 'voltios',
+                    //         data: [value]
+                    //     }))
+                    // }
                     if (value instanceof Date) {
                         labels.push(value);
                     } else {
                         const existingDatasetIndex = datasets.findIndex(dataset => dataset.label === key);
                         if (existingDatasetIndex !== -1) {
                             datasets[existingDatasetIndex].data.push(value);
+                            // labels.push(datasets[existingDatasetIndex].label)
                         } else {
                             datasets.push({
-                                label: key,
+                                // label: key,
+                                label: 'voltios',
                                 data: [value]
                             });
+                            // labels.push(key)
                         }
+
                     }
                 });
             });
-
+            if (labels.length == 0) datasets.forEach(dataset => labels.push(dataset.key))
             const newChartData = {
                 labels: labels,
                 datasets: datasets
@@ -67,36 +77,11 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
         }
     }, [data]);
 
-    const handleTitlePaddingChange = (value) => {
-        setTitlePadding(value)
-    }
-
-    const handleBorderWidthChange = (value) => {
-        setBorderWidth(value)
-    }
-
-    const handleDashDisplay = (value) => {
-        const dashElement = document.getElementById('dashOpt')
-        if (value == 'yes') {
-            dashElement.style.display = 'flex'
-            dashElement.style.flexDirection = 'column'
-        } else {
-            dashElement.style.display = 'none'
-        }
-    }
-
     const min5 = (value) => {
         const minutes = String(new Date(value).getMinutes()).padStart(2, '0')
         const hours = String(new Date(value).getHours()).padStart(2, '0')
         if (minutes % 5 === 0)
             return `${hours}:${minutes}`;
-    }
-
-    const handleSelectedOpt = (value) => {
-        if (value == 'week') {
-            const weekElement = document.getElementById('weekday')
-            weekElement.style.display = 'flex'
-        }
     }
 
     useEffect(() => {
@@ -136,7 +121,7 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
             setChartData({ ...chartData, datasets: construction })
             onChartType(newType)
         }
-    }, [chartType, datasetTypes, status])
+    }, [datasetTypes, status])
 
     useEffect(() => {
         console.log('HA CAMBIADO', chartData);
@@ -151,6 +136,50 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
             return { ...chartData, datasets: newDatasets };
         });
     };
+    const updateChartScaleOpt = (opt, axisId) => {
+        setChartOptions({ ...chartOptions, scales: { ...chartOptions.scales, [axisId]: opt } })
+    }
+    const updateChartOpt = (key, value) => {
+        let updatedProp
+        if (key.includes('-')) {
+            let arr = []
+            arr = key.split('-') //axis.hola.saludo = 8
+            console.log(arr);
+            let prop1 = arr[0]
+            let prop2 = arr[1]
+            let prop3 = arr[2]
+            switch (arr.length) {
+                case 2:
+                    console.log(arr[0], arr[1]);
+                    // console.log([arr[0]], axisIdScale.arr[0], [arr[1]], finalValue);
+                    updatedProp = {
+                        ...chartOptions, [prop1]: { ...chartOptions[prop1], [prop2]: value }
+                    }
+                    break
+                case 3:
+                    console.log(arr[0], arr[1], arr[2]);
+                    updatedProp = {
+                        ...chartOptions, [prop1]: { ...chartOptions[prop1], [prop2]: { ...chartOptions[prop1][prop2], [prop3]: value } }
+                    }
+                    break
+            }
+        } else {
+            updatedProp = { ...chartOptions, [key]: value }
+
+        }
+        setChartOptions(updatedProp)
+    }
+
+    useEffect(() => {
+        if (chartData != null && chartData.datasets != null) {
+            const newDatasets = chartData.datasets.map((dataset) => ({
+                ...dataset,
+                type: chartType,
+            }));
+            setDatasetTypes(newDatasets.map(() => chartType)); // Opcional, si es necesario
+            setChartData({ ...chartData, datasets: newDatasets });
+        }
+    }, [chartType])
 
     return (
         <form className="graphic-form">
@@ -159,9 +188,9 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                     <div>
                         <fieldset>
                             <legend>Title </legend>
-                            <label htmlFor="title">
+                            <label htmlFor="plugins-title-text">
                                 Title of the graphic</label>
-                            <input type='text' placeholder="Type a title for the chart" />
+                            <input type='plugins-title-text' placeholder="Type a title for the chart" onChange={(e) => updateChartOpt('plugins-title-text', e.target.value)} />
                         </fieldset>
                         <fieldset>
                             <legend>Type: </legend>
@@ -180,13 +209,14 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                             <legend>Legend: </legend>
                             <div>
                                 {/* TODO: AÑADIR QUE SI SELECCIONAS TRUE SE MUESTRE EL DIV DE LA POSICION. ENABLE=TRUE */}
-                                <input type='checkbox' name='legend-display' value='true' defaultChecked></input>
+                                <input type='checkbox' name='plugins-legend-display' value='true' defaultChecked
+                                    onChange={(e) => updateChartOpt('plugins-legend-display', e.target.value)}></input>
                                 <label htmlFor="legend-display">Enable legend</label>
                             </div>
                             <div>
-                                <label htmlFor="legend-position">
+                                <label htmlFor="plugins-legend-position">
                                     Position: </label>
-                                <select name='legend-position'>
+                                <select name='plugins-legend-position' onChange={(e) => updateChartOpt('plugins-legend-position', e.target.value)}>
                                     <option value='null'>--Select the legend position--</option>
                                     <option value='none'>None</option>
                                     <option value='top'>Top</option>
@@ -200,8 +230,8 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                         <fieldset>
                             <legend>Point information: </legend>
                             <div>
-                                <input type='checkbox' name='tooltip-enabled' value='true' defaultChecked></input>
-                                <label htmlFor="tooltip-enabled">Enable point information when hover</label>
+                                <input type='checkbox' name='plugins-tooltip-enabled' value='true' defaultChecked></input>
+                                <label htmlFor="plugins-tooltip-enabled">Enable point information when hover</label>
                             </div>
                             <div>
                             </div>
@@ -211,14 +241,14 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                             {chartData && chartData.datasets.map((dataset, index) => (
                                 <fieldset key={index}>
                                     <legend>
-                                        <div>{dataset.label}</div>
+                                        <div>{dataset?.label}</div>
                                     </legend>
                                     {(chartType == 'line' || datasetTypes[index] == 'line') &&
                                         < LineDataset dataset={dataset} index={index} onTypeChange={(type, index) => {
                                             const newDatasetTypes = [...datasetTypes]
                                             newDatasetTypes[index] = type
                                             setDatasetTypes(newDatasetTypes)
-                                            setChartType(undefined)
+                                            // setChartType(undefined)
                                         }}
                                             onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
                                     {(chartType == 'pie' || chartType == 'doughnut' || datasetTypes[index] == 'pie' || datasetTypes[index] == 'doughnut') &&
@@ -226,7 +256,7 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                                             const newDatasetTypes = [...datasetTypes]
                                             newDatasetTypes[index] = type
                                             setDatasetTypes(newDatasetTypes)
-                                            setChartType(undefined)
+                                            // setChartType(undefined)
                                         }}
                                             onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
                                     {(chartType == 'bar' || datasetTypes[index] == 'bar') &&
@@ -234,7 +264,7 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                                             const newDatasetTypes = [...datasetTypes]
                                             newDatasetTypes[index] = type
                                             setDatasetTypes(newDatasetTypes)
-                                            setChartType(undefined)
+                                            // setChartType(undefined)
                                         }}
                                             onDatasetChange={(updatedDataset) => modifyDataset(index, updatedDataset)} />}
                                 </fieldset>
@@ -247,11 +277,15 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                     <fieldset>
                         <legend>Axis Settings </legend>
                         {chartData && chartData.datasets.map((dataset, index) => {
-                            const { type, xAxisID, yAxisID } = dataset;
+                            // if (dataset.type) {
+                            const { type, xAxisID, yAxisID } = dataset
+                            // } else {
+                            //     const { xAxisID, yAxisID } = dataset
+                            // };
                             let showXAxisForm = false;
                             let showYAxisForm = false;
 
-                            if ((type === 'line' || type === 'bar')) {
+                            if (dataset.type && (dataset.type === 'line' || dataset.type === 'bar')) {
                                 if (xAxisID && !processedXAxisIds.has(xAxisID)) {
                                     processedXAxisIds.add(xAxisID);
                                     showXAxisForm = true;
@@ -265,14 +299,14 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                             return (
                                 <div key={index}>
                                     {showXAxisForm && (
-                                        <ScalesForm axisId={xAxisID} axis='x' datasetType={dataset.type} />
+                                        <ScalesForm axisId={xAxisID} axis='x' datasetType={dataset.type} chartLabels={chartData.labels} onOptionsChange={(opt) => updateChartScaleOpt(opt, xAxisID)} />
                                     )}
                                     {showYAxisForm && (
-                                        <ScalesForm axisId={yAxisID} axis='y' datasetType={dataset.type} />
+                                        <ScalesForm axisId={yAxisID} axis='y' datasetType={dataset.type} chartLabels={chartData.labels} onOptionsChange={(opt) => updateChartScaleOpt(opt, yAxisID)} />
                                     )}
-                                    {!showXAxisForm && !showYAxisForm && (
+                                    {/* {!showXAxisForm && !showYAxisForm && (
                                         <p>No hay configuraciones de escala para este tipo de gráfico</p>
-                                    )}
+                                    )} */}
                                 </div>
                             );
                         })}

@@ -219,7 +219,7 @@ li {
 }
 
 .panel {
-    background-color: #10bfeb;
+    background-color: #ffffff;
     border: 1px solid #ccc;
     padding: 10px;
     cursor: move;
@@ -357,7 +357,7 @@ input[type='color'] {
 
 .probador {
     color: rgba(0, 0, 0, 0.1);
-    
+
 }
 
 /* TODO: HACER RESPONSIVE */
