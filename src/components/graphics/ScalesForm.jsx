@@ -3,6 +3,7 @@ import { timeScaleOptions, linearScaleOptions, categoryScaleOptions, logarithmic
 
 //TODO: MIRAR BIEN LO DEL ADAPTER DE LA FECHA PORQUE CREO QUE ES LO QUE FALLA
 //TODO: RECUPERACION DE DATOS DE AXISSCALE SEGUN EL TIPO DE ESCALA Y CAMBIO DE VALORES CUANDO ES BARCHART
+//TODO: CUANDO SELECCIONO NULL EN TIPO DE SCALA ME DA ERROR YA QUE LA ESCALA NO PUEDE SER TYPE NULL
 export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange, chartLabels }) {
     let axisScale = { axis: axis, display: 'auto', type: undefined }
     let isBar = false
@@ -27,6 +28,7 @@ export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange,
     const modifySetting = (key, value, type) => {
         let updatedProp
         let finalValue = value
+        // if(key='')
         if (value == 'false') finalValue = false
         if (value == 'true') finalValue = true
         if (value == 'undefined') finalValue = undefined
@@ -134,7 +136,7 @@ export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange,
                                 ? setScaleType(e.target.value)
                                 : modifySetting('type', e.target.value)
                         }}>
-                        <option value='null'>--Select an axis type--</option>
+                        <option value='undefined'>--Select an axis type--</option>
                         <option value='time' title='For uniform time intervals'>time</option>
                         <option value='timeseries' title='For non uniform or scattered time intervals'>timeseries</option>
                         <option value='logarithmic' title='For wide range of values with exponential variation'>logarithmic</option>

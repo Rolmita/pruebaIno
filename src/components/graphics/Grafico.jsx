@@ -8,7 +8,7 @@ function Grafico({ data, options, type }) {
     const [typeOfChart, setTypeOfChart] = useState(type)
     ChartJS.register(...registerablesChartJS);
 
-    console.log('DATA DEL GRAFICO PASADO AL COMPONENTE', data, options);
+    // console.log('DATA DEL GRAFICO PASADO AL COMPONENTE', data, options);
 
     useEffect(() => {
         if (!type) {

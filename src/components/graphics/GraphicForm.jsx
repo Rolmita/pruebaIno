@@ -22,58 +22,67 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
     const [options, setOptions] = useState({})
     const [chartDataset, setChartDataset] = useState({})
     const [datasets, setDatasets] = useState([])
-    const [chartData, setChartData] = useState(null);
-    const [chartType, setChartType] = useState('line');
+    const [chartData, setChartData] = useState(null)
+    const [chartType, setChartType] = useState('line')
     const [datasetTypes, setDatasetTypes] = useState(['line'])
     const [chartOptions, setChartOptions] = useState(null)
 
-    const processedXAxisIds = new Set();
-    const processedYAxisIds = new Set();
+    const processedXAxisIds = new Set()
+    const processedYAxisIds = new Set()
 
 
     useEffect(() => {
         console.log(data);
         if (data) {
-            const labels = [];
-            const datasets = [];
-
+            const labels = []
+            const datasets = []
+            const datasetLabel = []
+            const datasetData = []
+            let datasetKey
             data.forEach(row => {
                 Object.entries(row).forEach(([key, value]) => {
-                    //TODO: SI SON VALORES DE MIN, MAX, MEDIA Y SUMA TODOS VAN EN EL MISMO DATASET (HACER ESTA TARDE)
-                    // if (key.includes('MAX') || key.includes('MIN') || key.includes('AVG') || key.includes('SUM')) {
-                    //     datasets.push(({
-                    //         // label: key,
-                    //         label: 'voltios',
-                    //         data: [value]
-                    //     }))
-                    // }
-                    if (value instanceof Date) {
-                        labels.push(value);
-                    } else {
-                        const existingDatasetIndex = datasets.findIndex(dataset => dataset.label === key);
-                        if (existingDatasetIndex !== -1) {
-                            datasets[existingDatasetIndex].data.push(value);
-                            // labels.push(datasets[existingDatasetIndex].label)
-                        } else {
-                            datasets.push({
-                                // label: key,
-                                label: 'voltios',
-                                data: [value]
-                            });
-                            // labels.push(key)
+                    if (key.includes('MAX') || key.includes('MIN') || key.includes('AVG') || key.includes('SUM')) {
+                        labels.push(key)
+                        let match = key.match(/\(([^)]+)\)/)
+                        if (match) {
+                            datasetKey = match[1]
                         }
-
+                        if (!datasetLabel.includes(datasetKey)) datasetLabel.push(datasetKey)
+                        datasetData.push(value)
+                    } else {
+                        if (value instanceof Date) {
+                            labels.push(value);
+                        } else {
+                            const existingDatasetIndex = datasets.findIndex(dataset => dataset.label === key)
+                            if (existingDatasetIndex !== -1) {
+                                datasets[existingDatasetIndex].data.push(value)
+                            } else {
+                                datasets.push({
+                                    label: key,
+                                    data: [value]
+                                });
+                            }
+                        }
                     }
-                });
-            });
-            if (labels.length == 0) datasets.forEach(dataset => labels.push(dataset.key))
+                })
+            })
+
+            console.log(datasetData, datasetLabel)
+            if (datasets.length == 0) {
+                datasets.push(({
+                    label: datasetLabel,
+                    data: datasetData
+                }))
+            }
+
+            if (labels.length == 0) datasets.forEach(dataset => labels.push(dataset.label))
             const newChartData = {
                 labels: labels,
                 datasets: datasets
             };
 
-            setChartData(newChartData);
-            console.log('DATOS DEL GRAFICO: ', newChartData);
+            setChartData(newChartData)
+            console.log('DATOS DEL GRAFICO: ', newChartData)
         }
     }, [data]);
 
@@ -81,7 +90,7 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
         const minutes = String(new Date(value).getMinutes()).padStart(2, '0')
         const hours = String(new Date(value).getHours()).padStart(2, '0')
         if (minutes % 5 === 0)
-            return `${hours}:${minutes}`;
+            return `${hours}:${minutes}`
     }
 
     useEffect(() => {
@@ -131,9 +140,9 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
 
     const modifyDataset = (index, updatedDataset) => {
         setChartData(() => {
-            const newDatasets = [...chartData.datasets];
-            newDatasets[index] = updatedDataset;
-            return { ...chartData, datasets: newDatasets };
+            const newDatasets = [...chartData.datasets]
+            newDatasets[index] = updatedDataset
+            return { ...chartData, datasets: newDatasets }
         });
     };
     const updateChartScaleOpt = (opt, axisId) => {

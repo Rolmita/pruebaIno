@@ -149,12 +149,12 @@ function QueryForm({ databases, onQueryResults, onQuery }) {
                                     <label htmlFor={`modifiers-${index}`}>Max</label>
                                 </div>
                                 <div>
-                                    <input type='checkbox' name={`modifiers-${index}`} value='MIN'></input>
-                                    <label htmlFor={`modifiers-${index}`}>Min</label>
-                                </div>
-                                <div>
                                     <input type='checkbox' name={`modifiers-${index}`} value='AVG'></input>
                                     <label htmlFor={`modifiers-${index}`}>AVG</label>
+                                </div>
+                                <div>
+                                    <input type='checkbox' name={`modifiers-${index}`} value='MIN'></input>
+                                    <label htmlFor={`modifiers-${index}`}>Min</label>
                                 </div>
                             </div>
                         </div>

@@ -294,46 +294,18 @@ export async function getDashboardsWithoutFolders() {
     return dashboards;
 }
 
-//TODO: ESTA FUNCION NO DEBE SER ASI, DEBE DE BUSCARSE EL PANEL ADECUADO 
-// export async function saveLayouts(newLayout, id, dashboard) {
-//     console.log('nuevo layout', newLayout);
-//     const prevContent = JSON.parse(dashboard.content)
-//     // const prevLayout = prevContent.layout
-//     prevContent.layout.lg.forEach(layout => { if (layout.i == id) layout = newLayout })
-//     const newContent = JSON.stringify(prevContent)
-//     const result = await prisma.dashboard.update({
-//         where: { id: dashboard.id },
-//         data: { content: newContent }
-//     })
-//     console.log('Se ha guardado el layout para el siguiente dashboard', result);
-//     return result
-//     // la estructura debe ser content = {layout:[{i:'chart1', w:....}], charts:[{id:'chart1',data:{}, options:{}}]}
-// }
-export async function saveLayouts(newLayout, dashboard) {
+export async function saveLayouts(newLayout, dashboard, breakpoint) {
     const prevContent = JSON.parse(dashboard.content);
-
-
-
-
-    // Si se encuentra el layout que deseas actualizar
-
-    // Copiar el objeto prevContent para no modificar el original directamente
     const updatedContent = { ...prevContent };
-
-    // Actualizar el layout en el array lg
-    updatedContent.layout.lg = newLayout;
-
-    // Convertir de nuevo a JSON para guardarlo en la base de datos
+    updatedContent.layout[breakpoint] = newLayout;
     const newContent = JSON.stringify(updatedContent);
     const result = await prisma.dashboard.update({
         where: { id: dashboard.id },
         data: { content: newContent }
     });
-
     console.log('Se ha guardado el layout actualizado en el dashboard', result);
-    return result;
-
-    // la estructura debe ser content = {layout:[{i:'chart1', w:....}], charts:[{id:'chart1',data:{}, options:{}}]}
+    // return result;
+    result.folderId ? revalidatePath(`dashboards/folder/${result.folderId}/${result.id}`) : revalidatePath(`/dashboards/${result.id}`)
 }
 
 //Para nuevo grafico
@@ -354,7 +326,11 @@ export async function saveChart(finalData, finalOptions, dashboard, query) {
     }
     const idChart = chartCount + 1
     // prevLayout.push({ i: idChart, x: 0, y: 0, w: 12, h: 2 })
-    prevLayout.lg.push({ i: idChart, x: 0, y: 0, w: 12, h: 2 })
+    prevLayout.lg.push({ i: idChart, x: 0, y: 0, w: 12, h: 3 })
+    prevLayout.md.push({ i: idChart, x: 0, y: 0, w: 10, h: 3 })
+    prevLayout.sm.push({ i: idChart, x: 0, y: 0, w: 6, h: 3 })
+    prevLayout.xs.push({ i: idChart, x: 0, y: 0, w: 4, h: 3 })
+    prevLayout.xxs.push({ i: idChart, x: 0, y: 0, w: 2, h: 3 })
     prevCharts.push({ id: idChart, type: finalData.datasets[0].type, querys: [query], data: finalData, options: finalOptions })
     const newContent = { ...prevContent, layout: prevLayout, charts: prevCharts }
     //INCLUIR EN BD
@@ -365,6 +341,30 @@ export async function saveChart(finalData, finalOptions, dashboard, query) {
     console.log('nuevo gráfico guardado', result);
     //TODO: revalidate path (quizá pasando los parámetros en la página)
     //TODO: no recoge chartType
+}
+
+export async function deleteChart(dashboard, chartId) {
+    console.log(dashboard);
+    console.log(' ELIMINANDO CHART ', chartId, typeof chartId, ' DEL DASHBOARD ', dashboard.id);
+    const prevContent = JSON.parse(dashboard.content)
+    const updatedContent = { ...prevContent }
+    // eliminamos la config de layout del dashboard correspondiente al grafico
+    for (const breakpoint in updatedContent.layout) {
+        if (updatedContent.layout.hasOwnProperty(breakpoint)) {
+            updatedContent.layout[breakpoint] = updatedContent.layout[breakpoint].filter(config => config.i != chartId);
+            // console.log(updatedContent.layout[breakpoint]);
+        }
+    }
+    console.log(updatedContent.layout);
+    // console.log(updatedContent.charts);
+    const updatedCharts = updatedContent.charts.filter(chart => chart.id != parseInt(chartId))
+    updatedContent.charts = updatedCharts
+    console.log(updatedContent);
+    const result = await prisma.dashboard.update({
+        where: { id: dashboard.id },
+        data: { content: JSON.stringify(updatedContent) }
+    })
+    result.folderId ? revalidatePath(`dashboards/folder/${result.folderId}/${result.id}`) : revalidatePath(`/dashboards/${result.id}`)
 }
 
 export async function editDashboard(formData) {
