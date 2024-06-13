@@ -1,7 +1,7 @@
 'use client'
 import Navbar from "@/components/NavBar"
 import Link from "next/link"
-import Information from "@/components/information";
+import Information from "@/components/Information";
 import Visualization from "@/components/charts/Visualization";
 import QueryForm from "@/components/QueryForm";
 import GraphicForm from "@/components/charts/GraphicForm2"
