@@ -201,7 +201,11 @@ export async function createQuery(formData, filterResult) {
         const table = formData.get('table')
         const columns = formData.getAll('column')
         let modifiers = {}
-        columns.forEach((column, index) => modifiers[`modifiers-${index}`] = formData.getAll(`modifiers-${index}`))
+        columns.forEach((column, index) => {
+            if (formData.getAll(`modifiers-${index}`).length > 0) {
+                modifiers[`modifiers-${index}`] = formData.getAll(`modifiers-${index}`)
+            }
+        })
         const allColumns = formData.get('all-columns')
         console.log('RESULTADOS DEL FORMULARIO: DATABASE:', db, ' TABLE: ', table, ' COLUMNS: ', allColumns ? allColumns : columns);
 
@@ -209,7 +213,9 @@ export async function createQuery(formData, filterResult) {
         if (allColumns) {
             cols = '*'
         } else {
-            if (modifiers) {
+            if (modifiers && Object.keys(modifiers).length > 0) {
+                console.log(modifiers, Object.keys(modifiers).length);
+                console.log('está entrando en modifiers');
                 columns.forEach((column, index) => {
                     //compruebo si existen modificadores para la columna
                     if (modifiers[`modifiers-${index}`]) {
@@ -217,7 +223,7 @@ export async function createQuery(formData, filterResult) {
                             (index == 0 && i == 0) ? cols += `${modifier}(${column})` : cols += `, ${modifier}(${column})`
                         })
                     } else {
-                        index == 0 ? cols += `${column}` : cols += `, ${column}`
+                        if (columns[index] != 'null') index == 0 ? cols += `${column}` : cols += `, ${column}`
                     }
 
                 })
@@ -238,6 +244,7 @@ export async function createQuery(formData, filterResult) {
     }
 }
 
+//TODO: probar si funciona al incluir db como prop y borrar la fila que recogia la variable del form
 export async function executeQuery(databases, formData) {
     console.log(formData);
     const query = formData.get('query-area')
@@ -255,6 +262,15 @@ async function getDatabase(db) {
     const user = await getUserByEmail(session.user.email)
     const databaseConfig = user.databases[db]
     return databaseConfig
+}
+
+export async function reloadQuery(databases, db, query) {
+    const databaseConfig = databases[db]
+    const connection = await mysql.createConnection(databaseConfig);
+    const [results, fields] = await connection.query(query);
+    await connection.end()
+    console.log(results)
+    return results
 }
 
 // export async function createCluster() {

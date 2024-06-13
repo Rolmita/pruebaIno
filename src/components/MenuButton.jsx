@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { createFolder, createFolderDashboard, createDashboard } from '@/lib/actions'
 import { useRouter } from 'next/navigation';
-import NewDashboard from '../app/dashboards/new-dashboard/page';
 
-const MenuButton = ({ name, style, isFolder, folderId, dashboardId , user}) => {
+const MenuButton = ({ name, style, isFolder, folderId, dashboardId, user }) => {
 
     const router = useRouter();
 
@@ -23,8 +22,10 @@ const MenuButton = ({ name, style, isFolder, folderId, dashboardId , user}) => {
                     router.push(`/dashboards/${newDashboard.id}`)
                 }
                 break
-                case 'New Visualization':
-                    router.push(`/dashboards/folder/${folderId}/${dashboardId}/new-visualization`)
+            case 'New Visualization':
+                folderId
+                    ? router.push(`/dashboards/folder/${folderId}/${dashboardId}/new-visualization`)
+                    : router.push(`/dashboards/${dashboardId}/new-visualization`)
             default: break
         }
     }

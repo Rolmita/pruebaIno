@@ -4,8 +4,9 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { deleteChart, saveLayouts } from '@/lib/actions'
-import 'chartjs-adapter-date-fns'
-import Grafico from './graphics/Grafico';
+import 'chartjs-adapter-luxon'
+import Grafico from './charts/Grafico';
+import Link from 'next/link';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -75,7 +76,14 @@ const Dashboard = ({ dashboard }) => {
                             <img src='/cross.svg' style={{ width: '90%', height: '90%' }}></img>
                         </button>
                         <button style={{ marginBottom: '5px', maxWidth: '20px' }}>
-                            <img src='/settings.svg' style={{ width: '100%', height: '100%' }}></img>
+                            {dashboard?.folderId
+                                ? <Link href={`/dashboards/folder/${dashboard.folderId}/${dashboard.id}/${chart.id}`}>
+                                    <img src='/settings.svg' style={{ width: '100%', height: '100%' }}></img>
+                                </Link>
+                                : <Link href={`/dashboards/${dashboard.id}/${chart.id}`}>
+                                    <img src='/settings.svg' style={{ width: '100%', height: '100%' }}></img>
+                                </Link>
+                            }
                         </button>
                     </div>
                     <div style={{ display: 'none', backgroundColor: '#a3a0a0', borderRadius: '5px' }} id={`deleteChart-${chart.id}`} className='deleteChart'>

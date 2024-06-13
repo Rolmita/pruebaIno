@@ -8,31 +8,28 @@ import List from './List';
 function ShowArchives({ folder, dashboards, isFolder }) {
 
     let archives
-
+    let id;
+    if (isFolder) {
+        id = folder.id
+    }
     if (typeof dashboards == 'undefined') {
-        archives = {
-            folders: folder
-        }
+        (!isFolder)
+            ? archives = {
+                folders: folder
+            }
+            : archives = {
+                dashboards: folder.dashboards
+            }
+
     } else if (typeof folder == 'undefined') {
         archives = {
             dashboards: dashboards
         }
     } else {
-        archives = {
-            folders: folder,
-            dashboards: dashboards
-        }
+        archives = { folders: folder, dashboards: dashboards }
     }
 
-    let id;
-
-
-    if (isFolder) {
-        id = folder.id
-
-    }
-
-    // console.log('Total de archivos', archives);
+    console.log('Total de archivos', archives);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -55,6 +52,7 @@ function ShowArchives({ folder, dashboards, isFolder }) {
     const searching = () => {
         const searchPattern = `${searchTerm}.*`
         const searchPatternLC = searchPattern.toLowerCase();
+        console.log(archives);
         const filteredResults = filterElements(archives, searchPatternLC)
         setSearchResults(filteredResults)
         console.log('Resultados filtrados', filteredResults);
@@ -65,7 +63,7 @@ function ShowArchives({ folder, dashboards, isFolder }) {
         searching()
     }
 
-   
+
 
     return (
         <div >

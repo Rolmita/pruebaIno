@@ -217,6 +217,30 @@ export const basicChartOptions = {
     scales: {}
 }
 
+export const basicChartOptionsR = {
+    animation: false, //animacion para los datos,
+    responsive: true,
+    // maintainAspectRatio: true,
+    maintainAspectRatio: false,
+    plugins: {
+        title: { // titulo del grafico
+            display: true,
+            text: '',
+        },
+        legend: { // para mostrar la leyenda de los datos
+            display: true,
+            position: 'top',
+        },
+        tooltip: { // para mostrar los datos
+            enabled: true,
+        }
+    },
+
+    // scales: {
+    //     myScale: { axis: 'r' }
+    // }
+}
+
 export const timeScaleOptions = {
     //all axes
     type: 'time',
@@ -296,9 +320,17 @@ export const timeScaleOptions = {
     //time axis
     offsetAfterAutoskip: false,
     //TODO: DA FALLO AL CAMBIAR POR EJEMPLO LA UNIDAD
+    adapters: {
+        date: {
+            zone: 'Europe/Madrid',
+            locale: 'es'
+            // zone: 'Europe/Madrid',
+
+        },
+    },
     time: {
-        // parser: 'yyyy-MM-dd\'T\'HH:mm:ss',
-        parser: "yyyy-MM-dd'T'HH:mm:ss:SSS'Z'",
+        // parser: 'YYYY-MM-DDTHH:mm:ss',
+        // parser: "luxon",
         unit: 'minute',
         // minUnit: undefined,
         isoWeekday: true,
@@ -307,11 +339,11 @@ export const timeScaleOptions = {
             second: 'HH:mm:ss',
             minute: 'HH:mm',
             hour: 'HH',
-            day: 'dd',
+            day: 'DD',
             week: '',
-            month: 'MM',
-            quarter: 'MMM yyyy',
-            year: 'yyyy',
+            month: 'M',
+            quarter: 'MMM YYYY',
+            year: 'YYYY',
         },
         tooltipFormat: 'dd-MM-yyyy HH:mm',
         // stepSize: 5,
@@ -380,11 +412,11 @@ export const linearScaleOptions = {
         autoSkipPadding: 3,//Padding between the ticks on the horizontal axis when autoSkip is enabled.
         includeBounds: true,//Should the defined min and max values be presented as ticks even if they are not "nice".
         labelOffset: 0,//Distance in pixels to offset the label from the centre point of the tick (in the x-direction for the x-axis, and the y-direction for the y-axis). Note: this can cause labels at the edges to be cropped by the edge of the canvas
-        maxRotation: 50,	//Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
+        maxRotation: 0,	//Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. Note: Only applicable to horizontal scales.
         minRotation: 0,//Minimum rotation for tick labels. Note: Only applicable to horizontal scales.
         mirror: false,	//Flips tick labels around axis, displaying the labels inside the chart instead of outside. Note: Only applicable to vertical scales.
         padding: 0,//Padding between the tick label and the axis. When set on a vertical axis, this applies in the horizontal (X) direction. When set on a horizontal axis, this applies in the vertical (Y) direction.
-        maxTicksLimit: 11,	//Maximum number of ticks and gridlines to show
+        maxTicksLimit: 100,	//Maximum number of ticks and gridlines to show
         //linear axis
         // count: undefined,
         format: {},

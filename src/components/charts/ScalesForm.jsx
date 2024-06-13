@@ -307,7 +307,7 @@ export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange,
                                     </select>
                                 </div>
 
-                                <div className='graphic-form-group-opt'>
+                                {/* <div className='graphic-form-group-opt'>
                                     <label htmlFor="time-displayFormats">
                                         Display format for the ticks </label>
                                     <select name='time-displayFormats' defaultValue={axisIdScale?.time.displayFormats}
@@ -319,7 +319,7 @@ export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange,
                                         <option value='HH:mm:ss'>HH:mm:ss</option>
                                         <option value='HH:mm'>HH:mm</option>
                                     </select>
-                                </div>
+                                </div> */}
                                 <div className='graphic-form-group-opt'>
                                     <label htmlFor="time-tooltipFormat">
                                         Tooltip format: </label>
@@ -824,7 +824,7 @@ export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange,
                                     <label htmlFor='ticks-minRotation'
                                         title="Minimum rotation for tick labels. Note: Only applicable to horizontal scales.">
                                         Min rotation:</label>
-                                    <input name='ticks-minRotation' type='number' min='0' max='20'
+                                    <input name='ticks-minRotation' type='number' min='0'
                                         defaultValue={axisIdScale?.ticks.minRotation}
                                         onChange={(e) => modifySetting('ticks-minRotation', e.target.value, e.target.type)}></input>
                                 </div>
@@ -846,7 +846,7 @@ export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange,
                                     <label htmlFor='ticks-maxTicksLimit'
                                         title="Maximum number of ticks and gridlines to show.">
                                         Max ticks limit:</label>
-                                    <input name='ticks-maxTicksLimit' type='number' min='0' max='20'
+                                    <input name='ticks-maxTicksLimit' type='number' min='0'
                                         defaultValue={axisIdScale?.ticks.maxTicksLimit}
                                         onChange={(e) => modifySetting('ticks-maxTicksLimit', e.target.value, e.target.type)}></input>
                                 </div>

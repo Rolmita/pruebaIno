@@ -2,6 +2,7 @@
 import Button from '@/components/button-form';
 import { useState } from 'react';
 import { login } from '@/lib/actions'
+import Link from 'next/link';
 
 
 function LoginForm() {
@@ -21,16 +22,19 @@ function LoginForm() {
     }
     return (
         <form action={wrapper} className='credentials user-form'>
-            <div>
-                <label htmlFor='email' className='izq'>Email de usuario:</label>
-                <input type='email' name='email' placeholder="jose@mail.com" className='drch' />
+            <div className='user-form-group'>
+                <div className='label-div'><label htmlFor='email'>Email: </label></div>
+                <div><input type='email' name='email' placeholder="jose@mail.com" maxLength='64' /></div>
             </div>
-            <div>
-                <label htmlFor='password' className='izq'>Contraseña:</label>
-                <input type="password" name='password' placeholder="******" className='drch' />
+            <div className='user-form-group'>
+                <div className='label-div'><label htmlFor='password'>Password: </label></div>
+                <div><input type="password" name='password' placeholder="******" /></div>
             </div>
             <p className={`info ${tipo}`}> {resultado} </p>
-            <Button title="Iniciar sesión" />
+
+            <Button title="Log in" />
+
+            <div className='form-change'><p>Are you not registered yet?</p><Link href='/auth/register'>Sign up</Link></div>
         </form>
     );
 };

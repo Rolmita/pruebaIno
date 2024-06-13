@@ -7,14 +7,14 @@ async function page() {
 
   if (sesion) {
     return (
-      <main className="contenido">
+      <section className='auth-section' >
         <h2 style={{ marginTop: '5%' }}>Cerrar sesión</h2>
         <form className="user-form">
-          <button formAction={logout} className="logout">
-            <img src="/logout.svg" alt="Exit" /> Cerrar sesión
+          <button formAction={logout} className="logout button btn-dropdown">
+           Logout
           </button>
         </form>
-      </main>
+      </section>
     )
   }
   else {

@@ -4,7 +4,8 @@ import LineDataset from './LineDatasets';
 import PieDoughnutDatasets from './PieDatasets';
 import BarDataset from './BarDatasets';
 import ScalesForm from './ScalesForm';
-import { lineChartData, pieChartData, barChartData, basicChartOptions } from '@/lib/lineChart';
+import 'chartjs-adapter-luxon'
+import { lineChartData, pieChartData, barChartData, basicChartOptions, basicChartOptionsR } from '@/lib/lineChart';
 
 //TODO: añadir funcion en el eje de datos para mostrar dependiendo del valor, ej:
 // color: function(context) {
@@ -44,9 +45,7 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                     if (key.includes('MAX') || key.includes('MIN') || key.includes('AVG') || key.includes('SUM')) {
                         labels.push(key)
                         let match = key.match(/\(([^)]+)\)/)
-                        if (match) {
-                            datasetKey = match[1]
-                        }
+                        if (match) datasetKey = match[1]
                         if (!datasetLabel.includes(datasetKey)) datasetLabel.push(datasetKey)
                         datasetData.push(value)
                     } else {
@@ -54,28 +53,16 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                             labels.push(value);
                         } else {
                             const existingDatasetIndex = datasets.findIndex(dataset => dataset.label === key)
-                            if (existingDatasetIndex !== -1) {
-                                datasets[existingDatasetIndex].data.push(value)
-                            } else {
-                                datasets.push({
-                                    label: key,
-                                    data: [value]
-                                });
-                            }
+                            existingDatasetIndex !== -1 ? datasets[existingDatasetIndex].data.push(value) : datasets.push({ label: key, data: [value] })
                         }
                     }
                 })
             })
 
             console.log(datasetData, datasetLabel)
-            if (datasets.length == 0) {
-                datasets.push(({
-                    label: datasetLabel,
-                    data: datasetData
-                }))
-            }
-
+            if (datasets.length == 0) datasets.push(({ label: datasetLabel, data: datasetData }))
             if (labels.length == 0) datasets.forEach(dataset => labels.push(dataset.label))
+
             const newChartData = {
                 labels: labels,
                 datasets: datasets
@@ -105,19 +92,44 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                 switch (currentType) {
                     case 'line':
                         baseObject = lineChartData.datasets[0]
+                        chartData.labels = chartData.labels.map(label => {
+                            let date = new Date(label)
+                            return label = date
+                        });
                         type = 'line'
                         break
                     case 'pie':
                         baseObject = pieChartData.datasets[0]
+                        chartData.labels = chartData.labels.map(label => {
+                            let date = new Date(label)
+                            console.log('date', date);
+                            date = label.toLocaleString()
+                            console.log('date change', date);
+                            return label = date
+                        });
+                        console.log('deberia haber cambaido la fecha y hora');
+                        console.log(chartData.labels);
                         type = 'pie'
                         break
                     case 'doughnut':
                         baseObject = pieChartData.datasets[0]
+                        chartData.labels = chartData.labels.map(label => {
+                            let date = new Date(label)
+                            console.log('date', date);
+                            date = label.toLocaleString()
+                            console.log('date change', date);
+                            return label = date
+                        });
+                        console.log(chartData.labels);
                         baseObject[type] = 'doughnut'
                         type = 'doughnut'
                         break
                     case 'bar':
                         baseObject = barChartData.datasets[0]
+                        chartData.labels = chartData.labels.map(label => {
+                            let date = new Date(label)
+                            return label = date
+                        });
                         type = 'bar'
                         break
                     default:
@@ -125,8 +137,9 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                 }
                 return { ...baseObject, type: type, label: dataset.label, data: dataset.data }
             });
-
-            setChartOptions(basicChartOptions)
+            (type == 'pie' || type == 'doughnut')
+                ? setChartOptions(basicChartOptionsR)
+                : setChartOptions(basicChartOptions)
             setChartData({ ...chartData, datasets: construction })
             onChartType(newType)
         }

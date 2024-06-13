@@ -30,6 +30,7 @@ async function DashboardList() {
 
     const folders = foundUser.folders
     const dashboards = foundUser.dashboards
+    // console.log('dashboardlist',dashboards);
 
 
     return (
@@ -38,7 +39,7 @@ async function DashboardList() {
                 <Navbar></Navbar>
                 <nav className='nav-section-page'>
                     <div>
-                        <Link className='route-link' href='/'><h1>Nombre</h1></Link>
+                        <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
                         <img src='/right.svg' width='18px'></img>
                         <Link className='route-link' href='/dashboards'>Dashboards</Link>
                     </div>

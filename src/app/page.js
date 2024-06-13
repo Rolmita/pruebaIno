@@ -11,7 +11,7 @@ const Home = async () => {
         <Navbar></Navbar>
         <nav className='nav-section-page' style={{ display: 'flex', flexDirection: 'column' }}>
           <div>
-            <Link className='route-link' href='/'><h1>Nombre</h1></Link>
+            <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
           </div>
         </nav>
       </div>

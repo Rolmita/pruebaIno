@@ -3,12 +3,10 @@ import Grafico from './Grafico';
 import { Line } from 'react-chartjs-2';
 
 export default function Visualization({ data, status, finalData, finalOpt, type }) {
-    const [chartData, setChartData] = useState(null);
+    // const [chartData, setChartData] = useState(null);
     useEffect(() => {
         console.log('DATOS FINALES PARA EL GRÁFICO:', finalData, finalOpt);
     }, [finalData, finalOpt])
-
-    //TODO: ESTO VIENE DE LOS FORMULARIOS DE LAS PESTAÑAS DE ABAJO (hay que pasarselo a esta page)
 
     const chartOpt = {
         responsive: true,

@@ -1,7 +1,8 @@
 'use client'
 import { Line, Pie, Doughnut, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, registerables as registerablesChartJS } from 'chart.js';
-import 'chartjs-adapter-date-fns'
+// import 'chartjs-adapter-date-fns'
+import 'chartjs-adapter-luxon';
 import { useState, useEffect } from 'react'
 
 function Grafico({ data, options, type }) {

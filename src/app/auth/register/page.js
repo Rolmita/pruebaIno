@@ -3,12 +3,12 @@ import RegisterForm from '@/components/register-form'
 
 function page() {
   return (
-    <main className='contenido'>
+    <section className='auth-section' >
       <div className="form">
-        <h2>Registro</h2>
+        <h1>Sign up for MyChartBoard</h1>
         <RegisterForm />
       </div>
-    </main>
+    </section>
   )
 }
 

@@ -1,8 +1,8 @@
 export default function Layout({ children }) {
     return (
-      <section className="auth">
+      <main className="auth">
         {children}
-      </section>
+      </main>
     )
   }
   

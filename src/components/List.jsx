@@ -1,7 +1,8 @@
+import { deleteDashboard, deleteFolder } from "@/lib/actions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-function List({ archives, isFolder }) {
+function List({ archives, isFolder, identificationFolder }) {
 
 
     let elementsList = [];
@@ -9,8 +10,8 @@ function List({ archives, isFolder }) {
     let folderId;
 
     if (isFolder) {
-        elementsList = archives.folders.dashboards
-        folderId = archives.folders.id
+        elementsList = archives.dashboards
+        folderId = archives.dashboards.folderId
     } else {
         elementsList = archives.folders.concat(archives.dashboards)
     }
@@ -30,34 +31,57 @@ function List({ archives, isFolder }) {
 
     // TODO: EN CSS ESTOS LINKS Y LOS LI INCLUYENDO EL :HOVER (NO FUNCIONAN BIEN LSO EVENTOS)
     return (
-        <ul className='folder-dashboard-list' style={{ backgroundColor: 'lightgray' }}>
+        <ul className='folder-dashboard-list' style={{ backgroundColor: 'lightgray', width: 'auto' }}>
             {elementsList.map(element =>
-                <li key={element.name}>
+                <li className='list-row' key={element.name} style={{ width: '100%' }}>
                     {!isFolder && element.folderId !== null
-                        ? <Link className='list-element' href={`dashboards/folder/${element.id}`} >
-                            <div>
-                                <img src='/folder2.svg' width='20px' />
-                                <p>{element.name}</p>
-                            </div>
-                            <span>{formattedDateTime(element.updatedAt)}</span>
-                        </Link>
+                        ? <div className="list-row-div">
+                            <Link className='list-element' href={`/dashboards/folder/${element.id}`} style={{ width: '93%', marginRight: '2%' }}>
+                                <div>
+                                    <img src='/folder2.svg' width='20px' />
+                                    <p>{element.name}</p>
+                                </div>
+                                <span>{formattedDateTime(element.updatedAt)}</span>
+                            </Link>
+                            <button type='button' style={{ width: 'auto', height: 'auto' }} onClick={() => deleteFolder(element.id)}>
+                                <img src='/cross.svg' style={{ height: '10px', margin: '2px' }}></img>
+                            </button>
+                        </div>
                         : ''}
 
                     {!isFolder && element.folderId === null
-                        ? <Link className='list-element' href={`dashboards/${element.id}`} target='__blank'>
-                            <div><img src='/dashboard-img.svg' width='15px'></img>
-                                <p>{element.name}</p></div>
-                            <span>{formattedDateTime(element.updatedAt)}</span>
-                        </Link>
+                        ? <div className="list-row-div">
+                            <Link className='list-element' href={`/dashboards/${element.id}`} target='__blank' style={{ width: '93%', marginRight: '2%' }}>
+                                <div >
+                                    <img src='/dashboard-img.svg' width='15px'></img>
+                                    <p>{element.name}</p>
+                                </div>
+                                <div>
+                                    <span>{formattedDateTime(element.updatedAt)}</span>
+                                </div>
+                            </Link>
+                            <button type='button' style={{ width: 'auto', height: 'auto' }} onClick={() => deleteDashboard(element.id)}>
+                                <img src='/cross.svg' style={{ height: '10px', margin: '2px' }}></img>
+                            </button>
+                        </div>
                         : ''
                     }
 
                     {isFolder
-                        ? <Link className='list-element' href={`${folderId}/${element.id}`} target='__blank'>
-                            <div><img src='/dashboard-img.svg' width='15px'></img>
-                                <p>{element.name}</p></div>
-                            <span>{formattedDateTime(element.updatedAt)}</span>
-                        </Link>
+                        ? <div className="list-row-div">
+                            <Link className='list-element' href={`/dashboards/folder/${element.folderId}/${element.id}`} target='__blank' style={{ width: '93%', marginRight: '2%' }}>
+                                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <img src='/dashboard-img.svg' width='15px'></img>
+                                    <p>{element.name}</p>
+                                </div>
+                                <div>
+                                    <span>{formattedDateTime(element.updatedAt)}</span>
+                                </div>
+                            </Link>
+                            <button type='button' style={{ width: 'auto', height: 'auto' }} onClick={() => deleteDashboard(element.id)}>
+                                <img src='/cross.svg' style={{ height: '10px', margin: '2px' }}></img>
+                            </button>
+                        </div>
                         : ''}
 
                 </li>

@@ -9,7 +9,6 @@ import { getFolderById, getDashboardById, getUserBySession, saveChart } from "@/
 import { useState, useEffect } from 'react'
 
 export default function NewVisualization({ params }) {
-    const [folder, setFolder] = useState(null)
     const [dashboard, setDashboard] = useState(null)
     const [databases, setDatabases] = useState(null)
     const [queryDb, setQueryDb] = useState(null)
@@ -22,10 +21,6 @@ export default function NewVisualization({ params }) {
 
     useEffect(() => {
         const fetchData = () => {
-            const folderId = Number(params.id);
-            getFolderById(folderId)
-                .then(folder => setFolder(folder))
-                .catch(error => console.error('Error fetching folder:', error));
             const dashboardId = Number(params.dashboardId);
             getDashboardById(dashboardId)
                 .then(dashboard => setDashboard(dashboard))
@@ -36,7 +31,7 @@ export default function NewVisualization({ params }) {
         };
 
         fetchData();
-    }, [params.id, params.dashboardId]);
+    }, [params.dashboardId]);
 
     return (
         <section>
@@ -50,9 +45,7 @@ export default function NewVisualization({ params }) {
                     <div>
                         <Link className='route-link' href='/dashboards'>Dashboards</Link>
                         <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/folder/${folder?.id}`}>{folder?.name}</Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/folder/${folder?.id}/${dashboard?.id}`}>{dashboard?.name}</Link>
+                        <Link className='route-link' href={`/dashboards/${dashboard?.id}`}>{dashboard?.name}</Link>
                         <img src='/right.svg' width='18px'></img>
                         <Link className='route-link' href={``}>New visualization</Link>
                     </div>

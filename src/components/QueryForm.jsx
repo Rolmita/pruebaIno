@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { searchTables, searchColumns, createQuery, executeQuery } from '@/lib/db-actions';
 import QueryFilterForm from './QueryFilterForm';
 
-function QueryForm({ databases, onQueryResults, onQuery }) {
+//TODO: FALLA LA ELECCION DE COLUMNAS DESPUES DE PONERLE LOS MODIFICADORES
+function QueryForm({ databases, onQueryResults, onQuery, onDb, prevQuery, prevDb }) {
     const [db, setDb] = useState(null);
     const [tables, setTables] = useState(null)
     const [table, setTable] = useState(null)
@@ -36,6 +37,7 @@ function QueryForm({ databases, onQueryResults, onQuery }) {
     const handleDbChange = (event) => {
         const selectedDB = event.target.value;
         setDb(selectedDB);
+        onDb(selectedDB)
     };
 
     const handleTableChange = (event) => {
@@ -48,13 +50,31 @@ function QueryForm({ databases, onQueryResults, onQuery }) {
     };
 
     useEffect(() => {
+        if (prevQuery != null) {
+            setQuery(prevQuery)
+            onQuery(prevQuery)
+        }
+    }, [prevQuery])
+
+    useEffect(() => {
+        if (prevDb != null) {
+            setDb(prevDb)
+            onDb(prevDb)
+        }
+    }, [prevDb])
+
+    useEffect(() => {
         async function fetchResult() {
             try {
                 if (formData !== null) {
                     const formDataEntries = formData.entries();
+                    console.log('formDataEntries', formDataEntries);
                     const formDataArray = Array.from(formDataEntries);
+                    console.log('formDataArray', formDataArray);
                     const lastPair = formDataArray.pop();
+                    console.log('lastPair', lastPair);
                     const lastValue = lastPair[1];
+                    console.log(lastValue, lastValue);
                     if (query != null && lastValue !== '') {
                         const result = await executeQuery(databases, formData)
                         onQueryResults(result);
@@ -99,8 +119,8 @@ function QueryForm({ databases, onQueryResults, onQuery }) {
             <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleSubmit}>
                 <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                     <label>Nombre de la base de datos: </label>
-                    <select name='database' onChange={handleDbChange}>
-                        <option value={null}>-- Elija una base de datos --</option>
+                    <select name='database' onChange={handleDbChange} defaultValue={prevDb && prevDb}>
+                        {prevDb ? <option value={prevDb}>{prevDb}</option> : <option value={null}>-- Elija una base de datos --</option>}
                         {databases
                             ? (Object.keys(databases).map(dbName => (
                                 <option key={dbName} value={dbName}>

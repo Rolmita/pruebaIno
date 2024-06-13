@@ -20,7 +20,7 @@ function Navbar() {
                     {/* <Link className="menu-item" href="/"><img className='burger-img' src='/logo.svg' width='30px' /></Link> */}
                     <Link className="menu-item" href="/dashboards"><img className='burger-img' src='/dashboard.svg' width='30px' />Dashboards</Link>
                     <Link className="menu-item" href="/databases"><img className='burger-img' src='/database_settings_icon.svg' width='30px' />Databases</Link>
-                    <Link className="menu-item" href="/settings"><img className='burger-img' src='/settings.svg' width='30px' />Settings</Link>
+                    <Link className="menu-item" href="/settings"><img className='burger-img' src='/settings.svg' width='30px' />Setting</Link>
                 </div>
             )}
         </nav>
