@@ -1,5 +1,5 @@
 'use client'
-import Navbar from "@/components/NavBar"
+import Navbar from "@/components/Menu"
 import Link from "next/link"
 import Information from "@/components/Information";
 import Visualization from "@/components/charts/Visualization";
@@ -98,7 +98,7 @@ export default function VisualizationId({ params }) {
                     </div>
                 </nav>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', flex:1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'lightgray', width: '100%', padding: '10px' }}>
                     <div>
                         <h1>Edit {visualization?.options.plugins.title.text}</h1>
@@ -111,7 +111,7 @@ export default function VisualizationId({ params }) {
                     </div>
                 </div>
                 <Visualization data={queryRes} status={status} finalData={finalData} type={chartType} finalOpt={finalOptions}></Visualization>
-                <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '20%', padding: '5px' }}>
+                <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '20%', padding: '5px', marginTop: 'auto', backgroundColor:'lightgray' }}>
 
                     <div className="tab-container">
 

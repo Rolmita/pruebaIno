@@ -5,95 +5,10 @@ import { Line } from 'react-chartjs-2';
 export default function Visualization({ data, status, finalData, finalOpt, type }) {
     // const [chartData, setChartData] = useState(null);
     useEffect(() => {
+        const preview = document.getElementById('preview-content')
+        preview.style.display = 'flex'
         console.log('DATOS FINALES PARA EL GRÁFICO:', finalData, finalOpt);
-    }, [finalData, finalOpt])
-
-    const chartOpt = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Chart.js Line Chart',
-            },
-            tooltip: { // para mostrar los datos
-                enabled: true,
-            }
-        },
-        scales: {
-            'first-x-axis': {
-                axis: 'x',
-                type: 'time',
-                alignToPixels: false,
-                backgroundColor: 'white',
-                border: {
-                    display: true,
-                    color: 'black',
-                    width: 1,
-                    dash: [],
-                    dashOffset: 0.0,
-                    z: 0,
-                },
-                display: 'auto',
-                grid: {
-                    circular: false,
-                    color: 'black',
-                    display: true,
-                    drawOnChartArea: true,
-                    drawTicks: true,
-                    lineWidth: 1,
-                    offset: false,
-                    tickColor: 'black',
-                    tickLength: 8,
-                    tickWidth: 1,
-                    z: -1,
-                },
-                reverse: false,
-                stacked: false,
-                // suggestedMax: 500,
-                // suggestedMin: 0,
-                ticks: {
-                    backdropColor: 'green',
-                    backdropPadding: 1,
-                    display: true,
-                    color: 'yellow',
-                    // font: 'Arial',
-                    major: false,
-                    padding: 1,
-                    showLabelBackdrop: true,
-                    textStrokeColor: 'orange',
-                    textStrokeWidth: 1,
-                    z: 0,
-                    callback: function (value) {
-                        const minutes = String(new Date(value).getMinutes()).padStart(2, '0')
-                        const hours = String(new Date(value).getHours()).padStart(2, '0')
-                        if (minutes % 5 === 0)
-                            return `${hours}:${minutes}`;
-                    }
-                },
-                time: {
-                    parser: 'YYYY-MM-DDTHH:mm:ss',
-                    unit: 'minute',
-                    displayFormats: {
-                        // hour: 'HH:mm',
-                        minute: 'HH:mm',
-                        // stepSize: 5, // Establecer el tamaño del paso a 5 minutos
-                    },
-                    // minUnit: 'minute', // Especifica la unidad mínima de tiempo que se debe usar
-                    // autoSkip: true, // Permite el salto automático de las marcas de tiempo si hay muchas de ellas
-                    tooltipFormat: 'dd-MM-yyyy HH:mm',
-                },
-
-            },
-            'first-y-axis': {
-                axis: 'y',
-                type: 'linear',
-                beginAtZero: false,
-            }
-        },
-    };
+    }, [finalData, finalOpt, data])
 
     const showTable = () => {
         const table = document.getElementById('preview-table');
@@ -110,20 +25,21 @@ export default function Visualization({ data, status, finalData, finalOpt, type 
     };
 
     return (
-        <section className="visualization" style={{ minWidth: '100%' }}>
-            <div className="preview" style={{ minHeight: '100%', backgroundColor: 'lightgrey' }}>
-                <div>
-                    <button onClick={showTable}>Show Table</button>
-                    <button onClick={showGraphic}>Show Graphic</button>
-                    <label>Select time</label>
+        <section className="visualization" style={{ minWidth: '100%', minHeight: '100%', flex: 1 }}>
+            <div className="preview"
+                style={{ minHeight: '60%', backgroundColor: 'lightgray', padding: '5px' }}>
+                <div style={{ marginBottom: '10px' }}>
+                    <button className='button' onClick={showTable}>Show Table</button>
+                    <button className='button' onClick={showGraphic}>Show Graphic</button>
+                    {/* <label>Select time</label>
                     <select>
                         <option>Tiempo1</option>
                         <option>Tiempo2</option>
                         <option>Tiempo3</option>
-                    </select>
+                    </select> */}
                 </div>
-                <div className="preview-content" style={{ minHeight: '100%', backgroundColor: 'white' }}>
-                    <div className="preview-table" id="preview-table" style={{ border: '1px solid black', height: '100%' }}>
+                <div className="preview-content" id='preview-content' style={{ display: 'none', minHeight: '100%', backgroundColor: '#ffffff', borderRadius: '5px' }}>
+                    <div className="preview-table" id="preview-table" style={{ height: '100%', margin: 'auto' }}>
                         <table style={{ border: '1px solid black', margin: '10px auto' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid red' }}>
@@ -152,7 +68,7 @@ export default function Visualization({ data, status, finalData, finalOpt, type 
                             </tbody>
                         </table>
                     </div>
-                    <div className="preview-graph" id="preview-graph" style={{ display: 'none', minHeight: '50vh', minWidth: '90vw' }}>
+                    <div className="preview-graph" id="preview-graph" style={{ display: 'none', minHeight: '50vh', minWidth: '100%' }}>
                         {finalData && <Grafico data={finalData} options={finalOpt} type={type}></Grafico>}
                     </div>
                 </div>

@@ -16,9 +16,9 @@ export default async function UserDB({ children }) {
     console.log(user.databases);
 
     return (
-        <div>
+        <div className="user-db">
             <ul className='databases-list'>
-            {databases != null && Object.keys(databases).length > 0 ? (
+                {databases != null && Object.keys(databases).length > 0 ? (
                     Object.keys(databases).map(dbName => (
                         <li key={dbName} style={{ color: 'white', listStyle: 'none' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>

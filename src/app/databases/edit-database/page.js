@@ -4,7 +4,8 @@ import { getUserByEmail } from "@/lib/data";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/Menu";
+import NavSection from "@/components/NavSection";
 
 async function EditDatabase({ searchParams }) {
     const databaseName = searchParams.database
@@ -18,23 +19,23 @@ async function EditDatabase({ searchParams }) {
 
     return (
         <main>
-            <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
-                <Navbar></Navbar>
-                <nav className='nav-section-page'>
-                    <div>
-                        <Link className='route-link' href='/'><h1>Nombre</h1></Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href='/databases'>Databases</Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/databases/edit-database?database=${databaseName}`}>Edit: {databaseName}</Link>
-                    </div>
-                </nav>
-            </div>
-            <div className="show-dashboards">
-                <DatabaseForm db={dbToEdit} userId={user.id} disbaled={disabled}>
-                    <button type='submit' className="button" formAction={editDbConnection}>Save Database Configuration</button>
-                    <Link className="button" href='/databases'>Cancelar</Link>
-                </DatabaseForm>
+            <NavSection>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href='/databases'>Databases</Link>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href={`/databases/edit-database?database=${databaseName}`}>Edit: {databaseName}</Link>
+            </NavSection>
+
+            <div className="show-databases">
+                <div style={{ margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <h1>Edit database</h1>
+                    <DatabaseForm db={dbToEdit} userId={user.id} disbaled={disabled}>
+                        <div style={{ padding: '10px 0', margin: 'auto' }}>
+                            <button type='submit' className="button" formAction={editDbConnection}>Save Database Configuration</button>
+                            <Link className="cancel-db" href='/databases'>Cancelar</Link>
+                        </div>
+                    </DatabaseForm>
+                </div>
             </div>
         </main>
     )

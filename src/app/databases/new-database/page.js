@@ -3,7 +3,8 @@ import { saveDbConnection } from "@/lib/db-actions"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
-import Navbar from "@/components/NavBar"
+import Navbar from "@/components/Menu"
+import NavSection from "@/components/NavSection"
 
 async function NewDatabase() {
     const session = await auth()
@@ -17,25 +18,23 @@ async function NewDatabase() {
 
     return (
         <main>
-            <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
-                <Navbar></Navbar>
-                <nav className='nav-section-page'>
-                    <div>
-                        <Link className='route-link' href='/'><h1>Nombre</h1></Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href='/databases'>Databases</Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href='/databases/new-database'>New</Link>
-                    </div>
-                </nav>
-            </div>
+            <NavSection>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href='/databases'>Databases</Link>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href='/databases/new-database'>New database</Link>
+            </NavSection>
+
             <div className="show-dashboards">
-                <DatabaseForm userId={user.id} disabled={disabled} >
-                    <div>
-                        <button type='submit' className="button" formAction={saveDbConnection}>Save Database Configuration</button>
-                        <Link className="button" href='/databases'>Cancelar</Link>
-                    </div>
-                </DatabaseForm>
+                <div style={{ margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <h1>New database</h1>
+                    <DatabaseForm userId={user.id} disabled={disabled} >
+                        <div style={{ padding: '10px 0', margin: 'auto' }}>
+                            <button type='submit' className="button" formAction={saveDbConnection}>Save Database Configuration</button>
+                            <Link className="button" href='/databases'>Cancelar</Link>
+                        </div>
+                    </DatabaseForm>
+                </div>
             </div>
         </main>
     )

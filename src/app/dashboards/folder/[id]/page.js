@@ -2,7 +2,8 @@ import { getFolderWithDashboards } from "@/lib/actions"
 import FolderHeader from "@/components/FolderHeader.jsx";
 import ShowArchives from "@/components/ShowArchives.jsx";
 import Link from "next/link";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/Menu";
+import NavSection from "@/components/NavSection";
 
 async function FolderFound({ params, isFolder }) {
 
@@ -16,18 +17,12 @@ async function FolderFound({ params, isFolder }) {
 
     return (
         <section>
-            <div className='nav-section-page' style={{ display: 'flex'}}>
-                <Navbar></Navbar>
-                <nav className='nav-section-page'>
-                    <div>
-                        <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href='/dashboards'>Dashboards</Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/folder/${folder.id}`}>{folder.name}</Link>
-                    </div>
-                </nav>
-            </div>
+            <NavSection>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href='/dashboards'>Dashboards</Link>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href={`/dashboards/folder/${folder.id}`}>{folder.name}</Link>
+            </NavSection>
             <div className="show-dashboards">
                 <FolderHeader folder={folder}></FolderHeader>
                 <ShowArchives folder={folder} isFolder={isFolder}></ShowArchives>

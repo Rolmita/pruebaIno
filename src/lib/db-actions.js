@@ -36,6 +36,7 @@ function dBConnConfig(formData) {
         enableKeepAlive: true,
         keepAliveInitialDelay: 0,
     };
+
     return config
 }
 
@@ -51,13 +52,13 @@ export async function saveDbConnection(formData) {
     foundUser.databases[dbConfig.database] = dbConfig;
 
     const result = await updateDb(foundUser.databases, userId);
-    console.log('Se ha registrado la nueva fuente de datos', result.databases);
 
     revalidatePath('/databases');
     redirect('/databases');
 }
 
 async function updateDb(databases, userId) {
+
     const result = await prisma.user.update({
         data: {
             databases: databases
@@ -77,8 +78,8 @@ export async function editDbConnection(formData) {
     const dbConfig = dBConnConfig(formData)
 
     updateDbConfig(foundUser, dBPrevName, dbConfig)
+
     const result = await updateDb(foundUser.databases, userId)
-    console.log(`Se ha editado la fuente de datos ${dBPrevName}`, result.databases);
 
     revalidatePath('/databases')
     redirect('/databases')

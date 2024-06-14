@@ -1,7 +1,7 @@
 import Dashboard from "@/components/Dashboard";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import Navbar from "@/components/NavBar";
+import Navbar from "@/components/Menu";
 import DashboardHeader from "@/components/DashboardHeader";
 
 async function FolderDashboard({ params }) {

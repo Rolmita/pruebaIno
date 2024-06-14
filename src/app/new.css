@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    font-family: "Lexend", sans-serif;
 }
 
 html,
@@ -33,7 +37,11 @@ body {
     color: #333;
     font-weight: 600;
     text-decoration: none;
-    text-align: left;
+    /* text-align: left; */
+}
+
+.menu-item h3:hover {
+    color: #4D688F;
 }
 
 main {
@@ -59,32 +67,37 @@ main {
 }
 
 .show-dashboards,
-.show-setting {
+.show-setting,
+.show-databases {
     width: 80%;
     margin: 20px auto;
     background-color: lightgray;
     padding: 50px;
 }
 
-.burger-menu {
+.dropdown-menu {
+    display: flex;
     position: relative;
     appearance: none;
     background-color: white;
     align-items: center;
     justify-content: space-evenly;
-    min-width: 35px;
+    /* min-width: 35px; */
 }
 
-.burger-icon {
+.dropdown-icon {
     background-color: white;
     border: none;
-    font-size: 24px;
+    /* font-size: 24px; */
     cursor: pointer;
-    max-height: 100vh;
+    /* margin: auto; */
+    align-self: center;
+    margin: 3px 5px 3px 0;
 }
 
-.burger-img {
-    margin-right: 10px;
+.dropdown-logo {
+    width: 200px;
+    height: 30px;
 }
 
 .menu {
@@ -92,11 +105,11 @@ main {
     flex-direction: column !important;
     position: absolute;
     z-index: 1;
-    top: 50px;
-    left: 0;
-    width: 150px;
-    background: #fff;
-    border: 1.5px solid black;
+    top: 40px;
+    left: 0px;
+    width: 200px;
+    background: #ffffff;
+    border: 1px solid #ffffff;
     padding: 5px;
 }
 
@@ -305,13 +318,13 @@ select {
 }
 
 :root {
-    --tabs-border-color: grey;
+    --tabs-border-color: #202c59;
     --tabs-border-size: 2px;
-    --tabs-text-color: black;
-    --tabs-dark-color: gray;
+    --tabs-text-color: #202c59;
+    --tabs-dark-color: #4D688F;
     --tabs-lite-color: lightgray;
-    --tabs-width: 85px;
-    --tabs-height: 30px;
+    --tabs-width: 100px;
+    --tabs-height: 35px;
 }
 
 .tab-container {
@@ -326,14 +339,6 @@ select {
 
 #tab2>a {
     --tabs-position: 1;
-}
-
-#tab3>a {
-    --tabs-position: 2;
-}
-
-#tab4>a {
-    --tabs-position: 3;
 }
 
 .tab>a {
@@ -355,8 +360,9 @@ select {
     display: none;
     background-color: var(--tabs-lite-color);
     padding: 20px;
+    width: 100%;
     border: var(--tabs-border-size) solid var(--tabs-border-color);
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 5px 5px;
     position: relative;
     z-index: 1;
 }
@@ -365,7 +371,7 @@ select {
     background-color: var(--tabs-dark-color);
     padding: 10px;
     border: var(--tabs-border-size) solid var(--tabs-border-color);
-    border-radius: 10px 10px 0 0;
+    border-radius: 5px 5px 0 0;
     border-bottom: 0;
     text-decoration: none;
     color: black;
@@ -411,7 +417,8 @@ fieldset {
 }
 
 input[type='color'] {
-    height: 20px;
+    height: 35px;
+    width: 35px;
 }
 
 .probador {
@@ -443,7 +450,8 @@ main.auth {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
     color: #202c59;
 }
 
@@ -527,6 +535,101 @@ div.form {
     border: 3px solid #202c59;
 }
 
+.deleteChart {
+    display: none;
+    background-color: #a3a0a0;
+    border-radius: 5px;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.deleteChart div {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.deleteChart p {
+    color: #ffffff;
+    text-align: center;
+}
+
+.chart-btn {
+    margin-bottom: 5px;
+    max-width: 20px;
+}
+
+.tab-content form,
+.form-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.form-row input,
+.form-row select,
+.modifiers-type {
+    height: 30px;
+    font-size: 0.8em;
+    margin: 5px;
+    align-items: center;
+}
+
+input[type='checkbox'] {
+    appearance: none;
+    height: 25px;
+    width: 25px;
+    margin: 0;
+    border: 2px solid #4D688F;
+    background-color: white;
+}
+
+input[type='checkbox']:checked {
+    background-color: #4D688F;
+    appearance: inherit;
+}
+
+#query-area {
+    width: 100%;
+}
+
+.column-choose {
+    display: flex;
+    flex-direction: column;
+    margin-right: 5px;
+}
+
+.columns {
+    align-items: first baseline;
+    margin-top: 0;
+}
+
+.tab-content form label {
+    font-size: 16px;
+}
+
+.modifiers-type {
+    align-items: center;
+}
+
+.user-db {
+    margin-top: 20px;
+}
+
+.cancel-db {
+    height: 30px;
+    background-color: #4D688F;
+    font-weight: bold;
+    padding: 5px;
+    color: white;
+    text-decoration: none;
+    border: 2px solid #202c59;
+    border-radius: 5px;
+    font-size: 0.8em;
+}
 
 /* TODO: HACER RESPONSIVE */
 @media (max-width: 650px) {
@@ -580,6 +683,24 @@ div.form {
         display: flex;
         flex-direction: column;
     }
+
+    input,
+    select {
+        font-size: 0.9em;
+    }
+
+    .nav-section-div {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .tab-content form,
+    .form-row {
+        display: flex;
+        flex-direction: column;
+    }
+
 
 
 }

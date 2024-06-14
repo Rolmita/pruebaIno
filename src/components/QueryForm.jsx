@@ -118,7 +118,7 @@ function QueryForm({ databases, onQueryResults, onQuery, onDb, prevQuery, prevDb
         <div className="tab-content">
             <form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleSubmit}>
                 <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-                    <label>Nombre de la base de datos: </label>
+                    <label>Database name: </label>
                     <select name='database' onChange={handleDbChange} defaultValue={prevDb && prevDb}>
                         {prevDb ? <option value={prevDb}>{prevDb}</option> : <option value={null}>-- Elija una base de datos --</option>}
                         {databases
@@ -142,52 +142,71 @@ function QueryForm({ databases, onQueryResults, onQuery, onDb, prevQuery, prevDb
                     </select>
                 </div>
 
-                <div className="form-row" style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                <div className="form-row columns">
                     <label>Columns: </label>
                     {numColumns.map((_, index) => (
-                        <div key={`column-${index}`}>
-                            <select name='column' key={index}>
-                                <option value='null'>-- Choose a column --</option>
-                                {columns != null && Object.keys(columns).map(index => (
-                                    <option key={columns[index].COLUMN_NAME} value={columns[index].COLUMN_NAME}>
-                                        {columns[index].COLUMN_NAME}
-                                    </option>
-                                ))}
-                            </select>
-                            <div key={`modifiers-${index}`}>
-                                <label htmlFor='modifiers'>Modifiers:</label>
-                                <div>
+                        <div key={`column-${index}`} className='column-choose'>
+                            <div className='form-row'>
+                                <select name='column' key={index}>
+                                    <option value='null'>-- Choose a column --</option>
+                                    {columns != null && Object.keys(columns).map(index => (
+                                        <option key={columns[index].COLUMN_NAME} value={columns[index].COLUMN_NAME}>
+                                            {columns[index].COLUMN_NAME}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className='form-row'>
+                                    <input id={`enable-modifier-${index}`} type='checkbox' defaultChecked={false}
+                                        onChange={(e) => {
+                                            const elemento = document.getElementById(`modifiers-${index}`)
+                                            console.log(e.target.checked);
+                                            e.target.checked == true ? e.target.checked == false : e.target.checked == true
+                                            e.target.checked == true
+                                                ? elemento.style.display = 'flex'
+                                                : elemento.style.display = 'none'
+                                        }}></input>
+                                    <label>Modifiers</label>
+                                </div>
+                            </div>
+                            <div key={`modifiers-${index}`} id={`modifiers-${index}`} style={{ display: 'none' }}>
+
+                                <div className='modifiers-type'>
                                     <input type='checkbox' name={`modifiers-${index}`} value='SUM'></input>
                                     <label htmlFor={`modifiers-${index}`}>Sum</label>
                                 </div>
-                                <div>
+                                <div className='modifiers-type'>
                                     <input type='checkbox' name={`modifiers-${index}`} value='COUNT'></input>
                                     <label htmlFor={`modifiers-${index}`}>Count</label>
                                 </div>
-                                <div>
+                                <div className='modifiers-type'>
                                     <input type='checkbox' name={`modifiers-${index}`} value='MAX'></input>
                                     <label htmlFor={`modifiers-${index}`}>Max</label>
                                 </div>
-                                <div>
+                                <div className='modifiers-type'>
                                     <input type='checkbox' name={`modifiers-${index}`} value='AVG'></input>
                                     <label htmlFor={`modifiers-${index}`}>AVG</label>
                                 </div>
-                                <div>
+                                <div className='modifiers-type'>
                                     <input type='checkbox' name={`modifiers-${index}`} value='MIN'></input>
                                     <label htmlFor={`modifiers-${index}`}>Min</label>
                                 </div>
                             </div>
                         </div>
                     ))}
-                    <input name='all-columns' type='checkbox' value='*'></input>
-                    <label>All columns</label>
-                    <div>
-                        <button type="button" onClick={handleAddSelect}>Add column</button>
+
+                    <div className='form-row'>
+                        <div className='form-row'>
+                            <input name='all-columns' type='checkbox' value='*'></input>
+                            <label>All columns</label>
+                        </div>
+                        <button type="button" className='button' onClick={handleAddSelect}>Add column</button>
                     </div>
                 </div>
                 <QueryFilterForm columns={columns} db={db} table={table} onFilter={setFilterResult} />
-                <textarea name='query-area' id='query-area' defaultValue={query}></textarea>
-                <button type='submit' onClick={handleButtonChange}>{buttonName}</button>
+                <div className='form-row'>
+                    <textarea name='query-area' id='query-area' defaultValue={query}></textarea>
+                </div>
+                <button type='submit' className='button' onClick={handleButtonChange}>{buttonName}</button>
             </form>
         </div>
     )

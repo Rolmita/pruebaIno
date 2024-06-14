@@ -1,8 +1,8 @@
 import Dashboard from "@/components/Dashboard";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import Navbar from "@/components/NavBar";
 import DashboardHeader from "@/components/DashboardHeader";
+import NavSection from "@/components/NavSection";
 
 async function FolderDashboard({ params }) {
 
@@ -14,17 +14,12 @@ async function FolderDashboard({ params }) {
 
     return (
         <section>
-            <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
-                <Navbar></Navbar>
-                <nav className='nav-section-page' style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <div >
-                        <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href='/dashboards'>Dashboards</Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/${dashboard.id}`}>{dashboard.name}</Link>
-                    </div>
-                </nav></div>
+            <NavSection dashboard={{ id: dashboard.id, name: dashboard.name }}>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href='/dashboards'>Dashboards</Link>
+                <img src='/right.svg' width='18px'></img>
+                <Link className='route-link' href={`/dashboards/${dashboard.id}`}>{dashboard.name}</Link>
+            </NavSection>
             <div style={{ width: '100%' }}>
                 <DashboardHeader dashboard={dashboard}></DashboardHeader>
                 <Dashboard dashboard={dashboard}></Dashboard>

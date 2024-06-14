@@ -1,11 +1,13 @@
 import React from 'react';
 import Link from 'next/link'
-import ShowArchives from '../../components/ShowArchives';
-import { getFolders, getDashboardsWithoutFolders } from '@/lib/actions';
-import DashboardsHeader from '../../components/DashboardsHearder';
-import Navbar from '../../components/NavBar';
-import { auth } from '@/auth';
-import { getUserByEmail } from '@/lib/data';
+import ShowArchives from '../../components/ShowArchives'
+import { getFolders, getDashboardsWithoutFolders } from '@/lib/actions'
+import DashboardsHeader from '../../components/DashboardsHearder'
+import Navbar from '../../components/Menu'
+import { auth } from '@/auth'
+import { getUserByEmail } from '@/lib/data'
+import { TfiAngleRight } from 'react-icons/tfi'
+import NavSection from '@/components/NavSection';
 
 async function DashboardList() {
 
@@ -35,16 +37,12 @@ async function DashboardList() {
 
     return (
         <section>
-            <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
-                <Navbar></Navbar>
-                <nav className='nav-section-page'>
-                    <div>
-                        <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href='/dashboards'>Dashboards</Link>
-                    </div>
-                </nav>
-            </div>
+            <NavSection>
+                <img src='/right.svg' width='18px'></img>
+                {/* <TfiAngleRight ></TfiAngleRight> */}
+                <Link className='route-link' href='/dashboards'>Dashboards</Link>
+            </NavSection>
+
             <div className="show-dashboards">
                 <DashboardsHeader user={foundUser.id}></DashboardsHeader>
                 {
@@ -53,7 +51,7 @@ async function DashboardList() {
                         : <ShowArchives folder={folders} dashboards={dashboards} isFolder={isFolder}></ShowArchives>
                 }
             </div>
-            </section>
+        </section>
     )
 }
 

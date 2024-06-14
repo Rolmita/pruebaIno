@@ -1,5 +1,5 @@
 'use client'
-import Navbar from "@/components/NavBar"
+import Navbar from "@/components/Menu"
 import Link from "next/link"
 import Information from "@/components/Information";
 import Visualization from "@/components/charts/Visualization";
@@ -39,7 +39,7 @@ export default function NewVisualization({ params }) {
                 <Navbar></Navbar>
                 <nav className='nav-section-page' >
                     <div>
-                        <Link className='route-link' href='/'><h1>Nombre</h1></Link>
+                        <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
                         <img src='/right.svg' width='18px'></img>
                     </div>
                     <div>
@@ -56,8 +56,10 @@ export default function NewVisualization({ params }) {
                     <div>
                         <h1>New Visualization</h1>
                     </div>
-                    <div><button onClick={() => saveChart(finalData, finalOptions, dashboard, query, queryDb)}>Save</button>
-                        <button>Discard</button>
+                    <div>
+                        <button className='button' onClick={() => saveChart(finalData, finalOptions, dashboard, query, queryDb)}>Save</button>
+                        {/* {//TODO: AÑADIR FUNCIONALIDAAD AL BOTON DE DESCARTAR} */}
+                        <button className='button'>Discard</button>
                     </div>
                 </div>
                 <Visualization data={queryRes} status={status} finalData={finalData} type={chartType} finalOpt={finalOptions}></Visualization>

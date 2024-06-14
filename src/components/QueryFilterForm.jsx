@@ -207,7 +207,7 @@ const QueryFilterForm = ({ columns, onFilter, db, table }) => {
     }, [queryFilter])
 
     return (
-        <div>
+        <div className='form-row'>
             <button type='button' onClick={() => addFilter()}>Añadir filtro</button>
             {filters.map((filter, index) => (
                 <div key={index}>

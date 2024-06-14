@@ -5,7 +5,7 @@ import PieDoughnutDatasets from './PieDatasets';
 import BarDataset from './BarDatasets';
 import ScalesForm from './ScalesForm';
 import 'chartjs-adapter-luxon'
-import { lineChartData, pieChartData, barChartData, basicChartOptions, basicChartOptionsR } from '@/lib/lineChart';
+import { lineChartData, pieChartData, barChartData, basicChartOptions, basicChartOptionsR } from '@/lib/chart-settings';
 
 //TODO: añadir funcion en el eje de datos para mostrar dependiendo del valor, ej:
 // color: function(context) {
@@ -28,10 +28,55 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
     const [datasetTypes, setDatasetTypes] = useState(['line'])
     const [chartOptions, setChartOptions] = useState(null)
 
-    const processedXAxisIds = new Set()
-    const processedYAxisIds = new Set()
+    let processedXAxisIds = new Set()
+    let processedYAxisIds = new Set()
 
+    // TODO: NO FUNCIONA BIEN LA SUMA Y LA CUENTA (VISTO EN PIE Y EN DOUGNUT)
+    // useEffect(() => {
+    //     console.log(data);
+    //     if (data) {
+    //         const labels = [];
+    //         const datasets = {};
 
+    //         data.forEach(row => {
+    //             Object.entries(row).forEach(([key, value]) => {
+    //                 const match = key.match(/\(([^)]+)\)/); // Extraer el nombre dentro de los paréntesis
+    //                 if (match) {
+    //                     const metric = key.split('(')[0]; // Extraer la métrica (SUM, COUNT, etc.)
+    //                     const label = match[1]; // El nombre dentro de los paréntesis
+
+    //                     if (!labels.includes(label)) {
+    //                         labels.push(label); // Añadir a las etiquetas si no está ya presente
+    //                     }
+
+    //                     // Si el dataset para esta métrica no existe, lo creamos
+    //                     if (!datasets[metric]) {
+    //                         datasets[metric] = {
+    //                             label: metric,
+    //                             data: Array(labels.length).fill(null) // Inicializamos con null para alinear los datos correctamente
+    //                         };
+    //                     }
+
+    //                     const labelIndex = labels.indexOf(label); // Encontrar el índice de la etiqueta actual
+    //                     datasets[metric].data[labelIndex] = value; // Asignar el valor al índice correspondiente
+    //                 } else {
+    //                     // Manejar otros casos si es necesario
+    //                 }
+    //             });
+    //         });
+
+    //         // Convertir el objeto datasets a un array
+    //         const datasetsArray = Object.values(datasets);
+
+    //         const newChartData = {
+    //             labels: labels,
+    //             datasets: datasetsArray
+    //         };
+
+    //         setChartData(newChartData);
+    //         console.log('DATOS DEL GRAFICO: ', newChartData);
+    //     }
+    // }, [data]);
     useEffect(() => {
         console.log(data);
         if (data) {
@@ -40,27 +85,41 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
             const datasetLabel = []
             const datasetData = []
             let datasetKey
+
             data.forEach(row => {
                 Object.entries(row).forEach(([key, value]) => {
-                    if (key.includes('MAX') || key.includes('MIN') || key.includes('AVG') || key.includes('SUM')) {
+
+                    if (key.includes('MAX') || key.includes('MIN') || key.includes('AVG')
+                        || key.includes('SUM') || key.includes('COUNT')) {
+
                         labels.push(key)
+
                         let match = key.match(/\(([^)]+)\)/)
                         if (match) datasetKey = match[1]
+
                         if (!datasetLabel.includes(datasetKey)) datasetLabel.push(datasetKey)
+
                         datasetData.push(value)
+
                     } else {
                         if (value instanceof Date) {
                             labels.push(value);
+
                         } else {
                             const existingDatasetIndex = datasets.findIndex(dataset => dataset.label === key)
-                            existingDatasetIndex !== -1 ? datasets[existingDatasetIndex].data.push(value) : datasets.push({ label: key, data: [value] })
+
+                            existingDatasetIndex !== -1
+                                ? datasets[existingDatasetIndex].data.push(value)
+                                : datasets.push({ label: key, data: [value] })
                         }
                     }
                 })
             })
 
             console.log(datasetData, datasetLabel)
+
             if (datasets.length == 0) datasets.push(({ label: datasetLabel, data: datasetData }))
+
             if (labels.length == 0) datasets.forEach(dataset => labels.push(dataset.label))
 
             const newChartData = {
@@ -71,6 +130,7 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
             setChartData(newChartData)
             console.log('DATOS DEL GRAFICO: ', newChartData)
         }
+
     }, [data]);
 
     const min5 = (value) => {
@@ -160,6 +220,8 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
     };
     const updateChartScaleOpt = (opt, axisId) => {
         setChartOptions({ ...chartOptions, scales: { ...chartOptions.scales, [axisId]: opt } })
+        // processedXAxisIds = new Set()
+        // processedYAxisIds = new Set()
     }
     const updateChartOpt = (key, value) => {
         let updatedProp
@@ -225,7 +287,6 @@ export default function GraphicForm({ data, status, onFinalData, onFinalOptions,
                                 <option value='doughnut'>Doughnut</option>
                                 <option value='bar'>Bar</option>
                             </select>
-
                         </fieldset>
                         <fieldset>
                             <legend>Legend: </legend>

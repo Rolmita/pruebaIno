@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react"
-import { timeScaleOptions, linearScaleOptions, categoryScaleOptions, logarithmicScaleoptions } from "@/lib/lineChart"
+import { timeScaleOptions, linearScaleOptions, categoryScaleOptions, logarithmicScaleoptions } from "@/lib/chart-settings"
 
+// TODO: CUANDO CAMBIA LA ESCALA DEL GRAFICO SE DEBE BORRAR TODA LA CONFIG PREVIA
+// TODO: CATEGORY ESCALA NO FUNCIONA (MUESTRA EL NUMERO DE ENTRADAS PERO NO EL NOMBRE)
+//  TODO: CAMBIAR SI LA ESCALA NO ES TIME, LOS INPUTS DE MIN Y MAX
 //TODO: MIRAR BIEN LO DEL ADAPTER DE LA FECHA PORQUE CREO QUE ES LO QUE FALLA
 //TODO: RECUPERACION DE DATOS DE AXISSCALE SEGUN EL TIPO DE ESCALA Y CAMBIO DE VALORES CUANDO ES BARCHART
 //TODO: CUANDO SELECCIONO NULL EN TIPO DE SCALA ME DA ERROR YA QUE LA ESCALA NO PUEDE SER TYPE NULL
@@ -226,7 +229,7 @@ export default function ScalesForm({ axisId, axis, datasetType, onOptionsChange,
                                     <label htmlFor="time-parser">
                                         Your data format: </label>
                                     <select name='time-parser'
-                                        defaultValue={axisIdScale?.time.parser}
+                                        // defaultValue={axisIdScale?.time.parser ? axisIdScale?.time.parser : undefined}
                                         onChange={(e) => modifySetting('time-parser', e.target.value)}>
                                         <option value='undefined'>--Select your data format--</option>
                                         <option value="yyyy-MM-dd'T'HH:mm:ss:SSS">YYYY-MM-DDTHH:mm:ss</option>

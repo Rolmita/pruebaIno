@@ -59,6 +59,8 @@ export default function PieDoughnutDatasets({ dataset, onDatasetChange, onTypeCh
         color: 'white'
     }
 
+    //TODO: LOS DESPLEGABLES HAY QUE CAMBIAR EL NOMBRE DE LA IMG Y DEL DIV
+    //TODO: los colores no están bien
     return (
         <div>
             <div className='graphic-form-group'>

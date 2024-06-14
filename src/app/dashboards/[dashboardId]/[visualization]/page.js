@@ -1,10 +1,11 @@
 'use client'
-import Navbar from "@/components/NavBar"
+import Navbar from "@/components/Menu"
 import Link from "next/link"
 import Information from "@/components/Information";
 import Visualization from "@/components/charts/Visualization";
 import QueryForm from "@/components/QueryForm";
 import GraphicForm from "@/components/charts/GraphicForm2";
+import NavSection from "@/components/NavSection";
 import { getFolderById, getDashboardById, getUserBySession, saveChart, getVisualization } from "@/lib/actions";
 import { useState, useEffect } from 'react'
 import { reloadQuery } from "@/lib/db-actions";
@@ -71,24 +72,19 @@ export default function VisualizationId({ params }) {
 
     return (
         <section>
-            <div className='nav-section-page' >
-                <Navbar></Navbar>
-                <nav className='nav-section-page' >
-                    <div>
-                        <Link className='route-link' href='/'><h1>Nombre</h1></Link>
-                        <img src='/right.svg' width='18px'></img>
-                    </div>
-                    <div>
-                        <Link className='route-link' href='/dashboards'>Dashboards</Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/${dashboard?.id}`}>{dashboard?.name}</Link>
-                        <img src='/right.svg' width='18px'></img>
-                        <Link className='route-link' href={`/dashboards/${dashboard?.id}/${visualization?.id}`}>
-                            Edit visualization {visualization?.id} {visualization?.options.plugins.title.text.length > 0 ? `(${visualization?.options.plugins.title.text})` : ''}
-                        </Link>
-                    </div>
-                </nav>
-            </div>
+            <NavSection>
+                <div><Link className='route-link' href='/dashboards'>Dashboards</Link></div>
+                <div>
+                    <img src='/right.svg' width='18px'></img>
+                    <Link className='route-link' href={`/dashboards/${dashboard?.id}`}>{dashboard?.name}</Link>
+                </div>
+                <div>
+                    <img src='/right.svg' width='18px'></img>
+                    <Link className='route-link' href={`/dashboards/${dashboard?.id}/${visualization?.id}`}>
+                        Edit visualization {visualization?.id} {visualization?.options.plugins.title.text.length > 0 ? `(${visualization?.options.plugins.title.text})` : ''}
+                    </Link>
+                </div>
+            </NavSection>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'lightgray', width: '100%', padding: '10px' }}>
                     <div>

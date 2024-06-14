@@ -2,8 +2,9 @@
 import React from 'react';
 import Link from 'next/link'
 import { getFolders, getDashboardsWithoutFolders, getUserBySession } from '@/lib/actions';
-import Navbar from '../../components/NavBar';
+import Navbar from '../../components/Menu';
 import { useEffect, useState } from 'react';
+import NavSection from '@/components/NavSection';
 
 export function Setting() {
 
@@ -38,20 +39,14 @@ export function Setting() {
     return (
         <main>
             <section>
-                <div className='nav-section-page' style={{ display: 'flex', flexDirection: 'row' }}>
-                    <Navbar></Navbar>
-                    <nav className='nav-section-page'>
-                        <div>
-                            <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
-                            <img src='/right.svg' width='18px'></img>
-                            <Link className='route-link' href='/setting'>Setting</Link>
-                        </div>
-                    </nav>
-                </div>
+                <NavSection>
+                    <img src='/right.svg' width='18px'></img>
+                    <Link className='route-link' href='/setting'>Setting</Link>
+                </NavSection>
                 <div className="show-setting">
                     <div className='setting-type'>
                         <div className='setting-list'>
-                            <h1>Setting</h1>
+                            <h1>Settings</h1>
                             <ul className='setting-list-grop'>
                                 <li className='setting-list-element'>
                                     <button className='setting-list-element' type='button'>Account</button>
@@ -95,9 +90,11 @@ export function Setting() {
                                             <input type="password" name='password' placeholder='******' disabled={true} />
                                         </div>
                                     </div>
+
                                     <div id='account-div' style={{ display: 'none', flexDirection: 'row', justifyContent: 'right' }}>
                                         <button className='button btn-dropdown' id='cancel-edit' name='account' type='button'
                                             onClick={(e) => changeDisability(e.target.name, 'edit-account')}>Discard</button>
+
                                         <button className='button btn-dropdown' type='submit'>Save changes</button>
                                     </div>
                                 </form>

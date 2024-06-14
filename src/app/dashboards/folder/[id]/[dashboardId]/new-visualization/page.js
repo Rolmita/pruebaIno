@@ -1,5 +1,5 @@
 'use client'
-import Navbar from "@/components/NavBar"
+import Navbar from "@/components/Menu"
 import Link from "next/link"
 import Information from "@/components/Information";
 import Visualization from "@/components/charts/Visualization";
@@ -44,7 +44,7 @@ export default function NewVisualization({ params }) {
                 <Navbar></Navbar>
                 <nav className='nav-section-page' >
                     <div>
-                        <Link className='route-link' href='/'><h1>Nombre</h1></Link>
+                        <Link className='route-link' href='/'><h1>MyChartBoard</h1></Link>
                         <img src='/right.svg' width='18px'></img>
                     </div>
                     <div>
@@ -58,33 +58,34 @@ export default function NewVisualization({ params }) {
                     </div>
                 </nav>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }} className='dashboard-header'>
                 <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'lightgray', width: '100%', padding: '10px' }}>
                     <div>
                         <h1>New Visualization</h1>
                     </div>
-                    <div><button onClick={() => saveChart(finalData, finalOptions, dashboard, query, queryDb)}>Save</button>
-                        <button>Discard</button>
+                    {/* TODO: AÑADIR FUNCIONALIDAD AL BOTON DE DESCARTAR */}
+                    <div><button className='button' onClick={() => saveChart(finalData, finalOptions, dashboard, query, queryDb)}>Save</button>
+                        <button className='button'>Discard</button>
                     </div>
                 </div>
                 <Visualization data={queryRes} status={status} finalData={finalData} type={chartType} finalOpt={finalOptions}></Visualization>
-                <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '20%', padding: '5px' }}>
+                <section className="visualization-settings tabs" style={{ display: 'flex', flexDirection: 'column', minWidth: '100%', padding: '5px', backgroundColor:'lightgray' }}>
 
                     <div className="tab-container">
 
-                        <div id="tab4" className="tab">
-                            <a href="#tab4"><h4>Build</h4></a>
+                        {/* <div id="tab4" className="tab">
+                            <a href="#tab4"><h3>Build</h3></a>
                             <Information build={queryRes}></Information>
 
                         </div>
 
                         <div id="tab3" className="tab">
-                            <a href="#tab3"><h4>Table</h4></a>
+                            <a href="#tab3"><h3>Table</h3></a>
                             <div className="tab-content">
                                 <h3>Titulo 2</h3>
                                 <p>Lorem ipsum ...</p>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div id="tab2" className="tab">
                             <a href="#tab2"><h4>Graphic</h4></a>

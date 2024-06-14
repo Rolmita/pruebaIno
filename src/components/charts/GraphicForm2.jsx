@@ -3,7 +3,7 @@ import LineDataset from '../../components/charts/LineDatasets';
 import PieDoughnutDatasets from '../../components/charts/PieDatasets';
 import BarDataset from '../../components/charts/BarDatasets';
 import ScalesForm from '../../components/charts/ScalesForm';
-import { lineChartData, pieChartData, barChartData, basicChartOptions } from '@/lib/lineChart';
+import { lineChartData, pieChartData, barChartData, basicChartOptions } from '@/lib/chart-settings';
 
 export default function GraphicForm2({ data, status, onFinalData, onFinalOptions, onChartType, chartOpt, chartD, chartT }) {
     const prevData = data
