@@ -115,3 +115,13 @@ SELECT DATA_TYPE,CHARACTER_MAXIMUM_LENGTH
   WHERE TABLE_SCHEMA='database'
   AND TABLE_NAME='tabla'
   AND COLUMN_NAME='campo';
+
+
+  //TODO: añadir funcion en el eje de datos para mostrar dependiendo del valor, ej:
+// color: function(context) {
+//     const index = context.dataIndex;
+//     const value = context.dataset.data[index];
+//     return value < 0 ? 'red' :  // draw negative values in red
+//         index % 2 ? 'blue' :    // else, alternate values in blue and green
+//         'green';
+// },
